@@ -24,5 +24,9 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
         return editable;
     }
 
+    public virtual void ChangeState(bool newState) {
+        gameObject.SetActive(newState);
+    }
+
     protected abstract IEnumerable<TEditableData> GetEditablesData(MapData mapData);
 }
