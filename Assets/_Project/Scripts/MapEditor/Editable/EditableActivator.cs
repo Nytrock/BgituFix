@@ -3,6 +3,9 @@ using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(BoxCollider2D))]
 public class EditableActivator : MonoBehaviour {
+    [SerializeField] private RectTransform _canvas;
+    [SerializeField] private float _canvasMultiplier;
+
     protected SpriteRenderer _renderer;
     private BoxCollider2D _collider;
     private bool _isMouseHold;
@@ -25,6 +28,11 @@ public class EditableActivator : MonoBehaviour {
         Pressed?.Invoke();
     }
 
+    private void Update() {
+        if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
+            _isMouseHold = false;
+    }
+
     private void OnMouseExit() {
         _isMouseHold = false;
     }
@@ -33,5 +41,6 @@ public class EditableActivator : MonoBehaviour {
         GetComponents();
         _renderer.size = data.Size;
         _collider.size = data.Size;
+        _canvas.sizeDelta = data.Size * _canvasMultiplier;
     }
 }

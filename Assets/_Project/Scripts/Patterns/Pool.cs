@@ -5,9 +5,13 @@ public class Pool<T> : MonoBehaviour where T : MonoBehaviour {
     [SerializeField] private T _prefab;
     private readonly Queue<T> _pool = new();
 
+    protected virtual T CreateObject() {
+        return Instantiate(_prefab, transform);
+    }
+
     public virtual T GetObject() {
         if (_pool.Count == 0)
-            _pool.Enqueue(Instantiate(_prefab, transform));
+            _pool.Enqueue(CreateObject());
 
         T obj = _pool.Dequeue();
         obj.gameObject.SetActive(true);

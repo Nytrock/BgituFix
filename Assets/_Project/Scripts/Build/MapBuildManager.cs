@@ -1,15 +1,19 @@
 using System;
+using UnityEngine;
 
 public class MapBuildManager : MapElementManager<MapBuild, EditableAudience, AudienceData, BuildData> {
+
+    [SerializeField] protected MapBuildPool _buildPool;
+
     public event Action<MapBuild> BuildAdded;
     public event Action<MapBuild> BuildChanged;
 
     public void GenerateBuilds(MapManager mapManager) {
         MapData mapData = mapManager.Data;
+        _buildPool.SetManagers(mapManager);
+
         foreach (var buildData in mapData.BuildDatas) {
-            MapBuild build = _mapElementsPool.GetObject();
-            build.SetMapManager(mapManager);
-            build.ChangeState(false);
+            MapBuild build = _buildPool.GetObject();
             build.Setup(mapData, buildData);
             _mapElements.Add(build);
             BuildAdded?.Invoke(build);

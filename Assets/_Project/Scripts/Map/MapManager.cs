@@ -10,6 +10,7 @@ public class MapManager : MonoBehaviour {
     [SerializeField] private string _APIPathToGetBuilds;
     [SerializeField] private string _APIPathToGetAudiences;
     [SerializeField] private string _APIPathToGetComputers;
+    [SerializeField] private string _APIPathToGetErrors;
     [SerializeField] private MapData _data;
 
     public MapData Data => _data;
@@ -51,13 +52,17 @@ public class MapManager : MonoBehaviour {
         yield return www.SendWebRequest();
         ComputerData[] computerDatas = RequestUtility.ToData<ComputerData[]>(www);
 
-        _data = new(buildDatas, audienceDatas, computerDatas);
+        www = RequestUtility.GetFromAPI(_APIPathToGetErrors);
+        yield return www.SendWebRequest();
+        ComputerErrorData[] errorDatas = RequestUtility.ToData<ComputerErrorData[]>(www);
+
+        _data = new(buildDatas, audienceDatas, computerDatas, errorDatas);
         GenerateStructures();
     }
 
     private void GenerateStructures() {
         _buildManager.GenerateBuilds(this);
-        _audienceManager.GenerateAudiences(_data);
+        _audienceManager.GenerateAudiences(this);
         OpenBuilds();
     }
 

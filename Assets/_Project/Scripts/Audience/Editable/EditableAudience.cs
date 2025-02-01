@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EditableAudience : Editable<AudienceData> {
     [SerializeField] private TextMeshProUGUI _nameText;
-    private MapManager _mapManager;
+    [SerializeField] private ComputerErrorRenderer _errorRenderer;
 
     public override void Press() {
         _mapManager.OpenAudience(_data);
@@ -12,9 +12,9 @@ public class EditableAudience : Editable<AudienceData> {
     public override void Setup(AudienceData data) {
         base.Setup(data);
         _nameText.text = data.Name;
-    }
 
-    public void SetMapManager(MapManager mapManager) {
-        _mapManager = mapManager;
+        ComputerErrorType type = _mapManager.Data.GetAudienceMaxErrorType(_data.Id);
+        _errorRenderer.ChangeState(type != ComputerErrorType.None);
+        _errorRenderer.SetVisual(type);
     }
 }

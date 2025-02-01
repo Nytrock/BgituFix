@@ -4,22 +4,17 @@ using UnityEngine;
 public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     [SerializeField] private MapBuildFloorPool _floorPool;
 
-    private MapManager _mapManager;
     private MapBuildFloor[] _floors;
     private int _nowFloor;
 
     public int FloorsCount => _data.FloorsCount;
-    public int Id => _data.Id;
+    public override int Id => _data.Id;
     public string Name => _data.Name;
 
     protected override void GenerateEditables(MapData mapData) {
         GenerateFloors();
         base.GenerateEditables(mapData);
         SetupFloorsSizes();
-    }
-
-    public void SetMapManager(MapManager mapManager) {
-        _mapManager = mapManager;
     }
 
     private void GenerateFloors() {
@@ -54,7 +49,6 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     protected override EditableAudience GenerateEditable(AudienceData data) {
         EditableAudience audience = base.GenerateEditable(data);
         _floors[data.Floor - 1].AddAudience(audience);
-        audience.SetMapManager(_mapManager);
         return audience;
     }
 

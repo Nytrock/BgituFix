@@ -9,8 +9,11 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
 
     protected TData _data;
     protected float _cameraSize;
+    protected MapManager _mapManager;
 
     public float CameraSize => _cameraSize;
+    public TData Data => _data;
+    public abstract int Id { get; }
 
     public virtual void Setup(MapData mapData, TData data) {
         _data = data;
@@ -22,8 +25,13 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
             GenerateEditable(data);
     }
 
+    public void SetMapManager(MapManager mapManager) {
+        _mapManager = mapManager;
+    }
+
     protected virtual TEditable GenerateEditable(TEditableData data) {
         TEditable editable = _pool.GetObject();
+        editable.SetMapManager(_mapManager);
         editable.Setup(data);
         return editable;
     }

@@ -4,6 +4,7 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour {
     [SerializeField] private float _minSize;
     [SerializeField] private float _scrollSensivity;
+    [SerializeField] private float _mouseSensivity;
     private Camera _camera;
 
     private void Awake() {
@@ -11,6 +12,11 @@ public class CameraManager : MonoBehaviour {
     }
 
     private void Update() {
+        UpdateSize();
+        UpdatePosition();
+    }
+
+    private void UpdateSize() {
         float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
         if (scrollAxis == 0)
             return;
@@ -20,8 +26,22 @@ public class CameraManager : MonoBehaviour {
         );
     }
 
+    private void UpdatePosition() {
+        if (!Input.GetMouseButton(0))
+            return;
+
+        float horizontalAxis = -Input.GetAxis("Mouse X");
+        float verticalAxis = -Input.GetAxis("Mouse Y");
+        float multiplier = _mouseSensivity * _camera.orthographicSize;
+        transform.position += new Vector3(horizontalAxis, verticalAxis) * multiplier;
+    }
+
     public void ForceSetSize(float size) {
         _camera.orthographicSize = size;
+    }
+
+    public void ResetPosition() {
+        transform.position = new(0, 0, -10);
     }
 
     public void SetSize(float size) {

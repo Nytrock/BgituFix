@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1664449816550149519}
   - component: {fileID: 715013804105087859}
   - component: {fileID: 21999283444864519}
-  - component: {fileID: 7415642275139280379}
+  - component: {fileID: 4700965455275677469}
   m_Layer: 5
   m_Name: Floor
   m_TagString: Untagged
@@ -37,7 +37,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 61, y: 0}
+  m_AnchoredPosition: {x: 100, y: 0}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4122399300930111084
@@ -66,7 +66,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 0
+  m_Spacing: 10
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -100,8 +100,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ac8418b4acb5cc47a42e8fda8cea93c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _buttonsPool: {fileID: 7415642275139280379}
---- !u!114 &7415642275139280379
+  _buttonsPool: {fileID: 4700965455275677469}
+--- !u!114 &4700965455275677469
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -110,7 +110,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 371195175623872833}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74f3b7d5449433e4fa12c8b4c2e86f6a, type: 3}
+  m_Script: {fileID: 11500000, guid: e0e1a960f91b3ea47a6a5fef2aa05904, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 5329936744125589688, guid: 2e3a74b58244b2b4497f3ecf13522d4e, type: 3}
+  _prefab: {fileID: 791303066607203710, guid: 2e3a74b58244b2b4497f3ecf13522d4e, type: 3}

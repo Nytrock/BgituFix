@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MapBuildManagerUI : MonoBehaviour {
-    [SerializeField] private MapBuildManager _manager;
+    [SerializeField] private MapManager _mapManager;
+    [SerializeField] private MapBuildManager _buildManager;
     [SerializeField] private GameObject _panel;
     [SerializeField] private ButtonWithTextPool _buildsButtonsPool;
     [SerializeField] private MapBuildFloorUIPool _floorUIPool;
@@ -11,9 +12,9 @@ public class MapBuildManagerUI : MonoBehaviour {
     private MapBuildFloorUI _nowFloor;
 
     private void Awake() {
-        _manager.BuildAdded += AddBuild;
-        _manager.BuildChanged += UpdateFloor;
-        _manager.StateChanged += ChangeState;
+        _buildManager.BuildAdded += AddBuild;
+        _buildManager.BuildChanged += UpdateFloor;
+        _buildManager.StateChanged += ChangeState;
     }
 
     private void UpdateFloor(MapBuild build) {
@@ -34,11 +35,11 @@ public class MapBuildManagerUI : MonoBehaviour {
         ButtonWithText buildButton = _buildsButtonsPool.GetObject();
         buildButton.SetText(build.Name);
         buildButton.onClick.AddListener(delegate {
-            _manager.ChangeBuild(build.Id);
+            _buildManager.ChangeBuild(build.Id);
         });
 
         MapBuildFloorUI floorUI = _floorUIPool.GetObject();
-        floorUI.GenerateButtons(build);
+        floorUI.GenerateButtons(build, _mapManager);
         _floorsUI.Add(floorUI);
     }
 

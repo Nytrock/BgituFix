@@ -3,7 +3,9 @@ using UnityEngine;
 public abstract class Editable<TData> : MonoBehaviour
     where TData : EditableData {
     [SerializeField] private EditableActivator _activator;
+
     protected TData _data;
+    protected MapManager _mapManager;
 
     public Vector2 Size => _data.Size;
     public Vector2 Position => _data.Position;
@@ -16,5 +18,9 @@ public abstract class Editable<TData> : MonoBehaviour
 
         _activator.Setup(_data);
         _activator.Pressed += Press;
+    }
+
+    public void SetMapManager(MapManager mapManager) {
+        _mapManager = mapManager;
     }
 }

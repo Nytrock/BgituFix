@@ -1,8 +1,16 @@
+using UnityEngine;
+
 public class MapAudienceManager : MapElementManager<MapAudience, EditableComputer, ComputerData, AudienceData> {
-    public void GenerateAudiences(MapData mapData) {
+
+    [SerializeField] protected MapAudiencePool _audiencePool;
+    [SerializeField] protected ComputerUIManager _computerUIManager;
+
+    public void GenerateAudiences(MapManager mapManager) {
+        MapData mapData = mapManager.Data;
+        _audiencePool.SetManagers(mapManager, _computerUIManager);
+
         foreach (var audienceData in mapData.AudienceDatas) {
-            MapAudience audience = _mapElementsPool.GetObject();
-            audience.ChangeState(false);
+            MapAudience audience = _audiencePool.GetObject();
             audience.Setup(mapData, audienceData);
             _mapElements.Add(audience);
         }

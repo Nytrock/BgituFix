@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -23,11 +22,9 @@ public class UserManager : MonoBehaviour {
         }
 
         UnityWebRequest www = RequestUtility.GetFromAPI(_APIPathToGetUser);
-        www.SetRequestHeader("Content-Type", "application/json");
-        string dataToSend = $"{{\"token\": \"{token}\"}}";
-        www.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(dataToSend));
-
+        www.LoadDataToSend($"{{\"token\": \"{token}\"}}");
         yield return www.SendWebRequest();
+
         _data = www.ToData<UserData>();
     }
 
