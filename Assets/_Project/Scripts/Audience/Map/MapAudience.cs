@@ -5,11 +5,11 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
     [SerializeField] private SpriteRenderer _renderer;
 
     public int Id => _data.Id;
-    public float CameraSize => Mathf.Max(_data.Width / 32f * 9, _data.Length / 2f);
 
     public override void Setup(MapData mapData, AudienceData data) {
         base.Setup(mapData, data);
-        _renderer.size = new(_data.Width, _data.Length);
+        _renderer.size = _data.Size;
+        _cameraSize = Mathf.Max(_data.Size.x / 2f / 16f * 9, _data.Size.y / 2f);
     }
 
     protected override IEnumerable<ComputerData> GetEditablesData(MapData mapData) {

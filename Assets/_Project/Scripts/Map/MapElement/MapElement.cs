@@ -6,7 +6,11 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
     where TEditableData : EditableData {
 
     [SerializeField] private Pool<TEditable> _pool;
+
     protected TData _data;
+    protected float _cameraSize;
+
+    public float CameraSize => _cameraSize;
 
     public virtual void Setup(MapData mapData, TData data) {
         _data = data;

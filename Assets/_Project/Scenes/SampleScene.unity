@@ -622,63 +622,49 @@ MonoBehaviour:
       _name: 228
       _buildId: 0
       _floor: 2
-      _isDisabled: 0
-      _width: 3
-      _length: 4
+      _isComputer: 1
     - _id: 1
       _position: {x: -2.02, y: 3.05}
       _size: {x: 1.31, y: 1.87}
       _name: 218
       _buildId: 0
       _floor: 2
-      _isDisabled: 0
-      _width: 1.5
-      _length: 2
+      _isComputer: 1
     - _id: 2
       _position: {x: 2.7, y: -3.31}
       _size: {x: 1.8, y: 2.48}
       _name: 227
       _buildId: 0
       _floor: 2
-      _isDisabled: 0
-      _width: 2
-      _length: 5
+      _isComputer: 1
     - _id: 3
       _position: {x: -0.56, y: 0.45}
       _size: {x: 0.75, y: 0.73}
       _name: 318
       _buildId: 1
       _floor: 3
-      _isDisabled: 0
-      _width: 20
-      _length: 20
+      _isComputer: 0
     - _id: 4
       _position: {x: 0, y: 0}
       _size: {x: 1.52, y: 1}
       _name: 139
       _buildId: 0
       _floor: 1
-      _isDisabled: 0
-      _width: 1
-      _length: 10
+      _isComputer: 0
     - _id: 5
       _position: {x: -0.45, y: 0.51}
       _size: {x: 0.88, y: 1.07}
       _name: 420
       _buildId: 0
       _floor: 4
-      _isDisabled: 0
-      _width: 7
-      _length: 3
+      _isComputer: 0
     - _id: 6
       _position: {x: 0.46, y: -0.45}
       _size: {x: 1, y: 1}
       _name: 419
       _buildId: 0
       _floor: 4
-      _isDisabled: 0
-      _width: 2
-      _length: 4
+      _isComputer: 0
     _computerDatas:
     - _id: 0
       _position: {x: 0, y: 0}
@@ -1020,6 +1006,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1101,6 +1088,69 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76d1b9590f3bc4b498420384a3002cbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _minSize: 0.5
+  _scrollSensivity: 3
+--- !u!1 &790277758
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 790277759}
+  - component: {fileID: 790277760}
+  m_Layer: 5
+  m_Name: Floors
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &790277759
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 790277758}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1784491515}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &790277760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 790277758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e63fc97330922cf4bbce977a7451e207, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _prefab: {fileID: 21999283444864519, guid: b61ac2fcad062104c9ef702c430af395, type: 3}
 --- !u!1 &1064025816
 GameObject:
   m_ObjectHideFlags: 0
@@ -1321,7 +1371,7 @@ MonoBehaviour:
   _APIPathToGetUser: 
   _data:
     _name: Pidor
-    _isAuthorized: 0
+    _isAuthorized: 1
     _isAdmin: 1
 --- !u!4 &1203970056
 Transform:
@@ -1390,7 +1440,7 @@ MonoBehaviour:
   _manager: {fileID: 1648348635}
   _panel: {fileID: 1784491514}
   _buildsButtonsPool: {fileID: 303892579}
-  _floorButtonsPool: {fileID: 1609230026}
+  _floorUIPool: {fileID: 790277760}
 --- !u!1 &1362003537
 GameObject:
   m_ObjectHideFlags: 0
@@ -1436,106 +1486,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1609230021
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1609230022}
-  - component: {fileID: 1609230025}
-  - component: {fileID: 1609230024}
-  - component: {fileID: 1609230023}
-  - component: {fileID: 1609230026}
-  m_Layer: 5
-  m_Name: Floors
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1609230022
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1609230021}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1784491515}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 61, y: 0}
-  m_SizeDelta: {x: 100, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1609230023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1609230021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
-  m_VerticalFit: 2
---- !u!114 &1609230024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1609230021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 4
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
---- !u!222 &1609230025
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1609230021}
-  m_CullTransparentMesh: 1
---- !u!114 &1609230026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1609230021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74f3b7d5449433e4fa12c8b4c2e86f6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _prefab: {fileID: 5329936744125589688, guid: 2e3a74b58244b2b4497f3ecf13522d4e, type: 3}
 --- !u!1 &1648348632
 GameObject:
   m_ObjectHideFlags: 0
@@ -1594,7 +1544,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d753c8a83e1ebc4abdeaac12ee4cff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _buildPool: {fileID: 1648348634}
+  _mapElementsPool: {fileID: 1648348634}
+  _cameraManager: {fileID: 519420033}
   _cameraSizeOffset: 5
 --- !u!1 &1784491514
 GameObject:
@@ -1626,7 +1577,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 303892574}
-  - {fileID: 1609230022}
+  - {fileID: 790277759}
   m_Father: {fileID: 1287862293}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1700,7 +1651,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f3be591a51febe4f87ca97bd2a7d421, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audiencePool: {fileID: 1958836750}
+  _mapElementsPool: {fileID: 1958836750}
+  _cameraManager: {fileID: 519420033}
   _cameraSizeOffset: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

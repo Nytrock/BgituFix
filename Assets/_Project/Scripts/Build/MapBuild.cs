@@ -7,11 +7,10 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     private MapManager _mapManager;
     private MapBuildFloor[] _floors;
     private int _nowFloor;
-    private float _cameraSize;
 
     public int FloorsCount => _data.FloorsCount;
-    public float CameraSize => _cameraSize;
     public int Id => _data.Id;
+    public string Name => _data.Name;
 
     protected override void GenerateEditables(MapData mapData) {
         GenerateFloors();

@@ -5,37 +5,41 @@ public class MapBuildManagerUI : MonoBehaviour {
     [SerializeField] private MapBuildManager _manager;
     [SerializeField] private GameObject _panel;
     [SerializeField] private ButtonWithTextPool _buildsButtonsPool;
-    [SerializeField] private ButtonWithTextPool _floorButtonsPool;
+    [SerializeField] private MapBuildFloorUIPool _floorUIPool;
 
-    private readonly List<ButtonWithText> _floorButtons = new();
+    private readonly List<MapBuildFloorUI> _floorsUI = new();
+    private MapBuildFloorUI _nowFloor;
 
     private void Awake() {
         _manager.BuildAdded += AddBuild;
-        _manager.BuildChanged += UpdateFloorButtons;
+        _manager.BuildChanged += UpdateFloor;
         _manager.StateChanged += ChangeState;
     }
 
-    private void UpdateFloorButtons(MapBuild build) {
-        foreach (var button in _floorButtons)
-            _floorButtonsPool.PutObject(button);
-        _floorButtons.Clear();
+    private void UpdateFloor(MapBuild build) {
+        if (_nowFloor != null)
+            _nowFloor.ChangeState(false);
 
-        for (int i = 1; i <= build.FloorsCount; i++) {
-            ButtonWithText button = _floorButtonsPool.GetObject();
-            button.SetText(i.ToString());
-
-            int index = i;
-            button.onClick.AddListener(delegate { build.ChangeFloor(index); });
-            _floorButtons.Add(button);
+        foreach (var floorUI in _floorsUI) {
+            if (floorUI.Id == build.Id) {
+                _nowFloor = floorUI;
+                break;
+            }
         }
+
+        _nowFloor.ChangeState(true);
     }
 
-    private void AddBuild(BuildData data) {
+    private void AddBuild(MapBuild build) {
         ButtonWithText buildButton = _buildsButtonsPool.GetObject();
-        buildButton.SetText(data.Name);
+        buildButton.SetText(build.Name);
         buildButton.onClick.AddListener(delegate {
-            _manager.ChangeBuild(data.Id);
+            _manager.ChangeBuild(build.Id);
         });
+
+        MapBuildFloorUI floorUI = _floorUIPool.GetObject();
+        floorUI.GenerateButtons(build);
+        _floorsUI.Add(floorUI);
     }
 
     private void ChangeState(bool newState) {

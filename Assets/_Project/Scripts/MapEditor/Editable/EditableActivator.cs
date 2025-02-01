@@ -3,8 +3,9 @@ using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(BoxCollider2D))]
 public class EditableActivator : MonoBehaviour {
-    private SpriteRenderer _renderer;
+    protected SpriteRenderer _renderer;
     private BoxCollider2D _collider;
+    private bool _isMouseHold;
 
     public event Action Pressed;
 
@@ -13,8 +14,19 @@ public class EditableActivator : MonoBehaviour {
         _collider = GetComponent<BoxCollider2D>();
     }
 
-    private void OnMouseDown() {
+    protected virtual void OnMouseDown() {
+        _isMouseHold = true;
+    }
+
+    private void OnMouseUp() {
+        if (!_isMouseHold)
+            return;
+
         Pressed?.Invoke();
+    }
+
+    private void OnMouseExit() {
+        _isMouseHold = false;
     }
 
     public virtual void Setup(EditableData data) {

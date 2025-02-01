@@ -251,6 +251,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canvas: {fileID: 5006449827707178640}
   _canvasMultiplier: 100
+  _computerColor: {r: 1, g: 1, b: 1, a: 1}
+  _nonComputerColor: {r: 0.7058824, g: 0.7058824, b: 0.7058824, a: 1}
 --- !u!1 &4983123602017916222
 GameObject:
   m_ObjectHideFlags: 0
