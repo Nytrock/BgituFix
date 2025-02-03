@@ -1,16 +1,19 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class MapManager : MonoBehaviour {
+    [SerializeField] private UrlManager _urlManager;
     [SerializeField] private UserManager _userManager;
     [SerializeField] private MapBuildManager _buildManager;
     [SerializeField] private MapAudienceManager _audienceManager;
+    [SerializeField] private ErrorManager _errorManager;
     [SerializeField] private string _APIPathToGetBuilds;
     [SerializeField] private string _APIPathToGetAudiences;
     [SerializeField] private string _APIPathToGetComputers;
-    [SerializeField] private string _APIPathToGetErrors;
+
     [SerializeField] private MapData _data;
 
     public MapData Data => _data;
@@ -22,11 +25,10 @@ public class MapManager : MonoBehaviour {
     }
 
     private void CheckUserType() {
-        UserType userType = _userManager.GetUserType();
-        if (userType == UserType.None)
+        if (_userManager.ClientType == UserType.None)
             BlockMap();
         else
-            StartCoroutine(GenerateMap());
+            StartCoroutine(GetMap());
     }
 
     private void BlockMap() {
@@ -34,35 +36,35 @@ public class MapManager : MonoBehaviour {
         BlockStateChanged?.Invoke(true);
     }
 
-    private IEnumerator GenerateMap() {
+    private IEnumerator GetMap() {
         if (string.IsNullOrEmpty(_APIPathToGetBuilds)) {
-            GenerateStructures();
+            GenerateMap();
             yield break;
         }
 
-        UnityWebRequest www = RequestUtility.GetFromAPI(_APIPathToGetBuilds);
-        yield return www.SendWebRequest();
-        BuildData[] buildDatas = RequestUtility.ToData<BuildData[]>(www);
+        string token = _urlManager.GetParameter("token");
 
-        www = RequestUtility.GetFromAPI(_APIPathToGetAudiences);
-        yield return www.SendWebRequest();
-        AudienceData[] audienceDatas = RequestUtility.ToData<AudienceData[]>(www);
+        UnityWebRequest request = RequestUtility.APIGet(_APIPathToGetBuilds, token);
+        yield return request.SendWebRequest();
+        List<BuildData> buildDatas = RequestUtility.ToData<List<BuildData>>(request);
 
-        www = RequestUtility.GetFromAPI(_APIPathToGetComputers);
-        yield return www.SendWebRequest();
-        ComputerData[] computerDatas = RequestUtility.ToData<ComputerData[]>(www);
+        request = RequestUtility.APIGet(_APIPathToGetAudiences, token);
+        yield return request.SendWebRequest();
+        List<AudienceData> audienceDatas = RequestUtility.ToData<List<AudienceData>>(request);
 
-        www = RequestUtility.GetFromAPI(_APIPathToGetErrors);
-        yield return www.SendWebRequest();
-        ComputerErrorData[] errorDatas = RequestUtility.ToData<ComputerErrorData[]>(www);
+        request = RequestUtility.APIGet(_APIPathToGetComputers, token);
+        yield return request.SendWebRequest();
+        List<ComputerData> computerDatas = RequestUtility.ToData<List<ComputerData>>(request);
 
-        _data = new(buildDatas, audienceDatas, computerDatas, errorDatas);
-        GenerateStructures();
+        _data = new(buildDatas, audienceDatas, computerDatas);
+        GenerateMap();
     }
 
-    private void GenerateStructures() {
+    private void GenerateMap() {
         _buildManager.GenerateBuilds(this);
         _audienceManager.GenerateAudiences(this);
+        StartCoroutine(_errorManager.GetErrors(_data));
+
         OpenBuilds();
     }
 

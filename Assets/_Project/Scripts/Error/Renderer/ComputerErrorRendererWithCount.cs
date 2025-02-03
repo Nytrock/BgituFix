@@ -13,6 +13,18 @@ public class ComputerErrorRendererWithCount : ComputerErrorRenderer {
     public void AddToCount() {
         _count++;
         UpdateText();
+        ChangeState(true);
+    }
+
+    public void RemoveFromCount() {
+        if (_count == 0)
+            return;
+
+        _count--;
+        UpdateText();
+
+        if (_count == 0)
+            ChangeState(false);
     }
 
     private void UpdateText() {

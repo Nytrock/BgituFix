@@ -362,9 +362,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _styles:
-  - _errorType: 0
-    _color: {r: 0.9150943, g: 0.8014012, b: 0.28920433, a: 1}
   - _errorType: 1
-    _color: {r: 1, g: 0.38102257, b: 0, a: 1}
+    _color: {r: 0.9150943, g: 0.8014012, b: 0.28920433, a: 1}
   - _errorType: 2
+    _color: {r: 1, g: 0.38102257, b: 0, a: 1}
+  - _errorType: 3
     _color: {r: 1, g: 0.00969137, b: 0, a: 1}

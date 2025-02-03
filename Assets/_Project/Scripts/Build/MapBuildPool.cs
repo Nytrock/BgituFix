@@ -1,13 +1,16 @@
-public class MapBuildPool : Pool<MapBuild> {
-    private MapManager _mapManager;
+using UnityEngine;
 
-    public void SetManagers(MapManager mapManager) {
-        _mapManager = mapManager;
-    }
+public class MapBuildPool : Pool<MapBuild> {
+    [SerializeField] private MapManager _mapManager;
+    [SerializeField] private UserManager _userManager;
+    [SerializeField] private ErrorManager _errorManager;
 
     protected override MapBuild CreateObject() {
         MapBuild build = base.CreateObject();
-        build.SetMapManager(_mapManager);
+        if (_userManager.ClientType == UserType.Admin)
+            build.SetManagers(_mapManager, _errorManager);
+        else
+            build.SetMapManager(_mapManager);
         return build;
     }
 

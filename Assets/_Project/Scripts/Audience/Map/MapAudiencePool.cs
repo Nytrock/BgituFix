@@ -1,15 +1,13 @@
-public class MapAudiencePool : Pool<MapAudience> {
-    private MapManager _mapManager;
-    private ComputerUIManager _computerUIManager;
+using UnityEngine;
 
-    public void SetManagers(MapManager mapManager, ComputerUIManager computerUIManager) {
-        _mapManager = mapManager;
-        _computerUIManager = computerUIManager;
-    }
+public class MapAudiencePool : Pool<MapAudience> {
+    [SerializeField] private MapManager _mapManager;
+    [SerializeField] private ComputerUIManager _computerUIManager;
+    [SerializeField] private ErrorManager _errorManager;
 
     protected override MapAudience CreateObject() {
         MapAudience audience = base.CreateObject();
-        audience.SetManagers(_mapManager, _computerUIManager);
+        audience.SetManagers(_mapManager, _computerUIManager, _errorManager);
         return audience;
     }
 

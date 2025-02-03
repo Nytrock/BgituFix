@@ -5,7 +5,9 @@ public class CameraManager : MonoBehaviour {
     [SerializeField] private float _minSize;
     [SerializeField] private float _scrollSensivity;
     [SerializeField] private float _mouseSensivity;
+
     private Camera _camera;
+    private bool _isHover;
 
     private void Awake() {
         _camera = GetComponent<Camera>();
@@ -13,7 +15,14 @@ public class CameraManager : MonoBehaviour {
 
     private void Update() {
         UpdateSize();
+        if (_isHover)
+            return;
+
         UpdatePosition();
+    }
+
+    public void UpdateHover(bool isHover) {
+        _isHover = isHover;
     }
 
     private void UpdateSize() {

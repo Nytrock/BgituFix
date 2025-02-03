@@ -21,7 +21,7 @@ public class ComputerErrorRenderer : MonoBehaviour {
         _image = GetComponent<Image>();
     }
 
-    public virtual void SetVisual(ComputerErrorType type) {
+    public virtual void SetType(ComputerErrorType type) {
         if (type == ComputerErrorType.None)
             return;
 

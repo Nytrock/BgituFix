@@ -23,8 +23,27 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
         return computer;
     }
 
-    public void SetManagers(MapManager mapManager, ComputerUIManager computerUIManager) {
+    public void SetManagers(MapManager mapManager, ComputerUIManager computerUIManager, ErrorManager errorManager) {
         SetMapManager(mapManager);
         _computerUIManager = computerUIManager;
+
+        errorManager.ErrorAdded += CheckNewError;
+        errorManager.ErrorChanged += CheckChangedError;
+        errorManager.ErrorDeleted += CheckDeletedError;
+    }
+
+    public void CheckNewError(ComputerErrorData errorData) {
+        foreach (var computer in _editables)
+            computer.CheckNewError(errorData);
+    }
+
+    public void CheckChangedError(ComputerErrorData errorData) {
+        foreach (var computer in _editables)
+            computer.CheckChangedError(errorData);
+    }
+
+    public void CheckDeletedError(ComputerErrorData errorData) {
+        foreach (var computer in _editables)
+            computer.CheckDeletedError(errorData);
     }
 }

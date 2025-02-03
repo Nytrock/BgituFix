@@ -10,16 +10,17 @@ public class MapBuildManager : MapElementManager<MapBuild, EditableAudience, Aud
 
     public void GenerateBuilds(MapManager mapManager) {
         MapData mapData = mapManager.Data;
-        _buildPool.SetManagers(mapManager);
-
-        foreach (var buildData in mapData.BuildDatas) {
-            MapBuild build = _buildPool.GetObject();
-            build.Setup(mapData, buildData);
-            _mapElements.Add(build);
-            BuildAdded?.Invoke(build);
-        }
+        foreach (var buildData in mapData.BuildDatas)
+            GenerateBuild(mapData, buildData);
 
         UpdateElement(_mapElements[0]);
+    }
+
+    private void GenerateBuild(MapData mapData, BuildData buildData) {
+        MapBuild build = _buildPool.GetObject();
+        build.Setup(mapData, buildData);
+        _mapElements.Add(build);
+        BuildAdded?.Invoke(build);
     }
 
     public void ChangeBuild(int id) {

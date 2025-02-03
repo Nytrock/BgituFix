@@ -10,6 +10,7 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
     protected TData _data;
     protected float _cameraSize;
     protected MapManager _mapManager;
+    protected List<TEditable> _editables = new();
 
     public float CameraSize => _cameraSize;
     public TData Data => _data;
@@ -33,6 +34,7 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
         TEditable editable = _pool.GetObject();
         editable.SetMapManager(_mapManager);
         editable.Setup(data);
+        _editables.Add(editable);
         return editable;
     }
 

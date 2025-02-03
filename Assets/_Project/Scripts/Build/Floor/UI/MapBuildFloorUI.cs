@@ -1,15 +1,15 @@
 using UnityEngine;
 
-public class MapBuildFloorUI : MonoBehaviour {
+public class MapBuildFloorUI : CameraHoverTrigger {
     [SerializeField] private MapBuildFloorButtonPool _buttonsPool;
     private MapBuild _build;
 
     public int Id => _build.Id;
 
-    public void GenerateButtons(MapBuild build, MapManager mapManager) {
+    public void GenerateButtons(MapBuild build) {
         for (int i = 1; i <= build.FloorsCount; i++) {
             MapBuildFloorButton button = _buttonsPool.GetObject();
-            button.Setup(build, i, mapManager);
+            button.Setup(build, i);
         }
 
         _build = build;

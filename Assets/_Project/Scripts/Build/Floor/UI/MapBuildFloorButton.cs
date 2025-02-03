@@ -9,12 +9,18 @@ public class MapBuildFloorButton : MonoBehaviour {
         _button = GetComponent<ButtonWithText>();
     }
 
-    public void Setup(MapBuild build, int floorIndex, MapManager mapManager) {
+    public void Setup(MapBuild build, int floorIndex) {
         _button.SetText(floorIndex.ToString());
         _button.onClick.AddListener(delegate { build.ChangeFloor(floorIndex); });
+        _errorRenderer.ChangeState(false);
 
-        ComputerErrorType type = mapManager.Data.GetFloorMaxErrorType(build.Id, floorIndex);
+        MapBuildFloor floor = build.GetFloor(floorIndex);
+        floor.ErrorUpdated += CheckError;
+    }
+
+    private void CheckError(ComputerErrorType type) {
         _errorRenderer.ChangeState(type != ComputerErrorType.None);
-        _errorRenderer.SetVisual(type);
+        if (type != ComputerErrorType.None)
+            _errorRenderer.SetType(type);
     }
 }

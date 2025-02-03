@@ -1,10 +1,16 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MapBuildFloor : MonoBehaviour {
     [SerializeField] private SpriteRenderer _renderer;
     [SerializeField] private float _offset;
     private readonly List<EditableAudience> _audiences = new();
+
+    private readonly List<ComputerErrorData> _errors = new();
+
+    public event Action<ComputerErrorType> ErrorUpdated;
 
     public float CameraSize {
         get {
@@ -59,5 +65,33 @@ public class MapBuildFloor : MonoBehaviour {
         rigthTop = new(maxX + _offset, maxY + _offset);
         _renderer.size = rigthTop - leftBottom;
         _renderer.transform.position = (rigthTop + leftBottom) / 2f;
+    }
+
+    public void CheckNewError(ComputerErrorData data) {
+        foreach (var audience in _audiences)
+            audience.CheckNewError(data);
+        UpdateError();
+    }
+
+    public void CheckDeletedError(ComputerErrorData data) {
+        foreach (var audience in _audiences)
+            audience.CheckDeletedError(data);
+        UpdateError();
+    }
+
+    public void CheckChangedError(ComputerErrorData data) {
+        foreach (var audience in _audiences)
+            audience.CheckChangedError(data);
+        UpdateError();
+    }
+
+    private void UpdateError() {
+        if (_audiences.Count == 0) {
+            ErrorUpdated?.Invoke(ComputerErrorType.None);
+            return;
+        }
+
+        ComputerErrorType maxType = _audiences.Select(audience => audience.ErrorType).Max();
+        ErrorUpdated?.Invoke(maxType);
     }
 }

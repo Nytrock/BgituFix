@@ -39,7 +39,7 @@ public class MapBuildManagerUI : MonoBehaviour {
         });
 
         MapBuildFloorUI floorUI = _floorUIPool.GetObject();
-        floorUI.GenerateButtons(build, _mapManager);
+        floorUI.GenerateButtons(build);
         _floorsUI.Add(floorUI);
     }
 

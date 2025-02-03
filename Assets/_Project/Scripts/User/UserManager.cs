@@ -1,41 +1,51 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class UserManager : MonoBehaviour {
     [SerializeField] private UrlManager _urlManager;
-    [SerializeField] private string _APIPathToGetUser;
-    [SerializeField] private UserData _data;
+    [SerializeField] private string _APIPathToGetClient;
+    [SerializeField] private string _APIPathToGetUsers;
+
+    [SerializeField] private UserData _clientData;
+    [SerializeField] private List<UserData> _usersData;
+
+    public UserType ClientType => _clientData.Type;
+    public int ClientId => _clientData.Id;
 
     public void Awake() {
         StartCoroutine(UpdateUserData());
     }
 
-    private IEnumerator UpdateUserData() {
-        if (string.IsNullOrEmpty(_APIPathToGetUser))
-            yield break;
+    public UserData GetUserDataById(int userId) {
+        foreach (var user in _usersData)
+            if (user.Id == userId)
+                return user;
+        return null;
+    }
 
-        string token = _urlManager.GetParameter("token");
-        if (token is null) {
-            _data = new();
+    private IEnumerator UpdateUserData() {
+        if (string.IsNullOrEmpty(_APIPathToGetClient)) {
+            _clientData.SetupType();
             yield break;
         }
 
-        UnityWebRequest www = RequestUtility.GetFromAPI(_APIPathToGetUser);
-        www.LoadDataToSend($"{{\"token\": \"{token}\"}}");
-        yield return www.SendWebRequest();
+        string token = _urlManager.GetParameter("token");
+        try {
+            string tokenContentEncoded = token.Split('.')[1];
+            byte[] contentBytes = Convert.FromBase64String(tokenContentEncoded);
+            string content = Encoding.UTF8.GetString(contentBytes);
+            _clientData = JsonUtility.FromJson<UserData>(content);
+        } catch {
+            _clientData = new();
+            yield break;
+        }
 
-        _data = www.ToData<UserData>();
-    }
-
-    public UserType GetUserType() {
-        StartCoroutine(UpdateUserData());
-
-        if (!_data.IsAuthorized)
-            return UserType.None;
-        else if (!_data.IsAdmin)
-            return UserType.Teacher;
-        else
-            return UserType.Admin;
+        UnityWebRequest request = RequestUtility.APIGet(_APIPathToGetUsers, token);
+        yield return request.SendWebRequest();
+        _usersData = request.ToData<List<UserData>>();
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     [SerializeField] private MapBuildFloorPool _floorPool;
 
-    private MapBuildFloor[] _floors;
+    private readonly List<MapBuildFloor> _floors = new();
     private int _nowFloor;
 
     public int FloorsCount => _data.FloorsCount;
@@ -17,14 +17,43 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
         SetupFloorsSizes();
     }
 
+    public void SetManagers(MapManager mapManager, ErrorManager errorManager) {
+        SetMapManager(mapManager);
+
+        errorManager.ErrorAdded += CheckNewError;
+        errorManager.ErrorChanged += CheckChangedError;
+        errorManager.ErrorDeleted += CheckDeletedError;
+    }
+
+    private void CheckNewError(ComputerErrorData data) {
+        foreach (var floor in _floors)
+            floor.CheckNewError(data);
+    }
+
+    private void CheckDeletedError(ComputerErrorData data) {
+        foreach (var floor in _floors)
+            floor.CheckDeletedError(data);
+    }
+
+    private void CheckChangedError(ComputerErrorData data) {
+        foreach (var floor in _floors)
+            floor.CheckChangedError(data);
+    }
+
     private void GenerateFloors() {
-        _floors = new MapBuildFloor[_data.FloorsCount];
-        for (int i = 0; i < _data.FloorsCount; i++) {
-            MapBuildFloor floor = _floorPool.GetObject();
-            _floors[i] = floor;
-            floor.ChangeState(false);
-        }
+        for (int i = 0; i < _data.FloorsCount; i++)
+            GenerateFloor();
         ChangeFloor(1);
+    }
+
+    private void GenerateFloor() {
+        MapBuildFloor floor = _floorPool.GetObject();
+        _floors.Add(floor);
+        floor.ChangeState(false);
+    }
+
+    public MapBuildFloor GetFloor(int index) {
+        return _floors[index - 1];
     }
 
     private void SetupFloorsSizes() {

@@ -1,15 +1,14 @@
 using UnityEngine;
 
 public class MapEditorManagerUI : MonoBehaviour {
-    [SerializeField] private UserManager _userManager;
     [SerializeField] private MapEditorManager _editorManager;
     [SerializeField] private GameObject _globalPanel;
     [SerializeField] private GameObject _defaultPanel;
     [SerializeField] private GameObject _editPanel;
 
-    private void Start() {
-        ChangePermission(_userManager.GetUserType() == UserType.Admin);
-        ChangeEditState(false);
+    private void Awake() {
+        _editorManager.PermissionChanged += ChangePermission;
+        _editorManager.EditStateChanged += ChangeEditState;
     }
 
     private void ChangePermission(bool newState) {

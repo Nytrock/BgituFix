@@ -5,6 +5,7 @@ using UnityEngine;
 public class EditableActivator : MonoBehaviour {
     [SerializeField] private RectTransform _canvas;
     [SerializeField] private float _canvasMultiplier;
+    [SerializeField] private float _maxMouseAxis;
 
     protected SpriteRenderer _renderer;
     private BoxCollider2D _collider;
@@ -29,7 +30,8 @@ public class EditableActivator : MonoBehaviour {
     }
 
     private void Update() {
-        if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
+        float mouseAxis = Mathf.Abs(Input.GetAxis("Mouse X")) + Mathf.Abs(Input.GetAxis("Mouse Y"));
+        if (mouseAxis >= _maxMouseAxis)
             _isMouseHold = false;
     }
 

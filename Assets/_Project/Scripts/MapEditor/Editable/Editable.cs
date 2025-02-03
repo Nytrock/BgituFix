@@ -9,6 +9,7 @@ public abstract class Editable<TData> : MonoBehaviour
 
     public Vector2 Size => _data.Size;
     public Vector2 Position => _data.Position;
+    public int Id => _data.Id;
 
     public abstract void Press();
 
