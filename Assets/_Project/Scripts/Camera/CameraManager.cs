@@ -14,10 +14,10 @@ public class CameraManager : MonoBehaviour {
     }
 
     private void Update() {
-        UpdateSize();
         if (_isHover)
             return;
 
+        UpdateSize();
         UpdatePosition();
     }
 

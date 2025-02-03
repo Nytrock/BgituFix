@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ComputerUIManager : MonoBehaviour {
     [SerializeField] private GameObject _panel;
+    [SerializeField] private GameObject _mapPanel;
     [SerializeField] private ComputerInfoUI _infoManager;
     [SerializeField] private ComputerErrorFormUI _errorForm;
 
@@ -11,10 +12,16 @@ public class ComputerUIManager : MonoBehaviour {
 
     public void ChangeState(bool newState) {
         _panel.SetActive(newState);
+        _mapPanel.SetActive(!newState);
+        if (!newState) {
+            _infoManager.Close();
+            _errorForm.Close();
+        }
     }
 
     public void OpenComputer(ComputerData data) {
-        _infoManager.SetData(data);
+        _infoManager.Open(data);
+        _errorForm.SetComputer(data);
         ChangeInfoState(true);
         ChangeState(true);
     }

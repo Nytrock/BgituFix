@@ -21,11 +21,29 @@ public class ComputerErrorData {
     public DateTime Date => _date;
     public string Comment => _comment;
 
+    public ComputerErrorData(int computerId, int userId, ComputerErrorType type, string comment) {
+        _computerId = computerId;
+        _userId = userId;
+        _type = type;
+        _comment = comment;
+
+        _id = -1;
+        _isSolved = false;
+        _date = DateTime.Today;
+    }
+
     public void SetAudienceId(int id) {
         _audienceId = id;
     }
 
     public void ChangeSolved(bool isSolved) {
         _isSolved = isSolved;
+    }
+
+    public void SetId(int id) {
+        if (_id != -1)
+            return;
+
+        _id = id;
     }
 }

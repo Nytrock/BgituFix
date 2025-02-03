@@ -10,10 +10,15 @@ public class ComputerErrorsUI : MonoBehaviour {
     [SerializeField] private TMP_Dropdown _solvedFilter;
 
     private readonly List<ComputerErrorUI> _errors = new();
+    private ComputerData _computerData;
 
     private void Awake() {
         _typeFilter.onValueChanged.AddListener(delegate { UpdateFilters(); });
         _solvedFilter.onValueChanged.AddListener(delegate { UpdateFilters(); });
+
+        _errorManager.ErrorAdded += CheckNewError;
+        _errorManager.ErrorChanged += CheckChangedError;
+        _errorManager.ErrorDeleted += CheckDeletedError;
     }
 
     private void UpdateFilters() {
@@ -31,32 +36,53 @@ public class ComputerErrorsUI : MonoBehaviour {
     }
 
     public void SetupErrorsList(ComputerData data) {
-        ClearList();
+        _computerData = data;
+        _solvedFilter.value = 0;
+        _typeFilter.value = 0;
 
         foreach (var error in _errorManager.Errors)
             if (error.ComputerId == data.Id)
-                CreateErrorUI(error, _userManager);
+                CreateErrorUI(error);
     }
 
-    private void CreateErrorUI(ComputerErrorData error, UserManager userManager) {
+    private void CreateErrorUI(ComputerErrorData error) {
         ComputerErrorUI errorUI = _errorsPool.GetObject();
-        errorUI.SetError(error, userManager);
+        errorUI.SetError(error, _userManager);
         _errors.Add(errorUI);
     }
 
-    private void ClearList() {
+    public void ChangeErrorSolve(ComputerErrorData error, bool isSolved) {
+        StartCoroutine(_errorManager.ChangeErrorSolve(error, isSolved));
+    }
+
+    public void DeleteError(ComputerErrorData error) {
+        StartCoroutine(_errorManager.DeleteError(error));
+    }
+
+    public void Close() {
+        _computerData = null;
         foreach (var error in _errors)
             _errorsPool.PutObject(error);
         _errors.Clear();
     }
 
-    public void ChangeErrorSolve(ComputerErrorData error, bool isSolved) {
-        StartCoroutine(_errorManager.ChangeErrorSolve(error, isSolved));
+    private void CheckChangedError(ComputerErrorData data) {
+        foreach (var error in _errors)
+            if (error.Id == data.Id)
+                error.UpdateSolved();
         UpdateFilters();
     }
 
-    public void DeleteError(ComputerErrorData error, ComputerErrorUI errorUI) {
-        _errorsPool.PutObject(errorUI);
-        StartCoroutine(_errorManager.DeleteError(error));
+    private void CheckNewError(ComputerErrorData data) {
+        if (data.ComputerId == _computerData.Id) {
+            CreateErrorUI(data);
+            UpdateFilters();
+        }
+    }
+
+    private void CheckDeletedError(ComputerErrorData data) {
+        foreach (var error in _errors)
+            if (error.Id == data.Id)
+                _errorsPool.PutObject(error);
     }
 }

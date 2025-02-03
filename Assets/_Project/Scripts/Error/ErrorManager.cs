@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 public class ErrorManager : MonoBehaviour {
     [SerializeField] private UrlManager _urlManager;
     [SerializeField] private MapAudienceManager _audienceManager;
+    [SerializeField] private UserManager _userManager;
     [SerializeField] private string _APIPathToGetErrors;
     [SerializeField] private string _APIPathToChangeError;
     [SerializeField] private string _APIPathToDeleteError;
@@ -64,6 +65,27 @@ public class ErrorManager : MonoBehaviour {
 
         string token = _urlManager.GetParameter("token");
         UnityWebRequest www = RequestUtility.APIDelete(_APIPathToDeleteError, error.Id, token);
+        yield return www.SendWebRequest();
+    }
+
+    public IEnumerator CreateError(ComputerErrorType type, string comment, int computerId) {
+        int clientId = _userManager.ClientId;
+        ComputerErrorData newError = new(computerId, clientId, type, comment);
+        _data.AddError(newError);
+        ErrorAdded?.Invoke(newError);
+
+        if (string.IsNullOrEmpty(_APIPathToAddError))
+            yield break;
+
+        WWWForm form = new();
+        form.AddField("Id", newError.Id.ToString());
+        form.AddField("ComputerId", computerId.ToString());
+        form.AddField("ClientId", clientId.ToString());
+        form.AddField("ErrorType", ((int)type).ToString());
+        form.AddField("Comment", comment);
+
+        string token = _urlManager.GetParameter("token");
+        UnityWebRequest www = RequestUtility.APIPost(_APIPathToAddError, form, token);
         yield return www.SendWebRequest();
     }
 }

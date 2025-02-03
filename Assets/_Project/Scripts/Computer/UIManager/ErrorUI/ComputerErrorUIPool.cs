@@ -8,4 +8,9 @@ public class ComputerErrorUIPool : Pool<ComputerErrorUI> {
         errorUI.SetErrorManager(_errorManager);
         return errorUI;
     }
+
+    public override void PutObject(ComputerErrorUI obj) {
+        obj.ClearData();
+        base.PutObject(obj);
+    }
 }

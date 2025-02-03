@@ -14,6 +14,7 @@ public class ComputerErrorUI : MonoBehaviour {
 
     public ComputerErrorType ErrorType => _data.Type;
     public bool IsSolved => _data.IsSolved;
+    public int Id => _data.Id;
 
     public void SetError(ComputerErrorData error, UserManager userManager) {
         _data = error;
@@ -23,7 +24,7 @@ public class ComputerErrorUI : MonoBehaviour {
         _solveToggle.SetIsOnWithoutNotify(error.IsSolved);
 
         bool isAdmin = userManager.ClientType == UserType.Admin;
-        _solveToggle.gameObject.SetActive(isAdmin);
+        _solveToggle.interactable = isAdmin;
         _deleteButton.gameObject.SetActive(isAdmin || userManager.ClientId == error.UserId);
     }
 
@@ -38,10 +39,18 @@ public class ComputerErrorUI : MonoBehaviour {
     }
 
     private void Delete() {
-        _errorManager.DeleteError(_data, this);
+        _errorManager.DeleteError(_data);
     }
 
     private void ChangeSolved(bool isSolved) {
         _errorManager.ChangeErrorSolve(_data, isSolved);
+    }
+
+    public void ClearData() {
+        _data = null;
+    }
+
+    public void UpdateSolved() {
+        _solveToggle.SetIsOnWithoutNotify(_data.IsSolved);
     }
 }

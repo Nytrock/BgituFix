@@ -9,7 +9,7 @@ public class ComputerInfoUI : MonoBehaviour {
     [SerializeField] private string _serialNumberMessage = "Серийный номер: ";
     [SerializeField] private ComputerErrorsUI _errorsUI;
 
-    public void SetData(ComputerData data) {
+    public void Open(ComputerData data) {
         AudienceData audienceData = _audienceManager.GetElementDataById(data.AudienceId);
         _audienceText.text = _audienceMessage + audienceData.Name;
         _serialNumberText.text = _serialNumberMessage + data.SerialNumber;
@@ -19,5 +19,9 @@ public class ComputerInfoUI : MonoBehaviour {
 
     public void ChangeState(bool newState) {
         gameObject.SetActive(newState);
+    }
+
+    public void Close() {
+        _errorsUI.Close();
     }
 }
