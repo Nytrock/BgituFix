@@ -4,10 +4,12 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour {
     [SerializeField] private float _minSize;
     [SerializeField] private float _scrollSensivity;
-    [SerializeField] private float _mouseSensivity;
+    [SerializeField] private float _keySpeed;
 
     private Camera _camera;
     private bool _isHover;
+
+    public static Vector3 LocalMousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
     private void Awake() {
         _camera = GetComponent<Camera>();
@@ -36,13 +38,9 @@ public class CameraManager : MonoBehaviour {
     }
 
     private void UpdatePosition() {
-        if (!Input.GetMouseButton(0))
-            return;
-
-        float horizontalAxis = -Input.GetAxis("Mouse X");
-        float verticalAxis = -Input.GetAxis("Mouse Y");
-        float multiplier = _mouseSensivity * _camera.orthographicSize;
-        transform.position += new Vector3(horizontalAxis, verticalAxis) * multiplier;
+        float horizontalAxis = Input.GetAxis("Horizontal");
+        float verticalAxis = Input.GetAxis("Vertical");
+        transform.position += _camera.orthographicSize * _keySpeed * new Vector3(horizontalAxis, verticalAxis);
     }
 
     public void ForceSetSize(float size) {

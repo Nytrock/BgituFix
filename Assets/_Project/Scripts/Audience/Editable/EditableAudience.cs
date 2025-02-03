@@ -10,9 +10,19 @@ public class EditableAudience : Editable<AudienceData> {
     private readonly List<ComputerErrorData> _errors = new();
 
     public ComputerErrorType ErrorType => _errorRenderer.Type;
+    public int Floor => _data.Floor;
 
-    public override void Press() {
+    protected override void LeftButtonUp() {
+        base.LeftButtonUp();
+        if (_editManager.IsEdit || !_data.IsComputer)
+            return;
+
         _mapManager.OpenAudience(_data);
+    }
+
+    protected override void UpdateEditState(bool isEdit) {
+        base.UpdateEditState(isEdit);
+        UpdateRenderer();
     }
 
     public override void Setup(AudienceData data) {
@@ -43,7 +53,7 @@ public class EditableAudience : Editable<AudienceData> {
     }
 
     private void UpdateRenderer() {
-        _errorRenderer.ChangeState(_errors.Count != 0);
+        _errorRenderer.ChangeState(_errors.Count != 0 && !_editManager.IsEdit);
         if (_errors.Count > 0)
             _errorRenderer.SetType(_errors.Select(error => error.Type).Max());
     }

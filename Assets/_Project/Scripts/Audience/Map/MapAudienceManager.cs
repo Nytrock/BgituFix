@@ -3,6 +3,19 @@ using UnityEngine;
 public class MapAudienceManager : MapElementManager<MapAudience, EditableComputer, ComputerData, AudienceData> {
 
     [SerializeField] protected MapAudiencePool _audiencePool;
+    [SerializeField] private MapEditManager _editManager;
+
+    private void Awake() {
+        _editManager.EditStateChanged += UpdateAudiences;
+    }
+
+    private void UpdateAudiences(bool isEditMode) {
+        if (isEditMode)
+            return;
+
+        foreach (var audience in _mapElements)
+            audience.UpdateSize();
+    }
 
     public void GenerateAudiences(MapManager mapManager) {
         MapData mapData = mapManager.Data;

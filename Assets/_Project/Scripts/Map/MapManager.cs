@@ -77,4 +77,12 @@ public class MapManager : MonoBehaviour {
         _buildManager.ChangeState(false);
         _audienceManager.OpenAudience(audience);
     }
+
+    public IEnumerator RevertMapData(MapData oldMapData) {
+        yield break;
+    }
+
+    public IEnumerator CheckUpdatedData(MapData oldMapData) {
+        yield break;
+    }
 }

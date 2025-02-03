@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -13,10 +12,8 @@ public class ErrorManagerData {
         _errorDatas = errorDatas;
     }
 
-    internal void AddError(ComputerErrorData newError) {
+    public void AddError(ComputerErrorData newError) {
         _errorDatas.Add(newError);
-        int maxId = _errorDatas.Select(error => error.Id).Max();
-        newError.SetId(maxId + 1);
     }
 
     public void DeleteError(ComputerErrorData error) {

@@ -17,8 +17,13 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
         SetupFloorsSizes();
     }
 
-    public void SetManagers(MapManager mapManager, ErrorManager errorManager) {
-        SetMapManager(mapManager);
+    public void SetManagers(MapManager mapManager, MapEditManager editManager,
+        ErrorManager errorManager, UserManager userManager) {
+
+        (_pool as EditableAudiencePool).SetManagers(mapManager, editManager);
+
+        if (userManager.ClientType != UserType.Admin)
+            return;
 
         errorManager.ErrorAdded += CheckNewError;
         errorManager.ErrorChanged += CheckChangedError;
@@ -58,11 +63,14 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
 
     private void SetupFloorsSizes() {
         _cameraSize = 0;
-        foreach (var floor in _floors) {
-            floor.SetupSize();
-            if (floor.CameraSize > _cameraSize)
-                _cameraSize = floor.CameraSize;
-        }
+        for (int i = 0; i < _data.FloorsCount; i++)
+            SetupFloorSize(i);
+    }
+
+    private void SetupFloorSize(int index) {
+        _floors[index].SetupSize();
+        if (_floors[index].CameraSize > _cameraSize)
+            _cameraSize = _floors[index].CameraSize;
     }
 
     public void ChangeFloor(int floor) {
@@ -78,6 +86,9 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     protected override EditableAudience GenerateEditable(AudienceData data) {
         EditableAudience audience = base.GenerateEditable(data);
         _floors[data.Floor - 1].AddAudience(audience);
+        audience.SizeOrPositionChanged += delegate {
+            SetupFloorSize(audience.Floor - 1);
+        };
         return audience;
     }
 

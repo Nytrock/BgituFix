@@ -5,44 +5,73 @@ using UnityEngine;
 public class EditableActivator : MonoBehaviour {
     [SerializeField] private RectTransform _canvas;
     [SerializeField] private float _canvasMultiplier;
-    [SerializeField] private float _maxMouseAxis;
 
     protected SpriteRenderer _renderer;
     private BoxCollider2D _collider;
-    private bool _isMouseHold;
+    private bool _isHover;
+    private bool _isEditing;
 
-    public event Action Pressed;
+    public event Action LeftButtonDown;
+    public event Action LeftButtonUp;
+    public event Action RightButtonDown;
+    public event Action RightButtonUp;
 
     private void GetComponents() {
         _renderer = GetComponent<SpriteRenderer>();
         _collider = GetComponent<BoxCollider2D>();
     }
 
-    protected virtual void OnMouseDown() {
-        _isMouseHold = true;
-    }
+    protected virtual void Update() {
+        if (!_isHover && _isEditing) {
+            CheckButtonsUp();
+            return;
+        }
 
-    private void OnMouseUp() {
-        if (!_isMouseHold)
+        if (!_isHover)
             return;
 
-        Pressed?.Invoke();
+        CheckButtonsUp();
+        CheckButtonsDown();
     }
 
-    private void Update() {
-        float mouseAxis = Mathf.Abs(Input.GetAxis("Mouse X")) + Mathf.Abs(Input.GetAxis("Mouse Y"));
-        if (mouseAxis >= _maxMouseAxis)
-            _isMouseHold = false;
+    private void CheckButtonsDown() {
+        if (Input.GetMouseButtonDown(0))
+            LeftButtonDown?.Invoke();
+        if (Input.GetMouseButtonDown(1))
+            RightButtonDown?.Invoke();
+    }
+
+    private void CheckButtonsUp() {
+        if (Input.GetMouseButtonUp(0))
+            LeftButtonUp?.Invoke();
+        if (Input.GetMouseButtonUp(1))
+            RightButtonUp?.Invoke();
+    }
+
+    private void OnMouseEnter() {
+        _isHover = true;
     }
 
     private void OnMouseExit() {
-        _isMouseHold = false;
+        _isHover = false;
+    }
+
+    private void OnDisable() {
+        _isHover = false;
     }
 
     public virtual void Setup(EditableData data) {
         GetComponents();
-        _renderer.size = data.Size;
-        _collider.size = data.Size;
-        _canvas.sizeDelta = data.Size * _canvasMultiplier;
+        SetSize(data.Size);
+    }
+
+    public void SetSize(Vector2 size) {
+        _renderer.size = size;
+        _collider.size = size;
+        _canvas.sizeDelta = size * _canvasMultiplier;
+    }
+
+    public void ChangeEditingMode(bool isEditing) {
+        _isEditing = isEditing;
     }
 }

@@ -2,15 +2,13 @@ using UnityEngine;
 
 public class MapBuildPool : Pool<MapBuild> {
     [SerializeField] private MapManager _mapManager;
+    [SerializeField] private MapEditManager _editManager;
     [SerializeField] private UserManager _userManager;
     [SerializeField] private ErrorManager _errorManager;
 
     protected override MapBuild CreateObject() {
         MapBuild build = base.CreateObject();
-        if (_userManager.ClientType == UserType.Admin)
-            build.SetManagers(_mapManager, _errorManager);
-        else
-            build.SetMapManager(_mapManager);
+        build.SetManagers(_mapManager, _editManager, _errorManager, _userManager);
         return build;
     }
 

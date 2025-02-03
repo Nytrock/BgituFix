@@ -70,22 +70,27 @@ public class ErrorManager : MonoBehaviour {
 
     public IEnumerator CreateError(ComputerErrorType type, string comment, int computerId) {
         int clientId = _userManager.ClientId;
-        ComputerErrorData newError = new(computerId, clientId, type, comment);
-        _data.AddError(newError);
-        ErrorAdded?.Invoke(newError);
 
-        if (string.IsNullOrEmpty(_APIPathToAddError))
+        if (string.IsNullOrEmpty(_APIPathToAddError)) {
+            ComputerErrorData error = new(12, computerId, clientId, type, comment);
+            _data.AddError(error);
+            ErrorAdded?.Invoke(error);
             yield break;
+        }
 
         WWWForm form = new();
-        form.AddField("Id", newError.Id.ToString());
         form.AddField("ComputerId", computerId.ToString());
         form.AddField("ClientId", clientId.ToString());
         form.AddField("ErrorType", ((int)type).ToString());
         form.AddField("Comment", comment);
 
         string token = _urlManager.GetParameter("token");
-        UnityWebRequest www = RequestUtility.APIPost(_APIPathToAddError, form, token);
-        yield return www.SendWebRequest();
+        UnityWebRequest request = RequestUtility.APIPost(_APIPathToAddError, form, token);
+        yield return request.SendWebRequest();
+
+        int id = request.ToData<IdData>().Id;
+        ComputerErrorData newError = new(id, computerId, clientId, type, comment);
+        _data.AddError(newError);
+        ErrorAdded?.Invoke(newError);
     }
 }

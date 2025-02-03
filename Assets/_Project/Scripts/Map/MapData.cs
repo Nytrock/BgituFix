@@ -35,4 +35,11 @@ public class MapData {
                 return data;
         return null;
     }
+
+    public AudienceData GetAudienceById(int id) {
+        foreach (var data in _audienceDatas)
+            if (data.Id == id)
+                return data;
+        return null;
+    }
 }

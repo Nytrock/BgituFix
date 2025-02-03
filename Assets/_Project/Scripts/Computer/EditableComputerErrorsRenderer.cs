@@ -21,4 +21,8 @@ public class EditableComputerErrorsRenderer : MonoBehaviour {
         int index = (int)(errorData.Type - 1);
         _errorRenderers[index].RemoveFromCount();
     }
+
+    public void ChangeState(bool newState) {
+        gameObject.SetActive(newState);
+    }
 }

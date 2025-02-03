@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MapBuildFloorUI : CameraHoverTrigger {
+public class MapBuildFloorUI : MonoBehaviour {
     [SerializeField] private MapBuildFloorButtonPool _buttonsPool;
     private MapBuild _build;
 

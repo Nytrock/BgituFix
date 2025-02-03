@@ -6,13 +6,6 @@ public class EditableAudienceActivator : EditableActivator {
 
     private AudienceData _data;
 
-    protected override void OnMouseDown() {
-        if (!_data.IsComputer)
-            return;
-
-        base.OnMouseDown();
-    }
-
     public override void Setup(EditableData data) {
         base.Setup(data);
 
