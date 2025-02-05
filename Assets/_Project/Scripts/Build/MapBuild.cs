@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,9 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     public int FloorsCount => _data.FloorsCount;
     public override int Id => _data.Id;
     public string Name => _data.Name;
+    public int NowFloor => _nowFloor;
+
+    public event Action<int> FloorChanged;
 
     protected override void GenerateEditables(MapData mapData) {
         GenerateFloors();
@@ -17,11 +21,16 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
         SetupFloorsSizes();
     }
 
+    protected override void ChangeSizeShowState(bool newState) {
+        _floors[_nowFloor - 1].ChangeSizeShowState(newState);
+    }
+
     public void SetManagers(MapManager mapManager, MapEditManager editManager,
         ErrorManager errorManager, UserManager userManager) {
 
         (_pool as EditableAudiencePool).SetManagers(mapManager, editManager);
-
+        editManager.EditableChanged += UpdateShowingSize;
+        editManager.EditStateChanged += UpdateShowingSize;
         if (userManager.ClientType != UserType.Admin)
             return;
 
@@ -53,6 +62,7 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
 
     private void GenerateFloor() {
         MapBuildFloor floor = _floorPool.GetObject();
+        floor.ChangeSizeShowState(false);
         _floors.Add(floor);
         floor.ChangeState(false);
     }
@@ -81,9 +91,10 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
             _floors[_nowFloor - 1].ChangeState(false);
         _nowFloor = floor;
         _floors[_nowFloor - 1].ChangeState(true);
+        FloorChanged?.Invoke(_nowFloor);
     }
 
-    protected override EditableAudience GenerateEditable(AudienceData data) {
+    public override EditableAudience GenerateEditable(AudienceData data) {
         EditableAudience audience = base.GenerateEditable(data);
         _floors[data.Floor - 1].AddAudience(audience);
         audience.SizeOrPositionChanged += delegate {

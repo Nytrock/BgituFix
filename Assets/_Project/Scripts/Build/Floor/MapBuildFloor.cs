@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class MapBuildFloor : MonoBehaviour {
     [SerializeField] private SpriteRenderer _renderer;
+    [SerializeField] private RectTransform _canvas;
     [SerializeField] private float _offset;
-    private readonly List<EditableAudience> _audiences = new();
+    [SerializeField] private TextMeshProUGUI _widthText;
+    [SerializeField] private TextMeshProUGUI _lengthText;
 
-    private readonly List<ComputerErrorData> _errors = new();
+    private readonly List<EditableAudience> _audiences = new();
+    private bool _isShowingSize;
 
     public event Action<ComputerErrorType> ErrorUpdated;
 
@@ -26,13 +30,28 @@ public class MapBuildFloor : MonoBehaviour {
         }
     }
 
+    private void Update() {
+        if (!_isShowingSize)
+            return;
+
+        _widthText.text = _renderer.size.x.ToString() + Units.SIZE_UNIT;
+        _lengthText.text = _renderer.size.y.ToString() + Units.SIZE_UNIT;
+    }
+
     public void AddAudience(EditableAudience audience) {
         audience.transform.parent = transform;
         _audiences.Add(audience);
     }
 
+    public void ChangeSizeShowState(bool newState) {
+        _isShowingSize = newState;
+        _canvas.gameObject.SetActive(newState);
+    }
+
     public void ChangeState(bool newState) {
         gameObject.SetActive(newState);
+        if (!newState)
+            ChangeSizeShowState(false);
     }
 
     public void SetupSize() {
@@ -65,6 +84,7 @@ public class MapBuildFloor : MonoBehaviour {
         rigthTop = new(maxX + _offset, maxY + _offset);
         _renderer.size = rigthTop - leftBottom;
         _renderer.transform.position = (rigthTop + leftBottom) / 2f;
+        _canvas.sizeDelta = _renderer.size * (1 / _canvas.localScale.x);
     }
 
     public void CheckNewError(ComputerErrorData data) {

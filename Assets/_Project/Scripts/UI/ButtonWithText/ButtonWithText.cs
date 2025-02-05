@@ -8,4 +8,9 @@ public class ButtonWithText : Button {
     public void SetText(string text) {
         _text.text = text;
     }
+
+    public void SetStyle(StateStyle style) {
+        image.color = style.BackgroundColor;
+        _text.color = style.TextColor;
+    }
 }

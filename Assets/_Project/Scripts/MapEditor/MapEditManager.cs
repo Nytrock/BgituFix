@@ -10,6 +10,7 @@ public class MapEditManager : MonoBehaviour {
     private MapData _oldMapData;
     private BaseEditable _nowEditable;
 
+    public event Action<BaseEditable> EditableChanged;
     public event Action<bool> EditStateChanged;
     public event Action<bool> PermissionChanged;
 
@@ -62,6 +63,7 @@ public class MapEditManager : MonoBehaviour {
         if (_nowEditable == editable) {
             _nowEditable.ChangeEditingMode(false);
             _nowEditable = null;
+            EditableChanged?.Invoke(null);
             return;
         }
 
@@ -69,5 +71,38 @@ public class MapEditManager : MonoBehaviour {
             _nowEditable.ChangeEditingMode(false);
         _nowEditable = editable;
         _nowEditable.ChangeEditingMode(true);
+        EditableChanged?.Invoke(_nowEditable);
+    }
+
+    public void CreateNewAudience() {
+        EditableAudience audience = _mapManager.CreateNewAudience();
+        SetEditable(audience);
+    }
+
+    public void CreateAudience(AudienceData audienceData) {
+        EditableAudience audience = _mapManager.CreateAudience(audienceData);
+        SetEditable(audience);
+    }
+
+    public void DeleteAudience(EditableAudience audience) {
+        if (_nowEditable == audience)
+            SetEditable(audience);
+        _mapManager.DeleteAudience(audience);
+    }
+
+    public void CreateNewComputer() {
+        EditableComputer computer = _mapManager.CreateNewComputer();
+        SetEditable(computer);
+    }
+
+    public void CreateComputer(ComputerData computerData) {
+        EditableComputer computer = _mapManager.CreateComputer(computerData);
+        SetEditable(computer);
+    }
+
+    public void DeleteComputer(EditableComputer computer) {
+        if (_nowEditable == computer)
+            SetEditable(computer);
+        _mapManager.DeleteComputer(computer);
     }
 }

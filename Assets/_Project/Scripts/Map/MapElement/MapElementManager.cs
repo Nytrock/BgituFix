@@ -14,6 +14,8 @@ public class MapElementManager<TElement, TEditable, TEditableData, TData> : Mono
     protected TElement _nowElement;
     protected readonly List<TElement> _mapElements = new();
 
+    public TElement NowElement => _nowElement;
+
     public event Action<bool> StateChanged;
 
     protected void UpdateCamera() {
@@ -40,5 +42,13 @@ public class MapElementManager<TElement, TEditable, TEditableData, TData> : Mono
         _nowElement = newElememt;
         _nowElement.ChangeState(true);
         UpdateCamera();
+    }
+
+    public void DeleteEditable(TEditable editable) {
+        _nowElement.DeleteEditable(editable);
+    }
+
+    public TEditable CreateEditable(TEditableData editableData) {
+        return _nowElement.GenerateEditable(editableData);
     }
 }

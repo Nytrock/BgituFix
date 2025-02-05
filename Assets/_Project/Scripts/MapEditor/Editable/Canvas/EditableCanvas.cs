@@ -1,15 +1,33 @@
+using TMPro;
 using UnityEngine;
 
 public class EditableCanvas : MonoBehaviour {
     [SerializeField] private GameObject _panel;
-    [SerializeField] private GameObject _infoPanel;
+    [SerializeField] private EditableCanvasInfo _infoPanel;
     [SerializeField] private GameObject _border;
-    [SerializeField] private BaseEditable _editable;
     [SerializeField] private EditableCanvasBorderElement[] _borderElements;
+    [SerializeField] private TextMeshProUGUI _widthText;
+    [SerializeField] private TextMeshProUGUI _lengthText;
+
+    private BaseEditable _editable;
+    private bool _isResizing;
 
     private void Awake() {
         ChangeInfoState(false);
         ChangeBorderState(false);
+    }
+
+    private void Update() {
+        if (!_isResizing)
+            return;
+
+        _widthText.text = _editable.Size.x.ToString() + Units.SIZE_UNIT;
+        _lengthText.text = _editable.Size.y.ToString() + Units.SIZE_UNIT;
+    }
+
+    public void SetEditable(BaseEditable editable) {
+        _editable = editable;
+        _infoPanel.SetEditable(editable);
         SetupBorderElements();
     }
 
@@ -44,18 +62,19 @@ public class EditableCanvas : MonoBehaviour {
 
     public void ChangeState(bool newState) {
         _panel.SetActive(newState);
-        _infoPanel.SetActive(false);
+        _infoPanel.ChangeState(false);
     }
 
     public void ChangeInfoState() {
-        _infoPanel.SetActive(!_infoPanel.activeSelf);
+        _infoPanel.ChangeState();
     }
 
     public void ChangeInfoState(bool newState) {
-        _infoPanel.SetActive(newState);
+        _infoPanel.ChangeState(newState);
     }
 
     public void ChangeBorderState(bool isEditing) {
         _border.SetActive(isEditing);
+        _isResizing = isEditing;
     }
 }

@@ -40,7 +40,7 @@ public class CameraManager : MonoBehaviour {
     private void UpdatePosition() {
         float horizontalAxis = Input.GetAxis("Horizontal");
         float verticalAxis = Input.GetAxis("Vertical");
-        transform.position += _camera.orthographicSize * _keySpeed * new Vector3(horizontalAxis, verticalAxis);
+        transform.position += _camera.orthographicSize * Time.deltaTime * _keySpeed * new Vector3(horizontalAxis, verticalAxis);
     }
 
     public void ForceSetSize(float size) {

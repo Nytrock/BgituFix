@@ -10,11 +10,17 @@ public class MapData {
 
     public IEnumerable<BuildData> BuildDatas => _buildDatas;
     public IEnumerable<AudienceData> AudienceDatas => _audienceDatas;
+    public IEnumerable<ComputerData> ComputerDatas => _computerDatas;
 
     public MapData(List<BuildData> buildDatas, List<AudienceData> audienceDatas, List<ComputerData> computerDatas) {
         _buildDatas = buildDatas;
         _audienceDatas = audienceDatas;
         _computerDatas = computerDatas;
+
+        foreach (var data in _audienceDatas)
+            data.SetupVectors();
+        foreach (var data in _computerDatas)
+            data.SetupVectors();
     }
 
     public IEnumerable<AudienceData> GetAudiencesByBuild(BuildData buildData) {
@@ -41,5 +47,21 @@ public class MapData {
             if (data.Id == id)
                 return data;
         return null;
+    }
+
+    public void AddAudience(AudienceData audienceData) {
+        _audienceDatas.Add(audienceData);
+    }
+
+    public void DeleteAudience(AudienceData audienceData) {
+        _audienceDatas.Remove(audienceData);
+    }
+
+    public void AddComputer(ComputerData computerData) {
+        _computerDatas.Add(computerData);
+    }
+
+    public void DeleteComputer(ComputerData computerData) {
+        _computerDatas.Remove(computerData);
     }
 }

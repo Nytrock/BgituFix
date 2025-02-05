@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public abstract class BaseEditable : MonoBehaviour {
-    [SerializeField] protected EditableActivator _activator;
+    [SerializeField] protected EditableRenderer _renderer;
     [SerializeField] protected EditableCanvas _canvas;
 
     protected MapManager _mapManager;
@@ -18,11 +18,11 @@ public abstract class BaseEditable : MonoBehaviour {
     protected float _mouseTime = 0;
 
     public bool IsResizing => _isResizing;
+    public abstract Vector2 Size { get; }
+    public abstract Vector2 Position { get; }
 
-    private void Awake() {
-        _activator.LeftButtonDown += LeftButtonDown;
-        _activator.LeftButtonUp += LeftButtonUp;
-        _activator.RightButtonUp += RightButtonUp;
+    protected virtual void Awake() {
+        _canvas.SetEditable(this);
     }
 
     private void Update() {
@@ -46,11 +46,11 @@ public abstract class BaseEditable : MonoBehaviour {
         ChangeEditState(true);
     }
 
-    protected virtual void LeftButtonUp() {
+    public virtual void LeftButtonUp() {
         if (!_editManager.IsEdit)
             return;
 
-        if (_mouseTime < 0.1f && _oldIsEditing)
+        if (_mouseTime < 0.15f && _oldIsEditing)
             _editManager.SetEditable(this);
         ChangeEditState(false);
     }
@@ -64,7 +64,7 @@ public abstract class BaseEditable : MonoBehaviour {
             _editManager.SetEditable(this);
     }
 
-    private void ChangeEditState(bool isEdit) {
+    public void ChangeEditState(bool isEdit) {
         if (_isVerticalResizing || _isHorizontalResizing || _isResizing)
             _isResizing = isEdit;
         else
@@ -77,8 +77,8 @@ public abstract class BaseEditable : MonoBehaviour {
 
     public void ChangeEditingMode(bool isEditing) {
         _isEditing = isEditing;
-        _activator.ChangeEditingMode(isEditing);
         _canvas.ChangeBorderState(_isEditing);
+        _renderer.ChangeEditingMode(_isEditing);
         if (!_isEditing)
             _canvas.ChangeInfoState(false);
     }
@@ -98,6 +98,8 @@ public abstract class BaseEditable : MonoBehaviour {
         _isHorizontalResizing = horizontalResizing;
     }
 
+    public abstract void Copy();
+    public abstract void Delete();
     protected abstract void UpdatePosition();
     protected abstract void UpdateSize();
 }

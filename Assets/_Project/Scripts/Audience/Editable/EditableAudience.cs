@@ -1,18 +1,24 @@
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 
 public class EditableAudience : Editable<AudienceData> {
-    [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private ComputerErrorRenderer _errorRenderer;
 
     private readonly List<ComputerErrorData> _errors = new();
+    private EditableAudienceRenderer _audienceActivator;
 
     public ComputerErrorType ErrorType => _errorRenderer.Type;
     public int Floor => _data.Floor;
+    public bool IsComputer => _data.IsComputer;
+    public string Name => _data.Name;
 
-    protected override void LeftButtonUp() {
+    protected override void Awake() {
+        base.Awake();
+        _audienceActivator = _renderer as EditableAudienceRenderer;
+    }
+
+    public override void LeftButtonUp() {
         base.LeftButtonUp();
         if (_editManager.IsEdit || !_data.IsComputer)
             return;
@@ -27,7 +33,6 @@ public class EditableAudience : Editable<AudienceData> {
 
     public override void Setup(AudienceData data) {
         base.Setup(data);
-        _nameText.text = data.Name;
         _errorRenderer.ChangeState(false);
     }
 
@@ -56,5 +61,24 @@ public class EditableAudience : Editable<AudienceData> {
         _errorRenderer.ChangeState(_errors.Count != 0 && !_editManager.IsEdit);
         if (_errors.Count > 0)
             _errorRenderer.SetType(_errors.Select(error => error.Type).Max());
+    }
+
+    public void UpdateIsComputer(bool isComputer) {
+        _data.UpdateIsComputer(isComputer);
+        _audienceActivator.UpdateStyle();
+    }
+
+    public void UpdateName(string newName) {
+        _data.UpdateName(newName);
+        _audienceActivator.UpdateName();
+    }
+
+    public override void Copy() {
+        AudienceData audienceData = new(_data, _gridPrecision * 2);
+        _editManager.CreateAudience(audienceData);
+    }
+
+    public override void Delete() {
+        _editManager.DeleteAudience(this);
     }
 }

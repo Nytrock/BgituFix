@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -76,6 +77,41 @@ public class MapManager : MonoBehaviour {
     public void OpenAudience(AudienceData audience) {
         _buildManager.ChangeState(false);
         _audienceManager.OpenAudience(audience);
+    }
+
+    public EditableAudience CreateNewAudience() {
+        int buildId = _buildManager.NowElement.Id;
+        int floorIndex = _buildManager.NowElement.NowFloor;
+        int audiencesCount = _data.AudienceDatas.Count();
+        float size = 1;
+        return CreateAudience(new(buildId, floorIndex, audiencesCount, size));
+    }
+
+    public EditableAudience CreateAudience(AudienceData audienceData) {
+        _data.AddAudience(audienceData);
+        return _buildManager.CreateEditable(audienceData);
+    }
+
+    public void DeleteAudience(EditableAudience audience) {
+        _buildManager.DeleteEditable(audience);
+        _data.DeleteAudience(audience.Data);
+    }
+
+    public EditableComputer CreateNewComputer() {
+        int audienceId = _audienceManager.NowElement.Id;
+        int computersCount = _data.ComputerDatas.Count();
+        float size = 0.2f;
+        return CreateComputer(new(audienceId, computersCount, size));
+    }
+
+    public EditableComputer CreateComputer(ComputerData computerData) {
+        _data.AddComputer(computerData);
+        return _audienceManager.CreateEditable(computerData);
+    }
+
+    public void DeleteComputer(EditableComputer computer) {
+        _audienceManager.DeleteEditable(computer);
+        _data.DeleteComputer(computer.Data);
     }
 
     public IEnumerator RevertMapData(MapData oldMapData) {

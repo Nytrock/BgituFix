@@ -1,77 +1,23 @@
-using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-[RequireComponent(typeof(SpriteRenderer), typeof(BoxCollider2D))]
-public class EditableActivator : MonoBehaviour {
-    [SerializeField] private RectTransform _canvas;
-    [SerializeField] private float _canvasMultiplier;
+public class EditableActivator : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
+    [SerializeField] private BaseEditable _editable;
 
-    protected SpriteRenderer _renderer;
-    private BoxCollider2D _collider;
-    private bool _isHover;
-    private bool _isEditing;
-
-    public event Action LeftButtonDown;
-    public event Action LeftButtonUp;
-    public event Action RightButtonDown;
-    public event Action RightButtonUp;
-
-    private void GetComponents() {
-        _renderer = GetComponent<SpriteRenderer>();
-        _collider = GetComponent<BoxCollider2D>();
+    public void Update() {
+        if (Input.GetMouseButtonUp(0) && _editable.IsResizing)
+            _editable.ChangeEditState(false);
     }
 
-    protected virtual void Update() {
-        if (!_isHover && _isEditing) {
-            CheckButtonsUp();
-            return;
-        }
-
-        if (!_isHover)
-            return;
-
-        CheckButtonsUp();
-        CheckButtonsDown();
+    public void OnPointerDown(PointerEventData eventData) {
+        if (eventData.button == PointerEventData.InputButton.Left)
+            _editable.LeftButtonDown();
     }
 
-    private void CheckButtonsDown() {
-        if (Input.GetMouseButtonDown(0))
-            LeftButtonDown?.Invoke();
-        if (Input.GetMouseButtonDown(1))
-            RightButtonDown?.Invoke();
-    }
-
-    private void CheckButtonsUp() {
-        if (Input.GetMouseButtonUp(0))
-            LeftButtonUp?.Invoke();
-        if (Input.GetMouseButtonUp(1))
-            RightButtonUp?.Invoke();
-    }
-
-    private void OnMouseEnter() {
-        _isHover = true;
-    }
-
-    private void OnMouseExit() {
-        _isHover = false;
-    }
-
-    private void OnDisable() {
-        _isHover = false;
-    }
-
-    public virtual void Setup(EditableData data) {
-        GetComponents();
-        SetSize(data.Size);
-    }
-
-    public void SetSize(Vector2 size) {
-        _renderer.size = size;
-        _collider.size = size;
-        _canvas.sizeDelta = size * _canvasMultiplier;
-    }
-
-    public void ChangeEditingMode(bool isEditing) {
-        _isEditing = isEditing;
+    public void OnPointerUp(PointerEventData eventData) {
+        if (eventData.button == PointerEventData.InputButton.Left)
+            _editable.LeftButtonUp();
+        else if (eventData.button == PointerEventData.InputButton.Right)
+            _editable.RightButtonUp();
     }
 }
