@@ -18,16 +18,14 @@ public class MapBuildFloorButton : MonoBehaviour {
         _errorRenderer.ChangeState(false);
 
         MapBuildFloor floor = build.GetFloor(floorIndex);
-        floor.ErrorUpdated += CheckError;
+        floor.ErrorUpdated += UpdateError;
     }
 
     private void CheckFloor(int floorIndex) {
         _button.SetStyle(floorIndex == _floorIndex ? _selectedStyle : _deselectedStyle);
     }
 
-    private void CheckError(ComputerErrorType type) {
-        _errorRenderer.ChangeState(type != ComputerErrorType.None);
-        if (type != ComputerErrorType.None)
-            _errorRenderer.SetType(type);
+    private void UpdateError(ComputerErrorType type) {
+        _errorRenderer.SetType(type);
     }
 }

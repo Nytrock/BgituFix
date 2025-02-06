@@ -8,7 +8,7 @@ public class ComputerErrorData {
     [SerializeField] private int userId;
     [SerializeField] private bool isSolved;
     [SerializeField] private ComputerErrorType level;
-    [SerializeField] private DateTime date;
+    [SerializeField] private string date;
     [SerializeField] private string description;
     private int _audienceId;
 
@@ -18,7 +18,7 @@ public class ComputerErrorData {
     public int UserId => userId;
     public bool IsSolved => isSolved;
     public ComputerErrorType Type => level;
-    public DateTime Date => date;
+    public string Date => date;
     public string Comment => description;
 
     public ComputerErrorData(int computerId, int userId, ComputerErrorType type, string comment) {

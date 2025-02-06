@@ -44,7 +44,7 @@ public class EditableAudience : Editable<AudienceData> {
     }
 
     public void CheckNewError(ComputerErrorData data) {
-        if (data.AudienceId == _data.Id) {
+        if (data.AudienceId == _data.Id && !data.IsSolved) {
             _errors.Add(data);
             UpdateRenderer();
         }

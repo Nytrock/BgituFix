@@ -6,7 +6,8 @@ public class ComputerErrorUI : MonoBehaviour {
     [SerializeField] private ComputerErrorRenderer _errorRenderer;
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private TextMeshProUGUI _descriptionText;
-    [SerializeField] private Toggle _solveToggle;
+    [SerializeField] private TextMeshProUGUI _dateText;
+    [SerializeField] private ComputerErrorUISolveButton _solveButton;
     [SerializeField] private Button _deleteButton;
 
     private ComputerErrorsUI _errorManager;
@@ -20,12 +21,12 @@ public class ComputerErrorUI : MonoBehaviour {
         _data = error;
         _errorRenderer.SetType(error.Type);
         _descriptionText.text = error.Comment;
+        _dateText.text = error.Date;
         _nameText.text = userManager.GetUserDataById(error.UserId).Name;
-        _solveToggle.SetIsOnWithoutNotify(error.IsSolved);
 
         bool isAdmin = userManager.ClientType == UserType.Admin;
-        _solveToggle.interactable = isAdmin;
         _deleteButton.gameObject.SetActive(isAdmin || userManager.ClientId == error.UserId);
+        _solveButton.Setup(error, userManager.ClientType);
     }
 
     public void ChangeState(bool newState) {
@@ -34,7 +35,8 @@ public class ComputerErrorUI : MonoBehaviour {
 
     public void SetErrorManager(ComputerErrorsUI errorManager) {
         _errorManager = errorManager;
-        _solveToggle.onValueChanged.AddListener(ChangeSolved);
+        _solveButton.SetupButton();
+        _solveButton.OnValueChanged += ChangeSolved;
         _deleteButton.onClick.AddListener(Delete);
     }
 
@@ -51,6 +53,6 @@ public class ComputerErrorUI : MonoBehaviour {
     }
 
     public void UpdateSolved() {
-        _solveToggle.SetIsOnWithoutNotify(_data.IsSolved);
+        _solveButton.SetIsSolvedWithoutNotify(_data.IsSolved);
     }
 }

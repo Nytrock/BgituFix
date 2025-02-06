@@ -17,6 +17,7 @@ public class ErrorManager : MonoBehaviour {
     [SerializeField] private string _APIPathToSSE;
 
     [SerializeField] private ErrorManagerData _data;
+    private MapData _mapData;
 
     public IEnumerable<ComputerErrorData> Errors => _data.Errors;
 
@@ -29,20 +30,19 @@ public class ErrorManager : MonoBehaviour {
     }
 
     public IEnumerator GetErrors(MapData mapData) {
+        _mapData = mapData;
+
         string token = _urlManager.Token;
         UnityWebRequest request = RequestUtility.APIGet(_APIPathToGetErrors, token);
         yield return request.SendWebRequest();
 
         _data = request.ToData<ErrorManagerData>();
-        GenerateErrors(mapData);
+        GenerateErrors();
     }
 
-    private void GenerateErrors(MapData mapData) {
-        foreach (var error in _data.Errors) {
-            ComputerData computerData = mapData.GetComputerById(error.ComputerId);
-            error.SetAudienceId(computerData.AudienceId);
-            ErrorAdded?.Invoke(error);
-        }
+    private void GenerateErrors() {
+        foreach (var error in _data.Errors)
+            AddError(error);
     }
 
     private void SSESetup() {
@@ -77,9 +77,13 @@ public class ErrorManager : MonoBehaviour {
             }
         }
 
+        List<ComputerErrorData> errorsToDelete = new();
         foreach (var oldError in _data.Errors)
             if (!newData.Contains(oldError))
-                DeleteError(oldError);
+                errorsToDelete.Add(oldError);
+
+        foreach (var error in errorsToDelete)
+            DeleteError(error);
     }
 
     public IEnumerator ChangeErrorSolveInDatabase(ComputerErrorData error, bool isSolved) {
@@ -105,6 +109,8 @@ public class ErrorManager : MonoBehaviour {
     }
 
     private void AddError(ComputerErrorData newError) {
+        ComputerData computerData = _mapData.GetComputerById(newError.ComputerId);
+        newError.SetAudienceId(computerData.AudienceId);
         _data.AddError(newError);
         ErrorAdded?.Invoke(newError);
     }

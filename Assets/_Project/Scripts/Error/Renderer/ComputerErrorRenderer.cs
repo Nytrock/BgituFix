@@ -7,6 +7,7 @@ public class ComputerErrorRenderer : MonoBehaviour {
     [SerializeField] private ComputerErrorTypeStyle[] _styles;
 
     private Image _image;
+    private bool _isActive;
     private ComputerErrorType _type;
 
     public ComputerErrorType Type => _type;
@@ -22,10 +23,12 @@ public class ComputerErrorRenderer : MonoBehaviour {
     }
 
     public virtual void SetType(ComputerErrorType type) {
-        if (type == ComputerErrorType.None)
-            return;
-
         _type = type;
+        if (_type == ComputerErrorType.None) {
+            ChangeState(false);
+            return;
+        }
+
         foreach (var style in _styles)
             if (style.ErrorType == type)
                 SetStyle(style);
@@ -37,6 +40,7 @@ public class ComputerErrorRenderer : MonoBehaviour {
     }
 
     public void ChangeState(bool newState) {
+        _isActive = newState;
         gameObject.SetActive(newState);
     }
 }

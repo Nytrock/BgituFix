@@ -10,6 +10,8 @@ public class ErrorManagerData {
     public IEnumerable<ComputerErrorData> Errors => breakdowns;
 
     public void AddError(ComputerErrorData newError) {
+        if (breakdowns.Contains(newError)) return;
+
         breakdowns.Add(newError);
     }
 
