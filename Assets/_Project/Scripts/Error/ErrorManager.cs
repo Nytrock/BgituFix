@@ -46,6 +46,9 @@ public class ErrorManager : MonoBehaviour {
     }
 
     private void SSESetup() {
+        if (_urlManager.Token == string.Empty)
+            return;
+
         Uri uri = new(RequestUtility.API_URL + _APIPathToSSE);
         HttpClient client = new();
         client.SetToken(_urlManager.Token);

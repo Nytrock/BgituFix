@@ -7452,7 +7452,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _editorUrl: https://nytrock.github.io/BgituSecTest/?username=TestAdmin&password=TestAdmin
-  _APIPathToLogin: auth/sign-in
 --- !u!4 &1362003539
 Transform:
   m_ObjectHideFlags: 0
