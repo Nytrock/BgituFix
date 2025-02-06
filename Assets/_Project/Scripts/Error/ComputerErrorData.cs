@@ -3,32 +3,38 @@ using UnityEngine;
 
 [Serializable]
 public class ComputerErrorData {
-    [SerializeField] private int _id;
-    [SerializeField] private int _computerId;
-    [SerializeField] private int _userId;
-    [SerializeField] private bool _isSolved;
-    [SerializeField] private ComputerErrorType _type;
-    [SerializeField] private DateTime _date;
-    [SerializeField] private string _comment;
+    [SerializeField] private int id;
+    [SerializeField] private int computerId;
+    [SerializeField] private int userId;
+    [SerializeField] private bool isSolved;
+    [SerializeField] private ComputerErrorType level;
+    [SerializeField] private DateTime date;
+    [SerializeField] private string description;
     private int _audienceId;
 
-    public int Id => _id;
-    public int ComputerId => _computerId;
+    public int Id => id;
+    public int ComputerId => computerId;
     public int AudienceId => _audienceId;
-    public int UserId => _userId;
-    public bool IsSolved => _isSolved;
-    public ComputerErrorType Type => _type;
-    public DateTime Date => _date;
-    public string Comment => _comment;
+    public int UserId => userId;
+    public bool IsSolved => isSolved;
+    public ComputerErrorType Type => level;
+    public DateTime Date => date;
+    public string Comment => description;
 
-    public ComputerErrorData(int id, int computerId, int userId, ComputerErrorType type, string comment) {
-        _id = id;
-        _computerId = computerId;
-        _userId = userId;
-        _type = type;
-        _comment = comment;
-        _isSolved = false;
-        _date = DateTime.Today;
+    public ComputerErrorData(int computerId, int userId, ComputerErrorType type, string comment) {
+        id = -1;
+        this.computerId = computerId;
+        this.userId = userId;
+        level = type;
+        description = comment;
+        isSolved = false;
+    }
+
+    public void SetId(int id) {
+        if (this.id != -1)
+            return;
+
+        this.id = id;
     }
 
     public void SetAudienceId(int id) {
@@ -36,6 +42,10 @@ public class ComputerErrorData {
     }
 
     public void ChangeSolved(bool isSolved) {
-        _isSolved = isSolved;
+        this.isSolved = isSolved;
+    }
+
+    public bool Equals(ComputerErrorData other) {
+        return other.id == id && other.isSolved == isSolved;
     }
 }

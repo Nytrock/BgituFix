@@ -8,15 +8,15 @@ public abstract class Editable<TData> : BaseEditable
 
     protected TData _data;
 
-    public override Vector2 Size => _data.Size;
-    public override Vector2 Position => _data.Position;
+    public override Vector2 Size => _data.SizeVector;
+    public override Vector2 Position => _data.PositionVector;
     public TData Data => _data;
 
     public event Action SizeOrPositionChanged;
 
     public virtual void Setup(TData data) {
         _data = data;
-        transform.position = _data.Position;
+        transform.position = _data.PositionVector;
 
         _renderer.Setup(_data);
     }
@@ -29,7 +29,7 @@ public abstract class Editable<TData> : BaseEditable
 
     protected override void UpdateSize() {
         Vector2 mousePosition = CameraManager.LocalMousePosition;
-        float width = _data.Size.x, height = _data.Size.y;
+        float width = _data.SizeVector.x, height = _data.SizeVector.y;
         float centerX = transform.position.x, centerY = transform.position.y;
 
         if (_isHorizontalResizing)
@@ -42,7 +42,7 @@ public abstract class Editable<TData> : BaseEditable
         _data.UpdatePosition(transform.position);
 
         _data.UpdateSize(width, height);
-        _renderer.SetSize(_data.Size);
+        _renderer.SetSize(_data.SizeVector);
         SizeOrPositionChanged?.Invoke();
     }
 

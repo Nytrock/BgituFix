@@ -5,10 +5,12 @@ public class MapBuildPool : Pool<MapBuild> {
     [SerializeField] private MapEditManager _editManager;
     [SerializeField] private UserManager _userManager;
     [SerializeField] private ErrorManager _errorManager;
+    [SerializeField] private CameraManager _cameraManager;
 
     protected override MapBuild CreateObject() {
         MapBuild build = base.CreateObject();
-        build.SetManagers(_mapManager, _editManager, _errorManager, _userManager);
+        build.SetManagers(_mapManager, _editManager, _errorManager,
+            _userManager, _cameraManager);
         return build;
     }
 

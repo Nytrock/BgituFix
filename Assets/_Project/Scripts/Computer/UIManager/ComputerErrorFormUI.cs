@@ -27,7 +27,7 @@ public class ComputerErrorFormUI : MonoBehaviour {
 
         ComputerErrorType type = (ComputerErrorType)(_errorType.value + 1);
         string comment = _errorDescription.text;
-        StartCoroutine(_errorManager.CreateError(type, comment, _computerData.Id));
+        StartCoroutine(_errorManager.CreateErrorInDatabase(type, comment, _computerData.Id));
         _closeButton.onClick.Invoke();
     }
 

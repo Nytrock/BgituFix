@@ -52,6 +52,10 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
         gameObject.SetActive(newState);
     }
 
+    public virtual TEditable CreateEditable(TEditableData data) {
+        return GenerateEditable(data);
+    }
+
     public void DeleteEditable(TEditable editable) {
         if (!_editables.Contains(editable))
             return;

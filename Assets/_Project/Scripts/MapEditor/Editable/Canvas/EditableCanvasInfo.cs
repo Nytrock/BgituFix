@@ -4,6 +4,8 @@ public class EditableCanvasInfo : MonoBehaviour {
     protected BaseEditable _editable;
     protected bool _isActive;
 
+    public bool IsActive => _isActive;
+
     public virtual void SetEditable(BaseEditable editable) {
         _editable = editable;
     }

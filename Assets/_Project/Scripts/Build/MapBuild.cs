@@ -6,11 +6,12 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     [SerializeField] private MapBuildFloorPool _floorPool;
 
     private readonly List<MapBuildFloor> _floors = new();
+    private CameraManager _cameraManager;
     private int _nowFloor;
 
     public int FloorsCount => _data.FloorsCount;
     public override int Id => _data.Id;
-    public string Name => _data.Name;
+    public int Number => _data.Number;
     public int NowFloor => _nowFloor;
 
     public event Action<int> FloorChanged;
@@ -26,11 +27,13 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     }
 
     public void SetManagers(MapManager mapManager, MapEditManager editManager,
-        ErrorManager errorManager, UserManager userManager) {
+        ErrorManager errorManager, UserManager userManager, CameraManager cameraManager) {
 
         (_pool as EditableAudiencePool).SetManagers(mapManager, editManager);
+        _cameraManager = cameraManager;
         editManager.EditableChanged += UpdateShowingSize;
         editManager.EditStateChanged += UpdateShowingSize;
+
         if (userManager.ClientType != UserType.Admin)
             return;
 
@@ -92,6 +95,13 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
         _nowFloor = floor;
         _floors[_nowFloor - 1].ChangeState(true);
         FloorChanged?.Invoke(_nowFloor);
+    }
+
+    public override EditableAudience CreateEditable(AudienceData data) {
+        EditableAudience audience = base.CreateEditable(data);
+        SetupFloorSize(data.Floor - 1);
+        _cameraManager.SetSize(_cameraSize);
+        return audience;
     }
 
     public override EditableAudience GenerateEditable(AudienceData data) {

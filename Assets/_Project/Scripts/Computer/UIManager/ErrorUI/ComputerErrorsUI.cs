@@ -52,11 +52,11 @@ public class ComputerErrorsUI : MonoBehaviour {
     }
 
     public void ChangeErrorSolve(ComputerErrorData error, bool isSolved) {
-        StartCoroutine(_errorManager.ChangeErrorSolve(error, isSolved));
+        StartCoroutine(_errorManager.ChangeErrorSolveInDatabase(error, isSolved));
     }
 
     public void DeleteError(ComputerErrorData error) {
-        StartCoroutine(_errorManager.DeleteError(error));
+        StartCoroutine(_errorManager.DeleteErrorInDatabase(error));
     }
 
     public void Close() {

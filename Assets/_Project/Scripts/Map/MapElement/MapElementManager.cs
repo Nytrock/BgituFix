@@ -1,15 +1,20 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class MapElementManager<TElement, TEditable, TEditableData, TData> : MonoBehaviour
+public abstract class MapElementManager<TElement, TEditable, TEditableData, TData> : MonoBehaviour
     where TElement : MapElement<TEditable, TEditableData, TData>
     where TEditable : Editable<TEditableData>
     where TEditableData : EditableData
     where TData : class {
 
     [SerializeField] private CameraManager _cameraManager;
-    [SerializeField] private float _cameraSizeOffset;
+    [SerializeField] private UrlManager _urlManager;
+    [SerializeField] private string _APIPathToCreateEditable;
+    [SerializeField] private string _APIPathToChangeEditable;
+    [SerializeField] private string _APIPathToDeleteEditable;
 
     protected TElement _nowElement;
     protected readonly List<TElement> _mapElements = new();
@@ -20,7 +25,7 @@ public class MapElementManager<TElement, TEditable, TEditableData, TData> : Mono
 
     protected void UpdateCamera() {
         float newSize = _nowElement.CameraSize;
-        _cameraManager.ForceSetSize(newSize + newSize / _cameraSizeOffset);
+        _cameraManager.ForceSetSize(newSize);
         _cameraManager.ResetPosition();
     }
 
@@ -49,6 +54,27 @@ public class MapElementManager<TElement, TEditable, TEditableData, TData> : Mono
     }
 
     public TEditable CreateEditable(TEditableData editableData) {
-        return _nowElement.GenerateEditable(editableData);
+        return _nowElement.CreateEditable(editableData);
+    }
+
+    public IEnumerator DeleteEditableInDatabase(TEditableData editableData) {
+        string token = _urlManager.Token;
+        UnityWebRequest request = RequestUtility.APIDelete(_APIPathToDeleteEditable, editableData.Id, token);
+        yield return request.SendWebRequest();
+    }
+
+    public IEnumerator CreateEditableInDatabase(TEditableData editableData) {
+        string token = _urlManager.Token;
+        UnityWebRequest request = RequestUtility.APIPost(_APIPathToCreateEditable, editableData, token);
+        yield return request.SendWebRequest();
+
+        IdData idData = request.ToData<IdData>();
+        editableData.SetId(idData.Id);
+    }
+
+    public IEnumerator ChangeEditableInDatabase(TEditableData editableData) {
+        string token = _urlManager.Token;
+        UnityWebRequest request = RequestUtility.APIPut(_APIPathToChangeEditable, editableData, token);
+        yield return request.SendWebRequest();
     }
 }

@@ -18,7 +18,7 @@ public class EditableRenderer : MonoBehaviour {
 
     public virtual void Setup(EditableData data) {
         GetComponents();
-        SetSize(data.Size);
+        SetSize(data.SizeVector);
     }
 
     public virtual void SetSize(Vector2 size) {

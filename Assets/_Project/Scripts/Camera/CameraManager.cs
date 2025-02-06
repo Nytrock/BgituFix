@@ -2,12 +2,14 @@ using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public class CameraManager : MonoBehaviour {
+    [SerializeField] private float _cameraOffset;
     [SerializeField] private float _minSize;
     [SerializeField] private float _scrollSensivity;
     [SerializeField] private float _keySpeed;
 
     private Camera _camera;
     private bool _isHover;
+    private bool _isMoving = true;
 
     public static Vector3 LocalMousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -19,8 +21,9 @@ public class CameraManager : MonoBehaviour {
         if (_isHover)
             return;
 
+        if (_isMoving)
+            UpdatePosition();
         UpdateSize();
-        UpdatePosition();
     }
 
     public void UpdateHover(bool isHover) {
@@ -44,7 +47,7 @@ public class CameraManager : MonoBehaviour {
     }
 
     public void ForceSetSize(float size) {
-        _camera.orthographicSize = size;
+        _camera.orthographicSize = size + size / _cameraOffset;
     }
 
     public void ResetPosition() {
@@ -52,9 +55,14 @@ public class CameraManager : MonoBehaviour {
     }
 
     public void SetSize(float size) {
-        if (_camera.orthographicSize > size)
+        float newSize = size + size / _cameraOffset;
+        if (_camera.orthographicSize > newSize)
             return;
 
-        _camera.orthographicSize = size;
+        _camera.orthographicSize = newSize;
+    }
+
+    public void ChangeMovingState(bool isMoving) {
+        _isMoving = isMoving;
     }
 }

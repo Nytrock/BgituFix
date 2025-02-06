@@ -1,11 +1,21 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class UrlManager : MonoBehaviour {
     [SerializeField] private string _editorUrl;
-    private Dictionary<string, string> _parameters;
+    [SerializeField] private string _APIPathToLogin;
 
-    private void GetDataFromUrl() {
+    private Dictionary<string, string> _parameters;
+    private string _token;
+
+    public string Token => _token;
+
+    public event Action TokenGetted;
+
+    private void Awake() {
         if (Application.isEditor) {
             GetDataFromUrl(_editorUrl);
             return;
@@ -25,10 +35,21 @@ public class UrlManager : MonoBehaviour {
             if (index > 0)
                 _parameters[parameter[..index]] = parameter[(index + 1)..];
         }
+
+        StartCoroutine(GetTokenFromData());
     }
 
-    public string GetParameter(string parameteer) {
-        GetDataFromUrl();
-        return _parameters.GetValueOrDefault(parameteer, null);
+    private IEnumerator GetTokenFromData() {
+        string username = _parameters.GetValueOrDefault("username", null);
+        string password = _parameters.GetValueOrDefault("password", null);
+        UserLoginData loginData = new(username, password);
+
+        UnityWebRequest request = RequestUtility.APIPost(_APIPathToLogin, loginData);
+        yield return request.SendWebRequest();
+
+        TokenData tokenData = request.ToData<TokenData>();
+        _token = tokenData.Token;
+
+        TokenGetted?.Invoke();
     }
 }

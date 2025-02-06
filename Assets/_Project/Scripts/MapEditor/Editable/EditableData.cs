@@ -3,37 +3,50 @@ using UnityEngine;
 
 [Serializable]
 public class EditableData {
-    [SerializeField] protected int _id;
-    [SerializeField] protected string _position;
-    [SerializeField] protected string _size;
+    [SerializeField] protected int id;
+    [SerializeField] protected string position;
+    [SerializeField] protected string size;
 
-    [SerializeField] protected Vector2 _positionVector;
-    [SerializeField] protected Vector2 _sizeVector;
+    protected Vector2 _positionVector;
+    protected Vector2 _sizeVector;
 
-    public int Id => _id;
-    public Vector2 Position => _positionVector;
-    public Vector2 Size => _sizeVector;
+    public int Id => id;
+    public Vector2 PositionVector => _positionVector;
+    public Vector2 SizeVector => _sizeVector;
+    public string Position => position;
+    public string Size => size;
 
     public EditableData(Vector2 position, Vector2 size) {
         _positionVector = position;
-        _position = position.VectorToString();
+        this.position = position.VectorToString();
 
         _sizeVector = size;
-        _size = size.VectorToString();
+        this.size = size.VectorToString();
     }
 
     public void UpdatePosition(Vector2 position) {
         _positionVector = position;
-        _position = _positionVector.VectorToString();
+        this.position = _positionVector.VectorToString();
     }
 
     public void UpdateSize(float width, float heigth) {
         _sizeVector = new(width, heigth);
-        _size = _sizeVector.VectorToString();
+        size = _sizeVector.VectorToString();
     }
 
     public void SetupVectors() {
-        _positionVector = _position.StringToVector();
-        _sizeVector = _size.StringToVector();
+        _positionVector = position.StringToVector();
+        _sizeVector = size.StringToVector();
+    }
+
+    public void SetId(int id) {
+        if (this.id != -1)
+            return;
+
+        this.id = id;
+    }
+
+    public bool Equals(EditableData other) {
+        return id == other.id && position == other.position && size == other.size;
     }
 }

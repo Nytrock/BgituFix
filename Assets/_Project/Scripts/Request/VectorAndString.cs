@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using UnityEngine;
 
@@ -8,7 +7,7 @@ public static class VectorAndString {
     }
 
     public static Vector2 StringToVector(this string vector) {
-        int[] values = vector.Split(';').Select(value => Convert.ToInt32(value)).ToArray();
+        float[] values = vector.Split(';').Select(value => float.Parse(value)).ToArray();
         return new(values[0], values[1]);
     }
 }

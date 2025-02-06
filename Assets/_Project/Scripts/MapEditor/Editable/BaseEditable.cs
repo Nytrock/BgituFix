@@ -60,6 +60,8 @@ public abstract class BaseEditable : MonoBehaviour {
             return;
 
         _canvas.ChangeInfoState();
+        _editManager.ChangeCameraMoving(!_canvas.IsInfoOpen);
+
         if (!_isEditing)
             _editManager.SetEditable(this);
     }
@@ -91,6 +93,7 @@ public abstract class BaseEditable : MonoBehaviour {
 
     protected virtual void UpdateEditState(bool isEdit) {
         _canvas.ChangeState(isEdit);
+        _editManager.ChangeCameraMoving(true);
     }
 
     public void SetResizings(bool verticalResizing, bool horizontalResizing) {

@@ -23,7 +23,7 @@ public class MapAudienceManager : MapElementManager<MapAudience, EditableCompute
             GenerateAudience(mapData, audienceData);
     }
 
-    private void GenerateAudience(MapData mapData, AudienceData audienceData) {
+    public void GenerateAudience(MapData mapData, AudienceData audienceData) {
         MapAudience audience = _audiencePool.GetObject();
         audience.Setup(mapData, audienceData);
         _mapElements.Add(audience);
@@ -37,5 +37,15 @@ public class MapAudienceManager : MapElementManager<MapAudience, EditableCompute
             }
         }
         ChangeState(true);
+    }
+
+    public void DeleteAudience(AudienceData data) {
+        foreach (var audience in _mapElements) {
+            if (audience.Id == data.Id) {
+                audience.Delete();
+                _audiencePool.PutObject(audience);
+                break;
+            }
+        }
     }
 }

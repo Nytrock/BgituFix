@@ -22,8 +22,8 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
         if (!_isShowingSize)
             return;
 
-        _widthText.text = _data.Size.x.ToString() + Units.SIZE_UNIT;
-        _lengthText.text = _data.Size.y.ToString() + Units.SIZE_UNIT;
+        _widthText.text = _data.SizeVector.x.ToString() + Units.SIZE_UNIT;
+        _lengthText.text = _data.SizeVector.y.ToString() + Units.SIZE_UNIT;
     }
 
     protected override void ChangeSizeShowState(bool newState) {
@@ -32,9 +32,9 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
     }
 
     public void UpdateSize() {
-        _renderer.size = _data.Size;
-        _canvas.sizeDelta = _data.Size * (1 / _canvas.localScale.x);
-        _cameraSize = Mathf.Max(_data.Size.x / 2f / 16f * 9, _data.Size.y / 2f);
+        _renderer.size = _data.SizeVector;
+        _canvas.sizeDelta = _data.SizeVector * (1 / _canvas.localScale.x);
+        _cameraSize = Mathf.Max(_data.SizeVector.x / 2f / 16f * 9, _data.SizeVector.y / 2f);
     }
 
     protected override IEnumerable<ComputerData> GetEditablesData(MapData mapData) {

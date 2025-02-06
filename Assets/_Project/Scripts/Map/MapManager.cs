@@ -21,8 +21,8 @@ public class MapManager : MonoBehaviour {
 
     public event Action<bool> BlockStateChanged;
 
-    private void Start() {
-        CheckUserType();
+    private void Awake() {
+        _userManager.ClientSetuped += CheckUserType;
     }
 
     private void CheckUserType() {
@@ -38,26 +38,21 @@ public class MapManager : MonoBehaviour {
     }
 
     private IEnumerator GetMap() {
-        if (string.IsNullOrEmpty(_APIPathToGetBuilds)) {
-            GenerateMap();
-            yield break;
-        }
-
-        string token = _urlManager.GetParameter("token");
+        string token = _urlManager.Token;
 
         UnityWebRequest request = RequestUtility.APIGet(_APIPathToGetBuilds, token);
         yield return request.SendWebRequest();
-        List<BuildData> buildDatas = RequestUtility.ToData<List<BuildData>>(request);
+        IEnumerable<BuildData> builds = request.ToData<MapData>().BuildDatas;
 
         request = RequestUtility.APIGet(_APIPathToGetAudiences, token);
         yield return request.SendWebRequest();
-        List<AudienceData> audienceDatas = RequestUtility.ToData<List<AudienceData>>(request);
+        IEnumerable<AudienceData> audiences = request.ToData<MapData>().AudienceDatas;
 
         request = RequestUtility.APIGet(_APIPathToGetComputers, token);
         yield return request.SendWebRequest();
-        List<ComputerData> computerDatas = RequestUtility.ToData<List<ComputerData>>(request);
+        IEnumerable<ComputerData> computers = request.ToData<MapData>().ComputerDatas;
 
-        _data = new(buildDatas, audienceDatas, computerDatas);
+        _data = new(builds, audiences, computers);
         GenerateMap();
     }
 
@@ -83,8 +78,7 @@ public class MapManager : MonoBehaviour {
         int buildId = _buildManager.NowElement.Id;
         int floorIndex = _buildManager.NowElement.NowFloor;
         int audiencesCount = _data.AudienceDatas.Count();
-        float size = 1;
-        return CreateAudience(new(buildId, floorIndex, audiencesCount, size));
+        return CreateAudience(new(buildId, floorIndex, audiencesCount));
     }
 
     public EditableAudience CreateAudience(AudienceData audienceData) {
@@ -93,15 +87,18 @@ public class MapManager : MonoBehaviour {
     }
 
     public void DeleteAudience(EditableAudience audience) {
+        foreach (var computerData in _data.GetComputersByAudience(audience.Data))
+            _errorManager.DeleteErrorsByComputerId(computerData);
+
         _buildManager.DeleteEditable(audience);
+        _audienceManager.DeleteAudience(audience.Data);
         _data.DeleteAudience(audience.Data);
     }
 
     public EditableComputer CreateNewComputer() {
         int audienceId = _audienceManager.NowElement.Id;
         int computersCount = _data.ComputerDatas.Count();
-        float size = 0.2f;
-        return CreateComputer(new(audienceId, computersCount, size));
+        return CreateComputer(new(audienceId, computersCount));
     }
 
     public EditableComputer CreateComputer(ComputerData computerData) {
@@ -111,14 +108,44 @@ public class MapManager : MonoBehaviour {
 
     public void DeleteComputer(EditableComputer computer) {
         _audienceManager.DeleteEditable(computer);
+        _errorManager.DeleteErrorsByComputerId(computer.Data);
         _data.DeleteComputer(computer.Data);
     }
 
-    public IEnumerator RevertMapData(MapData oldMapData) {
+    public IEnumerator RevertMapData(MapData _) {
         yield break;
     }
 
     public IEnumerator CheckUpdatedData(MapData oldMapData) {
-        yield break;
+        foreach (var oldData in oldMapData.AudienceDatas) {
+            if (!_data.ContainsAudience(oldData)) {
+                yield return _buildManager.DeleteEditableInDatabase(oldData);
+            } else {
+                AudienceData newData = _data.GetAudienceById(oldData.Id);
+                if (!newData.Equals(oldData))
+                    yield return _buildManager.ChangeEditableInDatabase(newData);
+            }
+        }
+
+        foreach (var newData in _data.AudienceDatas) {
+            if (newData.Id == -1) {
+                yield return _buildManager.CreateEditableInDatabase(newData);
+                _audienceManager.GenerateAudience(_data, newData);
+            }
+        }
+
+        foreach (var oldData in oldMapData.ComputerDatas) {
+            if (!_data.ContainsComputer(oldData)) {
+                yield return _audienceManager.DeleteEditableInDatabase(oldData);
+            } else {
+                ComputerData newData = _data.GetComputerById(oldData.Id);
+                if (!newData.Equals(oldData))
+                    yield return _audienceManager.ChangeEditableInDatabase(newData);
+            }
+        }
+
+        foreach (var newData in _data.ComputerDatas)
+            if (newData.Id == -1)
+                yield return _audienceManager.CreateEditableInDatabase(newData);
     }
 }

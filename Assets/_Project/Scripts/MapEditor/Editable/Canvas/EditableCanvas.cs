@@ -12,6 +12,8 @@ public class EditableCanvas : MonoBehaviour {
     private BaseEditable _editable;
     private bool _isResizing;
 
+    public bool IsInfoOpen => _infoPanel.IsActive;
+
     private void Awake() {
         ChangeInfoState(false);
         ChangeBorderState(false);

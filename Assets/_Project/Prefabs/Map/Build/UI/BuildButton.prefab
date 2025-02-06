@@ -334,6 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f0e035ffc9ea004c9c18257a5500a24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _buildText: "\u041A\u043E\u0440\u043F\u0443\u0441 \u2116"
   _button: {fileID: 278261657061287534}
   _selectedStyle:
     _backgroundColor: {r: 0.22745098, g: 0.45882353, b: 0.7647059, a: 1}

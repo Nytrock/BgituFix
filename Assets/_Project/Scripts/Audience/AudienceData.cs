@@ -3,38 +3,41 @@ using UnityEngine;
 
 [Serializable]
 public class AudienceData : EditableData {
-    [SerializeField] private string _name;
-    [SerializeField] private int _buildId;
-    [SerializeField] private int _floor;
-    [SerializeField] private bool _isComputer;
+    [SerializeField] private string name;
+    [SerializeField] private int buildingId;
+    [SerializeField] private int floor;
+    [SerializeField] private bool isComputer;
 
-    public string Name => _name;
-    public int BuildId => _buildId;
-    public int Floor => _floor;
-    public bool IsComputer => _isComputer;
+    public string Name => name;
+    public int BuildId => buildingId;
+    public int Floor => floor;
+    public bool IsComputer => isComputer;
 
-    public AudienceData(int buildId, int floorIndex, int audiencesCount, float size) : base(Vector2.zero, new(size, size)) {
-        _id = -1;
-        _buildId = buildId;
-        _floor = floorIndex;
-        _isComputer = false;
-        _name = $"Аудитория {audiencesCount + 1}";
+    public AudienceData(int buildId, int floorIndex, int audiencesCount) : base(Vector2.zero, new(2, 2)) {
+        id = -1;
+        buildingId = buildId;
+        floor = floorIndex;
+        isComputer = false;
+        name = $"Аудитория {audiencesCount + 1}";
     }
 
     public AudienceData(AudienceData data, float offset) : base(data._sizeVector, data._positionVector + new Vector2(offset, offset)) {
-        _id = -1;
-        _buildId = data._buildId;
-        _floor = data._floor;
-        _isComputer = data._isComputer;
-        _name = data._name + " (Копия)";
-        _sizeVector = data._sizeVector;
+        id = -1;
+        buildingId = data.buildingId;
+        floor = data.floor;
+        isComputer = data.isComputer;
+        name = data.name + " (Копия)";
     }
 
     public void UpdateIsComputer(bool isComputer) {
-        _isComputer = isComputer;
+        this.isComputer = isComputer;
     }
 
     public void UpdateName(string name) {
-        _name = name;
+        this.name = name;
+    }
+
+    public bool Equals(AudienceData other) {
+        return name == other.name && isComputer == other.isComputer && base.Equals(other);
     }
 }

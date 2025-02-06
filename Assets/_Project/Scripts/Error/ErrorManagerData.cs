@@ -1,22 +1,30 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
 public class ErrorManagerData {
-    [SerializeField] private List<ComputerErrorData> _errorDatas;
+    [SerializeField] private List<ComputerErrorData> breakdowns;
 
-    public IEnumerable<ComputerErrorData> Errors => _errorDatas;
-
-    public ErrorManagerData(List<ComputerErrorData> errorDatas) {
-        _errorDatas = errorDatas;
-    }
+    public IEnumerable<ComputerErrorData> Errors => breakdowns;
 
     public void AddError(ComputerErrorData newError) {
-        _errorDatas.Add(newError);
+        breakdowns.Add(newError);
     }
 
     public void DeleteError(ComputerErrorData error) {
-        _errorDatas.Remove(error);
+        breakdowns.Remove(error);
+    }
+
+    public bool Contains(ComputerErrorData error) {
+        return breakdowns.Select(error => error.Id).Contains(error.Id);
+    }
+
+    public ComputerErrorData GetErrorById(int id) {
+        foreach (var error in breakdowns)
+            if (error.Id == id)
+                return error;
+        return null;
     }
 }

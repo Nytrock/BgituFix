@@ -1,5 +1,5 @@
 public enum UserType {
     None,
-    Teacher,
+    User,
     Admin
 }

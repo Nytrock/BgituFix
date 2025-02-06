@@ -3,28 +3,30 @@ using UnityEngine;
 
 [Serializable]
 public class UserData {
-    [SerializeField] private int _id;
-    [SerializeField] private string _name;
-    [SerializeField] private bool _isAuthorized;
-    [SerializeField] private bool _isAdmin;
-    private UserType _type;
+    [SerializeField] private int id;
+    [SerializeField] private string username;
+    [SerializeField] private string email;
+    [SerializeField] private string role;
+    [SerializeField] private string sub;
 
-    public int Id => _id;
-    public string Name => _name;
-    public UserType Type => _type;
+    private UserType _userType;
+
+    public int Id => id;
+    public string Name => username;
+    public UserType UserType => _userType;
 
     public UserData() {
-        _name = "Not found";
-        _isAdmin = false;
-        _isAuthorized = false;
+        username = "Not found";
+        _userType = UserType.None;
     }
 
-    public void SetupType() {
-        if (!_isAuthorized)
-            _type = UserType.None;
-        else if (!_isAdmin)
-            _type = UserType.Teacher;
+    public void SetupClient() {
+        username = sub;
+        if (role == "ROLE_USER")
+            _userType = UserType.User;
+        else if (role == "ROLE_ADMIN")
+            _userType = UserType.Admin;
         else
-            _type = UserType.Admin;
+            _userType = UserType.None;
     }
 }

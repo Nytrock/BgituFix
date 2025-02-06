@@ -4,6 +4,7 @@ using UnityEngine;
 public class MapEditManager : MonoBehaviour {
     [SerializeField] private UserManager _userManager;
     [SerializeField] private MapManager _mapManager;
+    [SerializeField] private CameraManager _cameraManager;
 
     private bool _isAdmin;
     private bool _isEdit;
@@ -16,14 +17,16 @@ public class MapEditManager : MonoBehaviour {
 
     public bool IsEdit => _isEdit;
 
-    private void Start() {
-        ChangePermission(_userManager.ClientType == UserType.Admin);
-        ChangeState(false);
+    private void Awake() {
+        _userManager.ClientSetuped += delegate {
+            ChangePermission();
+            ChangeState(false);
+        };
     }
 
-    private void ChangePermission(bool isAdmin) {
-        _isAdmin = isAdmin;
-        PermissionChanged?.Invoke(isAdmin);
+    private void ChangePermission() {
+        _isAdmin = _userManager.ClientType == UserType.Admin;
+        PermissionChanged?.Invoke(_isAdmin);
     }
 
     public void StartEdit() {
@@ -104,5 +107,9 @@ public class MapEditManager : MonoBehaviour {
         if (_nowEditable == computer)
             SetEditable(computer);
         _mapManager.DeleteComputer(computer);
+    }
+
+    public void ChangeCameraMoving(bool isMoving) {
+        _cameraManager.ChangeMovingState(isMoving);
     }
 }
