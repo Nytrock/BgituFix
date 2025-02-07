@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public static class RequestUtility {
-    public const string API_URL = "http://138.124.127.43:8081/";
+    public const string API_URL = "https://bgitusec.online/";
     private const string TOKEN_HEADER = "Authorization";
     private const string TOKEN_TEXT = "Bearer ";
 

@@ -7451,7 +7451,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc3a9fe6239ec1a41b0edb0046f1a584, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _editorUrl: https://nytrock.github.io/BgituSecTest/?username=TestAdmin&password=TestAdmin
+  _APIPathToCheckToken: auth/valid
+  _editorUrl: http://127.0.0.1:5500/index.html?token=eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9BRE1JTiIsImlkIjoyLCJlbWFpbCI6IlRlc3RBZG1pbkBnbWFpbC5jb20iLCJzdWIiOiJUZXN0QWRtaW4iLCJpYXQiOjE3Mzg5NDUwMzMsImV4cCI6MTczOTA4OTAzM30.L5B_FnWJwrOxzLlztNW8zYi3P95mkrvI0aNyL9HmDtc
 --- !u!4 &1362003539
 Transform:
   m_ObjectHideFlags: 0
