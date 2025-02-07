@@ -23,7 +23,7 @@ public class LoginManagerUI : MonoBehaviour {
         string name = _nameInput.text;
         string password = _passwordInput.text;
 
-        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password)) {
+        if (name.Length < 8 || password.Length < 8) {
             _errorMessage.ShowEmptyFieldsError();
             return;
         }

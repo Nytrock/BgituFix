@@ -5,7 +5,7 @@ public class ProfileErrorsRenderer : MonoBehaviour {
     [SerializeField] private ProfileErrorRendererPool _pool;
 
     private ErrorManager _errorManager;
-    private List<ProfileErrorRenderer> _errors = new();
+    private readonly List<ProfileErrorRenderer> _errors = new();
     private int _userId;
 
     public void Setup(UserData clientData, ErrorManager errorManager) {

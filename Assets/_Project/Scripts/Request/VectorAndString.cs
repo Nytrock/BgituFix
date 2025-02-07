@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ public static class VectorAndString {
     }
 
     public static Vector2 StringToVector(this string vector) {
-        float[] values = vector.Split(';').Select(value => float.Parse(value)).ToArray();
+        float[] values = vector.Split(';').Select(value => float.Parse(value, CultureInfo.InvariantCulture)).ToArray();
         return new(values[0], values[1]);
     }
 }

@@ -8,6 +8,7 @@ public class UserData {
     [SerializeField] private string email;
     [SerializeField] private string role;
     [SerializeField] private string sub;
+    [SerializeField] private string password;
 
     private UserType _userType;
 

@@ -20,6 +20,13 @@ public class SaveFileManager<TData> where TData : class {
         return JsonUtility.FromJson<TData>(File.ReadAllText(_filePath));
     }
 
+    public void Delete() {
+        if (!IsFileExists())
+            return;
+
+        File.Delete(_filePath);
+    }
+
     public bool IsFileExists() {
         return File.Exists(_filePath);
     }

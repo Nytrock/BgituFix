@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class LoginManager : MonoBehaviour {
     [SerializeField] private string _APIPathToLogin;
-    [SerializeField] private string _APIPathToLogout;
     [SerializeField] private string _APIPathToCheckTokenValid;
     [SerializeField] private string _fileName;
 
@@ -65,8 +65,10 @@ public class LoginManager : MonoBehaviour {
         TokenLoaded?.Invoke();
     }
 
-    public IEnumerator Logout() {
-        UnityWebRequest request = RequestUtility.APIPost(_APIPathToLogout, _tokenData);
-        yield return request.SendWebRequest();
+    public void Logout() {
+        _fileManager.Delete();
+
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentSceneName);
     }
 }

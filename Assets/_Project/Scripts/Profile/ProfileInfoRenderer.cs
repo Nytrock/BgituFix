@@ -4,9 +4,7 @@ using UnityEngine;
 public class ProfileInfoRenderer : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private TextMeshProUGUI _emailText;
-    [SerializeField] private string _errorsFoundMessage;
     [SerializeField] private TextMeshProUGUI _errorsFoundText;
-    [SerializeField] private string _errorsFixedMessage;
     [SerializeField] private TextMeshProUGUI _errorsFixedText;
 
     private UserData _clientData;
@@ -21,6 +19,7 @@ public class ProfileInfoRenderer : MonoBehaviour {
         errorManager.ErrorAdded += CheckNewError;
         errorManager.ErrorChanged += CheckChangedError;
         errorManager.ErrorDeleted += CheckDeletedError;
+        UpdateErrorFields();
     }
 
     private void CheckChangedError(ComputerErrorData error) {
@@ -55,7 +54,7 @@ public class ProfileInfoRenderer : MonoBehaviour {
     }
 
     private void UpdateErrorFields() {
-        _errorsFoundText.text = string.Format(_errorsFoundMessage, _errorsFound);
-        _errorsFixedText.text = string.Format(_errorsFixedMessage, _errorsFixed);
+        _errorsFoundText.text = _errorsFound.ToString();
+        _errorsFixedText.text = _errorsFixed.ToString();
     }
 }

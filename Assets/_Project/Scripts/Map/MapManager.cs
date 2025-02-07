@@ -19,7 +19,9 @@ public class MapManager : MonoBehaviour {
 
     public MapData Data => _data;
 
-    public event Action<bool> BlockStateChanged;
+    public event Action<bool> StateChanged;
+    public event Action MapBlocked;
+    public event Action MapGenerated;
 
     private void Awake() {
         _userManager.ClientSetuped += CheckUserType;
@@ -33,8 +35,13 @@ public class MapManager : MonoBehaviour {
     }
 
     private void BlockMap() {
-        gameObject.SetActive(false);
-        BlockStateChanged?.Invoke(true);
+        ChangeState(false);
+        MapBlocked?.Invoke();
+    }
+
+    public void ChangeState(bool newState) {
+        gameObject.SetActive(newState);
+        StateChanged?.Invoke(newState);
     }
 
     private IEnumerator GetMap() {
@@ -59,8 +66,9 @@ public class MapManager : MonoBehaviour {
     private void GenerateMap() {
         _buildManager.GenerateBuilds(this);
         _audienceManager.GenerateAudiences(this);
-        StartCoroutine(_errorManager.GetErrors(_data));
+        MapGenerated?.Invoke();
 
+        StartCoroutine(_errorManager.GetErrors(_data));
         OpenBuilds();
     }
 
