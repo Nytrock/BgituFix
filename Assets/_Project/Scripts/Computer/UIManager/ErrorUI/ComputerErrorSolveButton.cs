@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(ButtonWithText))]
-public class ComputerErrorUISolveButton : MonoBehaviour {
+public class ComputerErrorSolveButton : MonoBehaviour {
     [SerializeField] private StateStyle _isSolvedStyle;
     [SerializeField] private StateStyle _notSolvedStyle;
     [SerializeField] private string _isSolvedText;
@@ -18,7 +18,7 @@ public class ComputerErrorUISolveButton : MonoBehaviour {
         _button.onClick.AddListener(ChangeIsSolved);
     }
 
-    public void Setup(ComputerErrorData error, UserType clientType) {
+    public void Setup(ComputerErrorData error, UserType clientType = UserType.Admin) {
         _isSolved = error.IsSolved;
         _button.interactable = clientType == UserType.Admin;
         UpdateStyle();

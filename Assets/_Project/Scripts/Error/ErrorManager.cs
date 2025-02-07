@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class ErrorManager : MonoBehaviour {
-    [SerializeField] private UrlManager _urlManager;
+    [SerializeField] private LoginManager _loginManager;
     [SerializeField] private MapAudienceManager _audienceManager;
     [SerializeField] private UserManager _userManager;
     [SerializeField] private string _APIPathToGetErrors;
@@ -21,23 +21,25 @@ public class ErrorManager : MonoBehaviour {
 
     public IEnumerable<ComputerErrorData> Errors => _data.Errors;
 
+    public event Action ErrorsLoaded;
     public event Action<ComputerErrorData> ErrorAdded;
     public event Action<ComputerErrorData> ErrorChanged;
     public event Action<ComputerErrorData> ErrorDeleted;
 
     private void Awake() {
-        _urlManager.TokenGetted += delegate { SSESetup(); };
+        _loginManager.TokenLoaded += delegate { SSESetup(); };
     }
 
     public IEnumerator GetErrors(MapData mapData) {
         _mapData = mapData;
 
-        string token = _urlManager.Token;
+        string token = _loginManager.Token;
         UnityWebRequest request = RequestUtility.APIGet(_APIPathToGetErrors, token);
         yield return request.SendWebRequest();
 
         _data = request.ToData<ErrorManagerData>();
         GenerateErrors();
+        ErrorsLoaded?.Invoke();
     }
 
     private void GenerateErrors() {
@@ -46,12 +48,12 @@ public class ErrorManager : MonoBehaviour {
     }
 
     private void SSESetup() {
-        if (_urlManager.Token == string.Empty)
+        if (_loginManager.Token == string.Empty)
             return;
 
         Uri uri = new(RequestUtility.API_URL + _APIPathToSSE);
         HttpClient client = new();
-        client.SetToken(_urlManager.Token);
+        client.SetToken(_loginManager.Token);
         client.SetHeaders();
 
         EventSourceReader evt = new EventSourceReader(uri, client).Start();
@@ -90,14 +92,14 @@ public class ErrorManager : MonoBehaviour {
     }
 
     public IEnumerator ChangeErrorSolveInDatabase(ComputerErrorData error, bool isSolved) {
-        string token = _urlManager.Token;
+        string token = _loginManager.Token;
         BoolChangeData dataToSend = new(error.Id, isSolved);
         UnityWebRequest www = RequestUtility.APIPut(_APIPathToChangeError, dataToSend, token);
         yield return www.SendWebRequest();
     }
 
     public IEnumerator DeleteErrorInDatabase(ComputerErrorData error) {
-        string token = _urlManager.Token;
+        string token = _loginManager.Token;
         UnityWebRequest www = RequestUtility.APIDelete(_APIPathToDeleteError, error.Id, token);
         yield return www.SendWebRequest();
     }
@@ -106,7 +108,7 @@ public class ErrorManager : MonoBehaviour {
         int clientId = _userManager.ClientId;
         ComputerErrorData newError = new(computerId, clientId, type, comment);
 
-        string token = _urlManager.Token;
+        string token = _loginManager.Token;
         UnityWebRequest request = RequestUtility.APIPost(_APIPathToAddError, newError, token);
         yield return request.SendWebRequest();
     }

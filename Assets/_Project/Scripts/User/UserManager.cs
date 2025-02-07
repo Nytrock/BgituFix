@@ -5,7 +5,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class UserManager : MonoBehaviour {
-    [SerializeField] private UrlManager _urlManager;
+    [SerializeField] private LoginManager _loginManager;
+    [SerializeField] private ProfileManager _profileManager;
     [SerializeField] private string _APIPathToGetUsers;
 
     [SerializeField] private UserData _clientData;
@@ -17,7 +18,7 @@ public class UserManager : MonoBehaviour {
     public event Action ClientSetuped;
 
     private void Awake() {
-        _urlManager.TokenGetted += delegate { StartCoroutine(UpdateUserData()); };
+        _loginManager.TokenLoaded += delegate { StartCoroutine(UpdateUserData()); };
     }
 
     public UserData GetUserDataById(int userId) {
@@ -28,7 +29,7 @@ public class UserManager : MonoBehaviour {
     }
 
     private IEnumerator UpdateUserData() {
-        string token = _urlManager.Token;
+        string token = _loginManager.Token;
 
         try {
             string tokenContentEncoded = token.Split('.')[1];
@@ -37,6 +38,7 @@ public class UserManager : MonoBehaviour {
             string content = Encoding.UTF8.GetString(contentBytes);
             _clientData = JsonUtility.FromJson<UserData>(content);
             _clientData.SetupClient();
+            _profileManager.SetupProfile(_clientData);
         } catch {
             _clientData = new();
             yield break;

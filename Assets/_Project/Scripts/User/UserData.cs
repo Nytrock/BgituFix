@@ -13,6 +13,7 @@ public class UserData {
 
     public int Id => id;
     public string Name => username;
+    public string Email => email;
     public UserType UserType => _userType;
 
     public UserData() {

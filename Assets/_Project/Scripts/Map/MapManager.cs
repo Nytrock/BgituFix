@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class MapManager : MonoBehaviour {
-    [SerializeField] private UrlManager _urlManager;
+    [SerializeField] private LoginManager _loginManager;
     [SerializeField] private UserManager _userManager;
     [SerializeField] private MapBuildManager _buildManager;
     [SerializeField] private MapAudienceManager _audienceManager;
@@ -38,7 +38,7 @@ public class MapManager : MonoBehaviour {
     }
 
     private IEnumerator GetMap() {
-        string token = _urlManager.Token;
+        string token = _loginManager.Token;
 
         UnityWebRequest request = RequestUtility.APIGet(_APIPathToGetBuilds, token);
         yield return request.SendWebRequest();
