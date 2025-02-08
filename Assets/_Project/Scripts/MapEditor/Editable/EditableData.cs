@@ -7,8 +7,8 @@ public class EditableData {
     [SerializeField] protected string position;
     [SerializeField] protected string size;
 
-    [SerializeField] protected Vector2 _positionVector;
-    [SerializeField] protected Vector2 _sizeVector;
+    protected Vector2 _positionVector;
+    protected Vector2 _sizeVector;
 
     public int Id => id;
     public Vector2 PositionVector => _positionVector;
