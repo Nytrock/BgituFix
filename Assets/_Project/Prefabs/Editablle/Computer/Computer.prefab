@@ -1081,7 +1081,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5345542649088139371}
         m_TargetAssemblyTypeName: EditableCanvasInfo, Assembly-CSharp
         m_MethodName: DeleteEditable
         m_Mode: 1
@@ -1918,7 +1918,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5345542649088139371}
         m_TargetAssemblyTypeName: EditableCanvasInfo, Assembly-CSharp
         m_MethodName: CopyEditable
         m_Mode: 1
