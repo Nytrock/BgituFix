@@ -56,7 +56,7 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
         return GenerateEditable(data);
     }
 
-    public void DeleteEditable(TEditable editable) {
+    public virtual void DeleteEditable(TEditable editable) {
         if (!_editables.Contains(editable))
             return;
 

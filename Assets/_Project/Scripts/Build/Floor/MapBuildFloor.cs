@@ -114,4 +114,8 @@ public class MapBuildFloor : MonoBehaviour {
         ComputerErrorType maxType = _audiences.Select(audience => audience.ErrorType).Max();
         ErrorUpdated?.Invoke(maxType);
     }
+
+    public void RemoveAudience(EditableAudience audience) {
+        _audiences.Remove(audience);
+    }
 }

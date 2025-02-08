@@ -21,7 +21,7 @@ public class AudienceData : EditableData {
         name = $"Аудитория {audiencesCount + 1}";
     }
 
-    public AudienceData(AudienceData data, float offset) : base(data._sizeVector, data._positionVector + new Vector2(offset, offset)) {
+    public AudienceData(AudienceData data, float offset) : base(data._positionVector + new Vector2(offset, -offset), data._sizeVector) {
         id = -1;
         buildingId = data.buildingId;
         floor = data.floor;
