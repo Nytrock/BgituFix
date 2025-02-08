@@ -104,6 +104,14 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
         return audience;
     }
 
+    public override void DeleteEditable(EditableAudience editable) {
+        base.DeleteEditable(editable);
+
+        int floorIndex = editable.Floor - 1;
+        _floors[floorIndex].RemoveAudience(editable);
+        SetupFloorSize(floorIndex);
+    }
+
     public override EditableAudience GenerateEditable(AudienceData data) {
         EditableAudience audience = base.GenerateEditable(data);
         _floors[data.Floor - 1].AddAudience(audience);
