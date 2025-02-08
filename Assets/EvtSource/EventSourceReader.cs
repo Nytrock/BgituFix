@@ -34,9 +34,9 @@ namespace EvtSource {
         /// </summary>
         /// <param name="url">URL to listen from</param>
         /// <param name="handler">An optional custom handler for HttpClient</param>
-        public EventSourceReader(Uri url, HttpClient client = null) {
+        public EventSourceReader(Uri url, HttpClient client) {
             Uri = url;
-            Hc = client ?? new();
+            Hc = client;
         }
 
 

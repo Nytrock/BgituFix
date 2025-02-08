@@ -7452,7 +7452,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _APIPathToCheckToken: auth/valid
-  _editorUrl: http://127.0.0.1:5500/index.html?token=eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9BRE1JTiIsImlkIjoyLCJlbWFpbCI6IlRlc3RBZG1pbkBnbWFpbC5jb20iLCJzdWIiOiJUZXN0QWRtaW4iLCJpYXQiOjE3Mzg5NDUwMzMsImV4cCI6MTczOTA4OTAzM30.L5B_FnWJwrOxzLlztNW8zYi3P95mkrvI0aNyL9HmDtc
+  _editorUrl: http://127.0.0.1:5500/index.html?token=eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9BRE1JTiIsImlkIjoyLCJlbWFpbCI6IlRlc3RBZG1pbkBnbWFpbC5jb20iLCJzdWIiOiJUZXN0QWRtaW4iLCJpYXQiOjE3Mzg5MzE1MzEsImV4cCI6MTczOTA3NTUzMX0.QhQbEulv7DOaoBpj28bwMNdaF1eODi_LRwsFgdY6LCE
 --- !u!4 &1362003539
 Transform:
   m_ObjectHideFlags: 0
