@@ -15,7 +15,7 @@ public class ComputerData : EditableData {
         auditoriumId = audienceId;
     }
 
-    public ComputerData(ComputerData data, float offset) : base(data._sizeVector, data._positionVector + new Vector2(offset, offset)) {
+    public ComputerData(ComputerData data, float offset) : base(data._positionVector + new Vector2(offset, -offset), data._sizeVector) {
         id = -1;
         serialNumber = data.serialNumber + " (Копия)";
         auditoriumId = data.auditoriumId;
