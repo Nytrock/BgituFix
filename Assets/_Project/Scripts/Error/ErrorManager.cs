@@ -11,10 +11,11 @@ public class ErrorManager : MonoBehaviour {
     [SerializeField] private string _APIPathToGetErrors;
     [SerializeField] private string _APIPathToChangeError;
     [SerializeField] private string _APIPathToDeleteError;
-    [SerializeField] private string _APIPathToAddError;
+    [SerializeField] private string _APIPathToCreateError;
 
     [SerializeField] private ErrorManagerData _data;
     private MapData _mapData;
+    private bool _isCoroutineRunning;
 
     public IEnumerable<ComputerErrorData> Errors => _data.Errors;
 
@@ -102,10 +103,10 @@ public class ErrorManager : MonoBehaviour {
         ComputerErrorData newError = new(computerId, clientId, type, comment);
 
         string token = _urlManager.Token;
-        UnityWebRequest request = RequestUtility.APIPost(_APIPathToAddError, newError, token);
+        UnityWebRequest request = RequestUtility.APIPost(_APIPathToCreateError, newError, token);
         yield return request.SendWebRequest();
-        IdData idData = request.ToData<IdData>();
 
+        IdData idData = request.ToData<IdData>();
         newError.SetId(idData.Id);
         AddError(newError);
     }
@@ -113,7 +114,6 @@ public class ErrorManager : MonoBehaviour {
     private void AddError(ComputerErrorData newError) {
         ComputerData computerData = _mapData.GetComputerById(newError.ComputerId);
         newError.SetAudienceId(computerData.AudienceId);
-        Debug.Log(computerData.AudienceId);
         _data.AddError(newError);
         ErrorAdded?.Invoke(newError);
     }
