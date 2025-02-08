@@ -17,7 +17,6 @@ public class AdminPanelStatistics : MonoBehaviour {
         _usersManager.UsersCountChanged += UpdateUsers;
 
         _mapManager.MapGenerated += UpdateMap;
-        _mapManager.MapUpdated += UpdateMap;
 
         _errorsManager.ErrorsLoaded += UpdateErrors;
         _errorsManager.ErrorsUpdated += UpdateErrors;

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -21,7 +20,6 @@ public class MapManager : MonoBehaviour {
 
     public event Action<bool> StateChanged;
     public event Action MapBlocked;
-    public event Action MapUpdated;
     public event Action MapGenerated;
 
     private void Awake() {
@@ -81,82 +79,5 @@ public class MapManager : MonoBehaviour {
     public void OpenAudience(AudienceData audience) {
         _buildManager.ChangeState(false);
         _audienceManager.OpenAudience(audience);
-    }
-
-    public EditableAudience CreateNewAudience() {
-        int buildId = _buildManager.NowElement.Id;
-        int floorIndex = _buildManager.NowElement.NowFloor;
-        int audiencesCount = _data.AudienceDatas.Count();
-        return CreateAudience(new(buildId, floorIndex, audiencesCount));
-    }
-
-    public EditableAudience CreateAudience(AudienceData audienceData) {
-        _data.AddAudience(audienceData);
-        return _buildManager.CreateEditable(audienceData);
-    }
-
-    public void DeleteAudience(EditableAudience audience) {
-        foreach (var computerData in _data.GetComputersByAudience(audience.Data))
-            _errorManager.DeleteErrorsByComputerId(computerData);
-
-        _buildManager.DeleteEditable(audience);
-        _audienceManager.DeleteAudience(audience.Data);
-        _data.DeleteAudience(audience.Data);
-    }
-
-    public EditableComputer CreateNewComputer() {
-        int audienceId = _audienceManager.NowElement.Id;
-        int computersCount = _data.ComputerDatas.Count();
-        return CreateComputer(new(audienceId, computersCount));
-    }
-
-    public EditableComputer CreateComputer(ComputerData computerData) {
-        _data.AddComputer(computerData);
-        return _audienceManager.CreateEditable(computerData);
-    }
-
-    public void DeleteComputer(EditableComputer computer) {
-        _audienceManager.DeleteEditable(computer);
-        _errorManager.DeleteErrorsByComputerId(computer.Data);
-        _data.DeleteComputer(computer.Data);
-    }
-
-    public IEnumerator RevertMapData(MapData _) {
-        yield break;
-    }
-
-    public IEnumerator CheckUpdatedData(MapData oldMapData) {
-        foreach (var oldData in oldMapData.AudienceDatas) {
-            if (!_data.ContainsAudience(oldData)) {
-                yield return _buildManager.DeleteEditableInDatabase(oldData);
-            } else {
-                AudienceData newData = _data.GetAudienceById(oldData.Id);
-                if (!newData.Equals(oldData))
-                    yield return _buildManager.ChangeEditableInDatabase(newData);
-            }
-        }
-
-        foreach (var newData in _data.AudienceDatas) {
-            if (newData.Id == -1) {
-                yield return _buildManager.CreateEditableInDatabase(newData);
-                _audienceManager.GenerateAudience(_data, newData);
-            }
-        }
-
-        foreach (var oldData in oldMapData.ComputerDatas) {
-            if (!_data.ContainsComputer(oldData)) {
-                yield return _audienceManager.DeleteEditableInDatabase(oldData);
-            } else {
-                ComputerData newData = _data.GetComputerById(oldData.Id);
-                if (!newData.Equals(oldData))
-                    yield return _audienceManager.ChangeEditableInDatabase(newData);
-            }
-        }
-
-        foreach (var newData in _data.ComputerDatas)
-            if (newData.Id == -1)
-                yield return _audienceManager.CreateEditableInDatabase(newData);
-
-        MapUpdated?.Invoke();
     }
 }

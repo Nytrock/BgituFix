@@ -13,22 +13,15 @@ public class EditableAudience : Editable<AudienceData> {
     public bool IsComputer => _data.IsComputer;
     public string Name => _data.Name;
 
-    protected override void Awake() {
-        base.Awake();
+    protected void Awake() {
         _audienceActivator = _renderer as EditableAudienceRenderer;
     }
 
     public override void LeftButtonUp() {
-        base.LeftButtonUp();
-        if (_editManager.IsEdit || !_data.IsComputer)
+        if (!_data.IsComputer)
             return;
 
         _mapManager.OpenAudience(_data);
-    }
-
-    protected override void UpdateEditState(bool isEdit) {
-        base.UpdateEditState(isEdit);
-        UpdateRenderer();
     }
 
     public override void Setup(AudienceData data) {
@@ -58,7 +51,7 @@ public class EditableAudience : Editable<AudienceData> {
     }
 
     private void UpdateRenderer() {
-        _errorRenderer.ChangeState(_errors.Count != 0 && !_editManager.IsEdit);
+        _errorRenderer.ChangeState(_errors.Count != 0);
         if (_errors.Count > 0)
             _errorRenderer.SetType(_errors.Select(error => error.Type).Max());
     }
@@ -71,14 +64,5 @@ public class EditableAudience : Editable<AudienceData> {
     public void UpdateName(string newName) {
         _data.UpdateName(newName);
         _audienceActivator.UpdateName();
-    }
-
-    public override void Copy() {
-        AudienceData audienceData = new(_data, _gridPrecision * 2);
-        _editManager.CreateAudience(audienceData);
-    }
-
-    public override void Delete() {
-        _editManager.DeleteAudience(this);
     }
 }

@@ -25,22 +25,6 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
             GenerateEditable(data);
     }
 
-    protected void UpdateShowingSize(BaseEditable editable) {
-        if (!gameObject.activeSelf)
-            return;
-
-        bool isShowSizes = _editables.Contains(editable as TEditable);
-        ChangeSizeShowState(isShowSizes);
-    }
-
-    protected void UpdateShowingSize(bool isEdit) {
-        if (!gameObject.activeSelf)
-            return;
-
-        if (!isEdit)
-            ChangeSizeShowState(false);
-    }
-
     public virtual TEditable GenerateEditable(TEditableData data) {
         TEditable editable = _pool.GetObject();
         editable.Setup(data);
@@ -52,18 +36,5 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
         gameObject.SetActive(newState);
     }
 
-    public virtual TEditable CreateEditable(TEditableData data) {
-        return GenerateEditable(data);
-    }
-
-    public virtual void DeleteEditable(TEditable editable) {
-        if (!_editables.Contains(editable))
-            return;
-
-        _editables.Remove(editable);
-        _pool.PutObject(editable);
-    }
-
-    protected abstract void ChangeSizeShowState(bool newState);
     protected abstract IEnumerable<TEditableData> GetEditablesData(MapData mapData);
 }

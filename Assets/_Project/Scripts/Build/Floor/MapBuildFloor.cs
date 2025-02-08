@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class MapBuildFloor : MonoBehaviour {
     [SerializeField] private SpriteRenderer _renderer;
-    [SerializeField] private RectTransform _canvas;
     [SerializeField] private float _offset;
     [SerializeField] private TextMeshProUGUI _widthText;
     [SerializeField] private TextMeshProUGUI _lengthText;
@@ -43,15 +42,8 @@ public class MapBuildFloor : MonoBehaviour {
         _audiences.Add(audience);
     }
 
-    public void ChangeSizeShowState(bool newState) {
-        _isShowingSize = newState;
-        _canvas.gameObject.SetActive(newState);
-    }
-
     public void ChangeState(bool newState) {
         gameObject.SetActive(newState);
-        if (!newState)
-            ChangeSizeShowState(false);
     }
 
     public void SetupSize() {
@@ -84,7 +76,6 @@ public class MapBuildFloor : MonoBehaviour {
         rigthTop = new(maxX + _offset, maxY + _offset);
         _renderer.size = rigthTop - leftBottom;
         _renderer.transform.position = (rigthTop + leftBottom) / 2f;
-        _canvas.sizeDelta = _renderer.size * (1 / _canvas.localScale.x);
     }
 
     public void CheckNewError(ComputerErrorData data) {

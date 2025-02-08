@@ -9,7 +9,6 @@ public class CameraManager : MonoBehaviour {
 
     private Camera _camera;
     private bool _isHover;
-    private bool _isMoving = true;
 
     public static Vector3 LocalMousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -21,8 +20,7 @@ public class CameraManager : MonoBehaviour {
         if (_isHover)
             return;
 
-        if (_isMoving)
-            UpdatePosition();
+        UpdatePosition();
         UpdateSize();
     }
 
@@ -60,9 +58,5 @@ public class CameraManager : MonoBehaviour {
             return;
 
         _camera.orthographicSize = newSize;
-    }
-
-    public void ChangeMovingState(bool isMoving) {
-        _isMoving = isMoving;
     }
 }

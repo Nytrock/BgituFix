@@ -11,10 +11,6 @@ public class EditableComputer : Editable<ComputerData> {
     public string SerialNumber => _data.SerialNumber;
 
     public override void LeftButtonUp() {
-        base.LeftButtonUp();
-        if (_editManager.IsEdit)
-            return;
-
         _computerUIManager.OpenComputer(_data);
     }
 
@@ -66,11 +62,6 @@ public class EditableComputer : Editable<ComputerData> {
         _audienceData = _mapManager.Data.GetAudienceById(data.AudienceId);
     }
 
-    protected override void UpdateEditState(bool isEdit) {
-        base.UpdateEditState(isEdit);
-        _errorsRenderer.ChangeState(!isEdit);
-    }
-
     public void CheckChangedError(ComputerErrorData errorData) {
         if (errorData.IsSolved)
             CheckDeletedError(errorData);
@@ -92,21 +83,12 @@ public class EditableComputer : Editable<ComputerData> {
         }
     }
 
-    public void SetManagers(MapManager mapManager, ComputerUIManager computerUI, MapEditManager editManager) {
+    public void SetManagers(MapManager mapManager, ComputerUIManager computerUI) {
         _computerUIManager = computerUI;
-        SetManagers(mapManager, editManager);
+        SetManagers(mapManager);
     }
 
     public void UpdateNumber(string newNumber) {
         _data.UpdateNumber(newNumber);
-    }
-
-    public override void Copy() {
-        ComputerData computerData = new(_data, _gridPrecision * 2);
-        _editManager.CreateComputer(computerData);
-    }
-
-    public override void Delete() {
-        _editManager.DeleteComputer(this);
     }
 }
