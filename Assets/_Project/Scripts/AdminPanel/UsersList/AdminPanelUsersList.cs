@@ -7,15 +7,23 @@ public class AdminPanelUsersList : MonoBehaviour {
 
     public void Setup(UserManager userManager) {
         _userManager = userManager;
+        _pool.SetUsersList(this);
+        _userManager.UsersGetted += GenerateUsers;
+    }
+
+    private void GenerateUsers() {
         foreach (var user in _userManager.Users)
-            AddUser(user);
+            if (user.Id != _userManager.ClientId)
+                AddUser(user);
     }
 
-    public void AddUser(NewUserData newUserData) {
-
+    public void AddUser(UserData userData) {
+        AdminPanelUserRenderer renderer = _pool.GetObject();
+        renderer.SetUserData(userData);
     }
 
-    private void AddUser(UserData userData) {
-
+    public void DeleteUser(AdminPanelUserRenderer renderer) {
+        _pool.PutObject(renderer);
+        StartCoroutine(_userManager.DeleteUser(renderer.UserData));
     }
 }

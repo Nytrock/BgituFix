@@ -22,6 +22,21 @@ public class UserData {
         _userType = UserType.None;
     }
 
+    public UserData(string username, string password, string email, bool isAdmin) {
+        id = -1;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+
+        if (isAdmin) {
+            role = "ROLE_ADMIN";
+            _userType = UserType.Admin;
+        } else {
+            role = "ROLE_USER";
+            _userType = UserType.User;
+        }
+    }
+
     public void SetupClient() {
         username = sub;
         if (role == "ROLE_USER")
@@ -30,5 +45,12 @@ public class UserData {
             _userType = UserType.Admin;
         else
             _userType = UserType.None;
+    }
+
+    public void SetId(int id) {
+        if (this.id != -1)
+            return;
+
+        this.id = id;
     }
 }

@@ -22,6 +22,8 @@ public class ErrorManager : MonoBehaviour {
     public IEnumerable<ComputerErrorData> Errors => _data.Errors;
 
     public event Action ErrorsLoaded;
+    public event Action ErrorsUpdated;
+
     public event Action<ComputerErrorData> ErrorAdded;
     public event Action<ComputerErrorData> ErrorChanged;
     public event Action<ComputerErrorData> ErrorDeleted;
@@ -117,17 +119,23 @@ public class ErrorManager : MonoBehaviour {
         ComputerData computerData = _mapData.GetComputerById(newError.ComputerId);
         newError.SetAudienceId(computerData.AudienceId);
         _data.AddError(newError);
+
         ErrorAdded?.Invoke(newError);
+        ErrorsUpdated?.Invoke();
     }
 
     private void DeleteError(ComputerErrorData error) {
         _data.DeleteError(error);
+
         ErrorDeleted?.Invoke(error);
+        ErrorsUpdated?.Invoke();
     }
 
     private void ChangeError(ComputerErrorData error, bool isSolved) {
         error.ChangeSolved(isSolved);
+
         ErrorChanged?.Invoke(error);
+        ErrorsUpdated?.Invoke();
     }
 
     public void DeleteErrorsByComputerId(ComputerData data) {

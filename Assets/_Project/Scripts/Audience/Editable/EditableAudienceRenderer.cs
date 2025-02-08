@@ -1,7 +1,10 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EditableAudienceRenderer : EditableRenderer {
+    [SerializeField] private Image _errorRenderer;
+    [SerializeField] private float _errorRendererMultiplier;
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private StateStyle _computerStyle;
     [SerializeField] private StateStyle _nonComputerStyle;
@@ -14,6 +17,11 @@ public class EditableAudienceRenderer : EditableRenderer {
         _data = data as AudienceData;
         UpdateName();
         UpdateStyle();
+    }
+
+    public override void SetSize(Vector2 size) {
+        base.SetSize(size);
+        _errorRenderer.rectTransform.sizeDelta = size * _errorRendererMultiplier;
     }
 
     public void UpdateName() {

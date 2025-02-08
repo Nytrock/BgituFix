@@ -12,6 +12,7 @@ public class MapManagerUI : MonoBehaviour {
 
     private void BlockMap() {
         _blockMessage.SetActive(true);
+        ChangeState(false);
     }
 
     private void ChangeState(bool newState) {

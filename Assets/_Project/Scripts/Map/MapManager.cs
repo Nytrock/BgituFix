@@ -21,6 +21,7 @@ public class MapManager : MonoBehaviour {
 
     public event Action<bool> StateChanged;
     public event Action MapBlocked;
+    public event Action MapUpdated;
     public event Action MapGenerated;
 
     private void Awake() {
@@ -155,5 +156,7 @@ public class MapManager : MonoBehaviour {
         foreach (var newData in _data.ComputerDatas)
             if (newData.Id == -1)
                 yield return _audienceManager.CreateEditableInDatabase(newData);
+
+        MapUpdated?.Invoke();
     }
 }

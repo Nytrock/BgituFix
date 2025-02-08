@@ -20,6 +20,7 @@ public class ProfileErrorRenderer : MonoBehaviour {
         _commentText.text = error.Comment;
         _dateText.text = error.Date;
 
+        _solveButton.SetupButton();
         _solveButton.Setup(error);
         _solveButton.OnValueChanged += ChangeErrorSolved;
     }

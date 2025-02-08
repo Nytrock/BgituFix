@@ -10,6 +10,7 @@ public class UserManager : MonoBehaviour {
     [SerializeField] private LoginManager _loginManager;
     [SerializeField] private ProfileManager _profileManager;
     [SerializeField] private string _APIPathToCreateUser;
+    [SerializeField] private string _APIPathToDeleteUser;
     [SerializeField] private string _APIPathToGetUsers;
 
     [SerializeField] private UserData _clientData;
@@ -21,6 +22,8 @@ public class UserManager : MonoBehaviour {
     public IEnumerable<UserData> Users => _usersData.Users;
 
     public event Action ClientSetuped;
+    public event Action UsersGetted;
+    public event Action UsersCountChanged;
 
     private void Awake() {
         _loginManager.TokenLoaded += delegate { StartCoroutine(UpdateUserData()); };
@@ -55,11 +58,26 @@ public class UserManager : MonoBehaviour {
         UnityWebRequest request = RequestUtility.APIGet(_APIPathToGetUsers, token);
         yield return request.SendWebRequest();
         _usersData = request.ToData<UserManagerData>();
+        UsersGetted?.Invoke();
     }
 
-    public IEnumerator CreateUser(NewUserData newUser) {
+    public IEnumerator CreateUser(UserData newUser) {
         string token = _loginManager.Token;
         UnityWebRequest request = RequestUtility.APIPost(_APIPathToCreateUser, newUser, token);
         yield return request.SendWebRequest();
+
+        IdData idData = request.ToData<IdData>();
+        newUser.SetId(idData.Id);
+        _usersData.AddUser(newUser);
+        UsersCountChanged?.Invoke();
+    }
+
+    public IEnumerator DeleteUser(UserData userData) {
+        string token = _loginManager.Token;
+        UnityWebRequest request = RequestUtility.APIDelete(_APIPathToDeleteUser, userData.Id, token);
+        yield return request.SendWebRequest();
+
+        _usersData.DeleteUser(userData);
+        UsersCountChanged?.Invoke();
     }
 }

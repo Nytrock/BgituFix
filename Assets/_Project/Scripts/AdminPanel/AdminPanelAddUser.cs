@@ -18,7 +18,7 @@ public class AdminPanelAddUser : MonoBehaviour {
 
         string email = _emailInput.text;
         bool isAdmin = _isAdminToggle.isOn;
-        NewUserData userData = new(name, password, email, isAdmin);
+        UserData userData = new(name, password, email, isAdmin);
         _adminManager.CreateUser(userData);
     }
 }

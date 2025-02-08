@@ -12,20 +12,28 @@ public class AdminPanelStatistics : MonoBehaviour {
 
     private int _usersCount;
 
-    public void SetupUsers() {
-        _usersCount = _usersManager.UsersCount;
-        _usersCountText.text = _usersCount.ToString();
+    public void Setup() {
+        _usersManager.UsersGetted += UpdateUsers;
+        _usersManager.UsersCountChanged += UpdateUsers;
 
-        _mapManager.MapGenerated += SetupMap;
-        _errorsManager.ErrorsLoaded += SetupErrors;
+        _mapManager.MapGenerated += UpdateMap;
+        _mapManager.MapUpdated += UpdateMap;
+
+        _errorsManager.ErrorsLoaded += UpdateErrors;
+        _errorsManager.ErrorsUpdated += UpdateErrors;
     }
 
-    private void SetupMap() {
+    private void UpdateUsers() {
+        _usersCount = _usersManager.UsersCount;
+        _usersCountText.text = _usersCount.ToString();
+    }
+
+    private void UpdateMap() {
         int computersCount = _mapManager.Data.ComputerDatas.Count();
         _computersCountText.text = computersCount.ToString();
     }
 
-    private void SetupErrors() {
+    private void UpdateErrors() {
         int errorsCount = _errorsManager.Errors.Count();
         _errorsCountText.text = errorsCount.ToString();
     }

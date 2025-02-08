@@ -18,10 +18,8 @@ public class MapEditManager : MonoBehaviour {
     public bool IsEdit => _isEdit;
 
     private void Awake() {
-        _userManager.ClientSetuped += delegate {
-            ChangePermission();
-            ChangeState(false);
-        };
+        _userManager.ClientSetuped += delegate { ChangePermission(); };
+        _mapManager.MapGenerated += delegate { ChangeState(false); };
     }
 
     private void ChangePermission() {

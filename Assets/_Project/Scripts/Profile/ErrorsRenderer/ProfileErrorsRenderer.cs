@@ -33,11 +33,15 @@ public class ProfileErrorsRenderer : MonoBehaviour {
     }
 
     private void CheckDeletedError(ComputerErrorData deletedError) {
-        foreach (var error in _errors) {
-            if (error.Id == deletedError.Id) {
-                _errors.Remove(error);
-                _pool.PutObject(error);
-            }
+        List<ProfileErrorRenderer> errorsToDelete = new();
+
+        foreach (var error in _errors)
+            if (error.Id == deletedError.Id)
+                errorsToDelete.Add(error);
+
+        foreach (var error in errorsToDelete) {
+            _errors.Remove(error);
+            _pool.PutObject(error);
         }
     }
 }

@@ -81,8 +81,14 @@ public class ComputerErrorsUI : MonoBehaviour {
     }
 
     private void CheckDeletedError(ComputerErrorData data) {
+        List<ComputerErrorUI> errorsToDelete = new();
         foreach (var error in _errors)
             if (error.Id == data.Id)
-                _errorsPool.PutObject(error);
+                errorsToDelete.Add(error);
+
+        foreach (var error in errorsToDelete) {
+            _errors.Remove(error);
+            _errorsPool.PutObject(error);
+        }
     }
 }

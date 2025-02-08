@@ -8,7 +8,7 @@ public static class VectorAndString {
     }
 
     public static Vector2 StringToVector(this string vector) {
-        float[] values = vector.Split(';').Select(value => float.Parse(value, CultureInfo.InvariantCulture)).ToArray();
+        float[] values = vector.Split(';').Select(value => float.Parse(value, new CultureInfo("ru-RU").NumberFormat)).ToArray();
         return new(values[0], values[1]);
     }
 }

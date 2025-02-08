@@ -22,7 +22,7 @@ public class AdminPanelManager : MonoBehaviour {
         if (_userManager.ClientType != UserType.Admin)
             return;
 
-        _stats.SetupUsers();
+        _stats.Setup();
         _usersList.Setup(_userManager);
         _openButton.onClick.AddListener(Open);
     }
@@ -42,7 +42,7 @@ public class AdminPanelManager : MonoBehaviour {
         _mapManager.ChangeState(true);
     }
 
-    public void CreateUser(NewUserData userData) {
+    public void CreateUser(UserData userData) {
         _usersList.AddUser(userData);
         _stats.AddUser();
         StartCoroutine(_userManager.CreateUser(userData));
