@@ -20,6 +20,7 @@ public class MapManager : MonoBehaviour {
     public MapData Data => _data;
 
     public event Action<bool> BlockStateChanged;
+    public event Action MapGenerated;
 
     private void Awake() {
         _userManager.ClientSetuped += CheckUserType;
@@ -59,8 +60,9 @@ public class MapManager : MonoBehaviour {
     private void GenerateMap() {
         _buildManager.GenerateBuilds(this);
         _audienceManager.GenerateAudiences(this);
-        StartCoroutine(_errorManager.GetErrors(_data));
+        MapGenerated?.Invoke();
 
+        StartCoroutine(_errorManager.GetErrors(_data));
         OpenBuilds();
     }
 

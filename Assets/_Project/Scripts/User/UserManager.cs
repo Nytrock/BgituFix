@@ -32,7 +32,7 @@ public class UserManager : MonoBehaviour {
 
         try {
             string tokenContentEncoded = token.Split('.')[1];
-            tokenContentEncoded = tokenContentEncoded.Replace('_', '/').Replace('-', '+') + '=';
+            tokenContentEncoded = tokenContentEncoded.Replace('_', '/').Replace('-', '+');
             byte[] contentBytes = Convert.FromBase64String(tokenContentEncoded);
             string content = Encoding.UTF8.GetString(contentBytes);
             _clientData = JsonUtility.FromJson<UserData>(content);
