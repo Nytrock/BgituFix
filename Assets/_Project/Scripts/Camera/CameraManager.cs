@@ -4,10 +4,10 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour {
     [SerializeField] private float _cameraOffset;
     [SerializeField] private float _minSize;
-    [SerializeField] private float _scrollSensivity;
-    [SerializeField] private float _keySpeed;
+    [SerializeField] private float _zoomSensivity;
 
     private Camera _camera;
+    private Vector3 _touchOffset;
     private bool _isHover;
 
     public static Vector3 LocalMousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -20,8 +20,10 @@ public class CameraManager : MonoBehaviour {
         if (_isHover)
             return;
 
-        UpdatePosition();
-        UpdateSize();
+        if (Input.touchCount == 1)
+            UpdatePosition();
+        else if (Input.touchCount == 2)
+            UpdateSize();
     }
 
     public void UpdateHover(bool isHover) {
@@ -29,34 +31,34 @@ public class CameraManager : MonoBehaviour {
     }
 
     private void UpdateSize() {
-        float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
-        if (scrollAxis == 0)
-            return;
+        Touch touchZero = Input.GetTouch(0);
+        Touch touchOne = Input.GetTouch(1);
 
-        _camera.orthographicSize = Mathf.Max(
-            _camera.orthographicSize - scrollAxis * _scrollSensivity, _minSize
-        );
+        Vector2 touchZeroPrev = touchZero.position - touchZero.deltaPosition;
+        Vector2 touchOnePrev = touchOne.position - touchOne.deltaPosition;
+
+        float prevMagnitude = (touchZeroPrev - touchOnePrev).magnitude;
+        float nowMagnitude = (touchZero.position - touchOne.position).magnitude;
+
+        float difference = nowMagnitude - prevMagnitude;
+        _camera.orthographicSize = Mathf.Max(_camera.orthographicSize - difference * _zoomSensivity, _minSize);
     }
 
     private void UpdatePosition() {
-        float horizontalAxis = Input.GetAxis("Horizontal");
-        float verticalAxis = Input.GetAxis("Vertical");
-        transform.position += _camera.orthographicSize * Time.deltaTime * _keySpeed * new Vector3(horizontalAxis, verticalAxis);
+        if (Input.GetMouseButtonDown(0))
+            _touchOffset = LocalMousePosition;
+
+        if (Input.GetMouseButton(0)) {
+            Vector3 direction = _touchOffset - LocalMousePosition;
+            transform.position = direction;
+        }
     }
 
     public void ForceSetSize(float size) {
-        _camera.orthographicSize = size + size / _cameraOffset;
+        _camera.orthographicSize = size + size * _cameraOffset;
     }
 
     public void ResetPosition() {
         transform.position = new(0, 0, -10);
-    }
-
-    public void SetSize(float size) {
-        float newSize = size + size / _cameraOffset;
-        if (_camera.orthographicSize > newSize)
-            return;
-
-        _camera.orthographicSize = newSize;
     }
 }

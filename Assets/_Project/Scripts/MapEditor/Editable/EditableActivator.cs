@@ -1,15 +1,10 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class EditableActivator : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
+public class EditableActivator : MonoBehaviour, IPointerClickHandler {
     [SerializeField] private BaseEditable _editable;
 
-    public void OnPointerDown(PointerEventData eventData) {
-
-    }
-
-    public void OnPointerUp(PointerEventData eventData) {
-        if (eventData.button == PointerEventData.InputButton.Left)
-            _editable.LeftButtonUp();
+    public void OnPointerClick(PointerEventData eventData) {
+        _editable.Click();
     }
 }

@@ -8,7 +8,7 @@ public class MapBuildPool : Pool<MapBuild> {
 
     protected override MapBuild CreateObject() {
         MapBuild build = base.CreateObject();
-        build.SetManagers(_mapManager, _errorManager, _userManager, _cameraManager);
+        build.SetManagers(_mapManager, _errorManager, _userManager);
         return build;
     }
 

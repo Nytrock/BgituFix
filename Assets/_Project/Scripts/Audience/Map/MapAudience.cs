@@ -13,7 +13,7 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
 
     public void UpdateSize() {
         _renderer.size = _data.SizeVector;
-        _cameraSize = Mathf.Max(_data.SizeVector.x / 2f / 16f * 9, _data.SizeVector.y / 2f);
+        _cameraSize = Mathf.Max(_data.SizeVector.x / 2f / 9f * 16, _data.SizeVector.y / 2f);
     }
 
     protected override IEnumerable<ComputerData> GetEditablesData(MapData mapData) {

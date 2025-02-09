@@ -68,6 +68,7 @@ public class MapManager : MonoBehaviour {
         MapGenerated?.Invoke();
 
         StartCoroutine(_errorManager.GetErrors(_data));
+        ChangeState(true);
         OpenBuilds();
     }
 

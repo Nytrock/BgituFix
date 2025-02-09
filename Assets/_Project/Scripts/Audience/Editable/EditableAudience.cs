@@ -17,7 +17,7 @@ public class EditableAudience : Editable<AudienceData> {
         _audienceActivator = _renderer as EditableAudienceRenderer;
     }
 
-    public override void LeftButtonUp() {
+    public override void Click() {
         if (!_data.IsComputer)
             return;
 

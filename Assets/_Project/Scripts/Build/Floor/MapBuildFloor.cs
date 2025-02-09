@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 
 public class MapBuildFloor : MonoBehaviour {
     [SerializeField] private SpriteRenderer _renderer;
     [SerializeField] private float _offset;
-    [SerializeField] private TextMeshProUGUI _widthText;
-    [SerializeField] private TextMeshProUGUI _lengthText;
 
     private readonly List<EditableAudience> _audiences = new();
-    private bool _isShowingSize;
 
     public event Action<ComputerErrorType> ErrorUpdated;
 
@@ -25,16 +21,8 @@ public class MapBuildFloor : MonoBehaviour {
             float horizontalOffset = _renderer.size.x / 2f;
             float horizontalMax = Mathf.Max(horizontalCenter + horizontalOffset, Mathf.Abs(horizontalCenter - horizontalOffset));
 
-            return Mathf.Max(verticalMax, horizontalMax / 16f * 9);
+            return Mathf.Max(verticalMax, horizontalMax / 9f * 16);
         }
-    }
-
-    private void Update() {
-        if (!_isShowingSize)
-            return;
-
-        _widthText.text = _renderer.size.x.ToString() + Units.SIZE_UNIT;
-        _lengthText.text = _renderer.size.y.ToString() + Units.SIZE_UNIT;
     }
 
     public void AddAudience(EditableAudience audience) {

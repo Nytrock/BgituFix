@@ -10,7 +10,7 @@ public class EditableComputer : Editable<ComputerData> {
 
     public string SerialNumber => _data.SerialNumber;
 
-    public override void LeftButtonUp() {
+    public override void Click() {
         _computerUIManager.OpenComputer(_data);
     }
 

@@ -29,7 +29,7 @@ public abstract class BaseEditable : MonoBehaviour {
             UpdateSize();
     }
 
-    public abstract void LeftButtonUp();
+    public abstract void Click();
 
     public void SetManagers(MapManager mapManager) {
         _mapManager = mapManager;
