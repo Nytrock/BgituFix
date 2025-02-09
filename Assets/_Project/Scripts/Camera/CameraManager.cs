@@ -50,7 +50,7 @@ public class CameraManager : MonoBehaviour {
 
         if (Input.GetMouseButton(0)) {
             Vector3 direction = _touchOffset - LocalMousePosition;
-            transform.position = direction;
+            transform.position = new(direction.x, direction.y, -10);
         }
     }
 
