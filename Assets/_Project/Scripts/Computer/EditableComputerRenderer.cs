@@ -9,6 +9,8 @@ public class EditableComputerRenderer : EditableRenderer {
     public override void SetSize(Vector2 size) {
         base.SetSize(size);
         _errors.cellSize = size * _errorsSizeMultiplier;
+        _errors.padding.left = (int)_errors.cellSize.x / -2;
+        _errors.padding.top = (int)_errors.cellSize.x / -2;
         _errors.spacing = new Vector2(_errorsSpacingMultiplier * size.x, 0);
     }
 }
