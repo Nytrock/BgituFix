@@ -39,7 +39,7 @@ public class LoginManager : MonoBehaviour {
         yield return request.SendWebRequest();
         ValidationData validationData = request.ToData<ValidationData>();
 
-        if (!validationData.IsValid) {
+        if (request.error != null || !validationData.IsValid) {
             LoginStateChanged?.Invoke(true);
             yield break;
         }
