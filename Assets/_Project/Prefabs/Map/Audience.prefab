@@ -108,7 +108,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -381,6 +381,7 @@ MonoBehaviour:
   _pool: {fileID: 2692291252967851186}
   _renderer: {fileID: 8898689892234416948}
   _canvas: {fileID: 2892720661425853895}
+  _sizesTextsMultiplier: 16
   _widthText: {fileID: 4134273076804728494}
   _lengthText: {fileID: 7017107261597275243}
 --- !u!1 &5854236302112379616
@@ -491,7 +492,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

@@ -47,7 +47,7 @@ public class CameraManager : MonoBehaviour {
     }
 
     public void ForceSetSize(float size) {
-        _camera.orthographicSize = size + size / _cameraOffset;
+        _camera.orthographicSize = size + size * _cameraOffset;
     }
 
     public void ResetPosition() {
@@ -55,7 +55,7 @@ public class CameraManager : MonoBehaviour {
     }
 
     public void SetSize(float size) {
-        float newSize = size + size / _cameraOffset;
+        float newSize = size + size * _cameraOffset;
         if (_camera.orthographicSize > newSize)
             return;
 

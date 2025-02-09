@@ -8,6 +8,7 @@ public class MapBuildFloor : MonoBehaviour {
     [SerializeField] private SpriteRenderer _renderer;
     [SerializeField] private RectTransform _canvas;
     [SerializeField] private float _offset;
+    [SerializeField] private float _sizesTextsMultiplier;
     [SerializeField] private TextMeshProUGUI _widthText;
     [SerializeField] private TextMeshProUGUI _lengthText;
 
@@ -35,7 +36,9 @@ public class MapBuildFloor : MonoBehaviour {
             return;
 
         _widthText.text = _renderer.size.x.ToString() + Units.SIZE_UNIT;
+        _widthText.fontSize = _renderer.size.x * _sizesTextsMultiplier;
         _lengthText.text = _renderer.size.y.ToString() + Units.SIZE_UNIT;
+        _lengthText.fontSize = _renderer.size.y * _sizesTextsMultiplier;
     }
 
     public void AddAudience(EditableAudience audience) {

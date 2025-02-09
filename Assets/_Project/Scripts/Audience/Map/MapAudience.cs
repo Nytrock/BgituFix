@@ -5,6 +5,7 @@ using UnityEngine;
 public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceData> {
     [SerializeField] private SpriteRenderer _renderer;
     [SerializeField] private RectTransform _canvas;
+    [SerializeField] private float _sizesTextsMultiplier;
     [SerializeField] private TextMeshProUGUI _widthText;
     [SerializeField] private TextMeshProUGUI _lengthText;
 
@@ -23,7 +24,9 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
             return;
 
         _widthText.text = _data.SizeVector.x.ToString() + Units.SIZE_UNIT;
+        _widthText.fontSize = _data.SizeVector.x * _sizesTextsMultiplier;
         _lengthText.text = _data.SizeVector.y.ToString() + Units.SIZE_UNIT;
+        _lengthText.fontSize = _data.SizeVector.y * _sizesTextsMultiplier;
     }
 
     protected override void ChangeSizeShowState(bool newState) {
