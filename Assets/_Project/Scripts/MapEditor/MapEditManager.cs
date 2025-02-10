@@ -61,6 +61,7 @@ public class MapEditManager : MonoBehaviour {
     }
 
     public void SetEditable(BaseEditable editable) {
+        ChangeCameraMoving(true);
         if (_nowEditable == editable) {
             _nowEditable.ChangeEditingMode(false);
             _nowEditable = null;
