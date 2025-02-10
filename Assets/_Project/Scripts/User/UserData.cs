@@ -39,6 +39,10 @@ public class UserData {
 
     public void SetupClient() {
         username = sub;
+        SetupRole();
+    }
+
+    public void SetupRole() {
         if (role == "ROLE_USER")
             _userType = UserType.User;
         else if (role == "ROLE_ADMIN")

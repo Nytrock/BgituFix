@@ -8,6 +8,11 @@ public class UserManagerData {
 
     public IEnumerable<UserData> Users => users;
 
+    public void SetupUsers() {
+        foreach (var user in users)
+            user.SetupRole();
+    }
+
     public void AddUser(UserData newUser) {
         users.Add(newUser);
     }
