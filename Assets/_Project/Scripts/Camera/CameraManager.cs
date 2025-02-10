@@ -9,7 +9,7 @@ public class CameraManager : MonoBehaviour {
 
     private Camera _camera;
     private bool _isHover;
-    private bool _isMoving = true;
+    [SerializeField] private bool _isMoving = true;
 
     public static Vector3 LocalMousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -52,14 +52,6 @@ public class CameraManager : MonoBehaviour {
 
     public void ResetPosition() {
         transform.position = new(0, 0, -10);
-    }
-
-    public void SetSize(float size) {
-        float newSize = size + size * _cameraOffset;
-        if (_camera.orthographicSize > newSize)
-            return;
-
-        _camera.orthographicSize = newSize;
     }
 
     public void ChangeMovingState(bool isMoving) {

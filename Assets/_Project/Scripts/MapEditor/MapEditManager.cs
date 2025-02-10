@@ -18,7 +18,6 @@ public class MapEditManager : MonoBehaviour {
     public bool IsEdit => _isEdit;
 
     private void Awake() {
-        _userManager.ClientSetuped += delegate { ChangePermission(); };
         _mapManager.MapGenerated += delegate { ChangeState(false); };
     }
 
@@ -48,6 +47,7 @@ public class MapEditManager : MonoBehaviour {
     }
 
     private void ChangeState(bool newState) {
+        ChangePermission();
         if (!_isAdmin)
             return;
 
@@ -61,6 +61,7 @@ public class MapEditManager : MonoBehaviour {
     }
 
     public void SetEditable(BaseEditable editable) {
+        ChangeCameraMoving(true);
         if (_nowEditable == editable) {
             _nowEditable.ChangeEditingMode(false);
             _nowEditable = null;

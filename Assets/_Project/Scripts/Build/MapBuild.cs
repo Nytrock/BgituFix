@@ -100,7 +100,6 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     public override EditableAudience CreateEditable(AudienceData data) {
         EditableAudience audience = base.CreateEditable(data);
         SetupFloorSize(data.Floor - 1);
-        _cameraManager.SetSize(_cameraSize);
         return audience;
     }
 
