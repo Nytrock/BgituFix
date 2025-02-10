@@ -650,6 +650,7 @@ MonoBehaviour:
   _errorRenderer: {fileID: 8599703792067719269}
   _errorRendererMultiplier: 10
   _nameText: {fileID: 6279440061962674042}
+  _nameTextMultiplier: 20
   _computerStyle:
     _backgroundColor: {r: 0.22745098, g: 0.45882353, b: 0.7647059, a: 1}
     _textColor: {r: 1, g: 1, b: 1, a: 1}
@@ -3702,7 +3703,7 @@ MonoBehaviour:
   m_fontSize: 45
   m_fontSizeBase: 45
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 45
   m_fontStyle: 0
