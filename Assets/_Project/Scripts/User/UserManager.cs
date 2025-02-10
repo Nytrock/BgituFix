@@ -63,6 +63,7 @@ public class UserManager : MonoBehaviour {
         UnityWebRequest request = RequestUtility.APIGet(_APIPathToGetUsers, token);
         yield return request.SendWebRequest();
         _usersData = request.ToData<UserManagerData>();
+        _usersData.SetupUsers();
         UsersGetted?.Invoke();
     }
 
