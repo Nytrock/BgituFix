@@ -6,11 +6,16 @@ public class MapManagerUI : MonoBehaviour {
     [SerializeField] private GameObject _blockMessage;
 
     private void Awake() {
-        _mapManager.BlockStateChanged += ChangeBlockState;
+        _mapManager.StateChanged += ChangeState;
+        _mapManager.MapBlocked += BlockMap;
     }
 
-    private void ChangeBlockState(bool isBlocked) {
-        _panel.SetActive(!isBlocked);
-        _blockMessage.SetActive(isBlocked);
+    private void BlockMap() {
+        _blockMessage.SetActive(true);
+        ChangeState(false);
+    }
+
+    private void ChangeState(bool newState) {
+        _panel.SetActive(newState);
     }
 }

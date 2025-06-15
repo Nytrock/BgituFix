@@ -7,7 +7,7 @@ public class ComputerErrorUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private TextMeshProUGUI _descriptionText;
     [SerializeField] private TextMeshProUGUI _dateText;
-    [SerializeField] private ComputerErrorUISolveButton _solveButton;
+    [SerializeField] private ComputerErrorSolveButton _solveButton;
     [SerializeField] private Button _deleteButton;
 
     private ComputerErrorsUI _errorManager;

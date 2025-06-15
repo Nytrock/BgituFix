@@ -26,6 +26,7 @@ public class EditableRenderer : MonoBehaviour {
     public virtual void SetSize(Vector2 size) {
         _renderer.size = size;
         _canvasRect.sizeDelta = size * (1 / _canvasRect.localScale.x);
+
         float infoSize = (size.x + size.y) / 2f * _infoPanelMultiplier;
         _infoPanel.localScale = new(infoSize, infoSize);
     }

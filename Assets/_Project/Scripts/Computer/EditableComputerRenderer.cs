@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+
 public class EditableComputerRenderer : EditableRenderer {
     [SerializeField] private GridLayoutGroup _errors;
     [SerializeField] private float _errorsSizeMultiplier;

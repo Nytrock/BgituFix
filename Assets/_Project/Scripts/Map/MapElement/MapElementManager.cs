@@ -11,7 +11,7 @@ public abstract class MapElementManager<TElement, TEditable, TEditableData, TDat
     where TData : class {
 
     [SerializeField] private CameraManager _cameraManager;
-    [SerializeField] private UrlManager _urlManager;
+    [SerializeField] private LoginManager _loginManager;
     [SerializeField] private string _APIPathToCreateEditable;
     [SerializeField] private string _APIPathToChangeEditable;
     [SerializeField] private string _APIPathToDeleteEditable;
@@ -58,13 +58,13 @@ public abstract class MapElementManager<TElement, TEditable, TEditableData, TDat
     }
 
     public IEnumerator DeleteEditableInDatabase(TEditableData editableData) {
-        string token = _urlManager.Token;
+        string token = _loginManager.Token;
         UnityWebRequest request = RequestUtility.APIDelete(_APIPathToDeleteEditable, editableData.Id, token);
         yield return request.SendWebRequest();
     }
 
     public IEnumerator CreateEditableInDatabase(TEditableData editableData) {
-        string token = _urlManager.Token;
+        string token = _loginManager.Token;
         UnityWebRequest request = RequestUtility.APIPost(_APIPathToCreateEditable, editableData, token);
         yield return request.SendWebRequest();
 
@@ -73,7 +73,7 @@ public abstract class MapElementManager<TElement, TEditable, TEditableData, TDat
     }
 
     public IEnumerator ChangeEditableInDatabase(TEditableData editableData) {
-        string token = _urlManager.Token;
+        string token = _loginManager.Token;
         UnityWebRequest request = RequestUtility.APIPut(_APIPathToChangeEditable, editableData, token);
         yield return request.SendWebRequest();
     }

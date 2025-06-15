@@ -41,6 +41,8 @@ public class MapBuildFloor : MonoBehaviour {
         _lengthText.fontSize = _renderer.size.y * _sizesTextsMultiplier;
     }
 
+
+
     public void AddAudience(EditableAudience audience) {
         audience.transform.parent = transform;
         _audiences.Add(audience);

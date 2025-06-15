@@ -1081,7 +1081,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6188860313093912849}
+      - m_Target: {fileID: 5345542649088139371}
         m_TargetAssemblyTypeName: EditableCanvasInfo, Assembly-CSharp
         m_MethodName: DeleteEditable
         m_Mode: 1
@@ -1182,6 +1182,56 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cursorType: 4
+--- !u!1 &2086173648538304881
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5185928329317360877}
+  - component: {fileID: 5345542649088139371}
+  m_Layer: 0
+  m_Name: InfoPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5185928329317360877
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2086173648538304881}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 533793251059863998}
+  m_Father: {fileID: 359200655416922824}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5345542649088139371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2086173648538304881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38d987f456def83459448ee35a6323e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _numberField: {fileID: 8600424013054275707}
 --- !u!1 &2118512762734247189
 GameObject:
   m_ObjectHideFlags: 0
@@ -1868,7 +1918,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6188860313093912849}
+      - m_Target: {fileID: 5345542649088139371}
         m_TargetAssemblyTypeName: EditableCanvasInfo, Assembly-CSharp
         m_MethodName: CopyEditable
         m_Mode: 1
@@ -2471,8 +2521,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d390b7e98d3ae3149bd082a990adab5a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  _renderer: {fileID: 631794572269457110}
+  m_EditorClassIdentifier:
+  _renderer: {fileID: 8451016626976818549}
   _canvas: {fileID: 3700747297323265377}
   _gridPrecision: 0.05
   _errorsRenderer: {fileID: 245126031400107094}
@@ -2506,7 +2556,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3245006479633732662}
-  - {fileID: 251008519608863021}
+  - {fileID: 5185928329317360877}
   m_Father: {fileID: 9063902486888901642}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2878,7 +2928,7 @@ RectTransform:
   - {fileID: 371194710522981834}
   - {fileID: 7388828361340080387}
   - {fileID: 2071230056901316081}
-  m_Father: {fileID: 251008519608863021}
+  m_Father: {fileID: 5185928329317360877}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -3041,7 +3091,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _panel: {fileID: 5438587070263879777}
-  _infoPanel: {fileID: 6188860313093912849}
+  _infoPanel: {fileID: 5345542649088139371}
   _border: {fileID: 3550095259548652791}
   _borderElements:
   - {fileID: 7933597194502643402}
@@ -3908,7 +3958,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8701687333224026251}
   - component: {fileID: 8139271525174303823}
-  - component: {fileID: 631794572269457110}
+  - component: {fileID: 8451016626976818549}
   m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
@@ -3986,7 +4036,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &631794572269457110
+--- !u!114 &8451016626976818549
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4001,8 +4051,8 @@ MonoBehaviour:
   _defaultSpriteLayer: 2
   _editSpriteLayer: 4
   _canvas: {fileID: 6957755539835456743}
-  _infoPanel: {fileID: 251008519608863021}
-  _infoPanelMultiplier: 3.33
+  _infoPanel: {fileID: 5185928329317360877}
+  _infoPanelMultiplier: 3.3
   _errors: {fileID: 3342819660820139208}
   _errorsSizeMultiplier: 30
   _errorsSpacingMultiplier: 5

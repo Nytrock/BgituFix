@@ -20,6 +20,13 @@ public class EditableAudienceRenderer : EditableRenderer {
         UpdateStyle();
     }
 
+    public override void SetSize(Vector2 size) {
+        base.SetSize(size);
+        float avgSize = (size.x + size.y) / 2f;
+        _errorRenderer.rectTransform.sizeDelta = new Vector2(avgSize, avgSize) * _errorRendererMultiplier;
+        _nameText.fontSize = avgSize * _nameTextMultiplier;
+    }
+
     public void UpdateName() {
         _nameText.text = _data.Name;
     }
