@@ -1,6 +1,8 @@
+using EvtSource;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -11,11 +13,11 @@ public class ErrorManager : MonoBehaviour {
     [SerializeField] private string _APIPathToGetErrors;
     [SerializeField] private string _APIPathToChangeError;
     [SerializeField] private string _APIPathToDeleteError;
-    [SerializeField] private string _APIPathToCreateError;
+    [SerializeField] private string _APIPathToAddError;
+    [SerializeField] private string _APIPathToSSE;
 
     [SerializeField] private ErrorManagerData _data;
     private MapData _mapData;
-    private bool _isCoroutineRunning;
 
     public IEnumerable<ComputerErrorData> Errors => _data.Errors;
 
@@ -66,7 +68,7 @@ public class ErrorManager : MonoBehaviour {
             if (!Application.isPlaying)
                 return;
 
-            Debug.Log($"{e.ReconnectDelay} - {e.Exception}");
+            Debug.Log($"Переподключение: {e.ReconnectDelay} - Ошибка: {e.Exception}");
             evt.Start();
         };
     }
@@ -94,10 +96,8 @@ public class ErrorManager : MonoBehaviour {
     public IEnumerator ChangeErrorSolveInDatabase(ComputerErrorData error, bool isSolved) {
         string token = _loginManager.Token;
         BoolChangeData dataToSend = new(error.Id, isSolved);
-        UnityWebRequest request = RequestUtility.APIPut(_APIPathToChangeError, dataToSend, token);
-        yield return request.SendWebRequest();
-
-        ChangeError(error, isSolved);
+        UnityWebRequest www = RequestUtility.APIPut(_APIPathToChangeError, dataToSend, token);
+        yield return www.SendWebRequest();
     }
 
     public IEnumerator DeleteErrorInDatabase(ComputerErrorData error) {

@@ -31,13 +31,6 @@ public class EditableAudienceRenderer : EditableRenderer {
         _nameText.text = _data.Name;
     }
 
-    public override void SetSize(Vector2 size) {
-        base.SetSize(size);
-        float avgSize = (size.x + size.y) / 2f;
-        _errorRenderer.rectTransform.sizeDelta = new Vector2(avgSize, avgSize) * _errorRendererMultiplier;
-        _nameText.fontSize = avgSize * _nameTextMultiplier;
-    }
-
     public void UpdateStyle() {
         StateStyle style = _nonComputerStyle;
         if (_data.IsComputer)

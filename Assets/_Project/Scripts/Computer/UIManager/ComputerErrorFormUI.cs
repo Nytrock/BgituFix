@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ComputerErrorFormUI : MonoBehaviour {
-    [SerializeField] private GameObject _panel;
     [SerializeField] private ErrorManager _errorManager;
     [SerializeField] private TMP_Dropdown _errorType;
     [SerializeField] private TMP_InputField _errorDescription;
@@ -12,7 +11,7 @@ public class ComputerErrorFormUI : MonoBehaviour {
     private ComputerData _computerData;
 
     public void ChangeState(bool newState) {
-        _panel.SetActive(newState);
+        gameObject.SetActive(newState);
         if (!newState)
             ClearForm();
     }

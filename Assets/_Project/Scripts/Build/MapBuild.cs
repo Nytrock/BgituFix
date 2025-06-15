@@ -105,7 +105,6 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
 
     public override void DeleteEditable(EditableAudience editable) {
         base.DeleteEditable(editable);
-
         int floorIndex = editable.Floor - 1;
         _floors[floorIndex].RemoveAudience(editable);
         SetupFloorSize(floorIndex);

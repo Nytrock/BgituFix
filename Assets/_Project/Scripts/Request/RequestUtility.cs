@@ -1,3 +1,4 @@
+using EvtSource;
 using System.Net.Http;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -62,6 +63,10 @@ public static class RequestUtility {
 
     public static T ToData<T>(this UnityWebRequest result) {
         return JsonUtility.FromJson<T>(result.downloadHandler.text);
+    }
+
+    public static T ToData<T>(this EventSourceMessageEventArgs result) {
+        return JsonUtility.FromJson<T>(result.Message);
     }
 
     public static string ToJson<T>(this T data) {
