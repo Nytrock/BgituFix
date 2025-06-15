@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AdminPanelManager : MonoBehaviour {
     [SerializeField] private GameObject _panel;
@@ -7,6 +8,7 @@ public class AdminPanelManager : MonoBehaviour {
     [SerializeField] private MapManager _mapManager;
     [SerializeField] private AdminPanelStatistics _stats;
     [SerializeField] private AdminPanelUsersList _usersList;
+    [SerializeField] private Button _openButton;
 
     public event Action<bool> StateChanged;
 
@@ -16,11 +18,13 @@ public class AdminPanelManager : MonoBehaviour {
     }
 
     private void Setup() {
+        _openButton.gameObject.SetActive(_userManager.ClientType == UserType.Admin);
         if (_userManager.ClientType != UserType.Admin)
             return;
 
         _stats.Setup();
         _usersList.Setup(_userManager);
+        _openButton.onClick.AddListener(Open);
     }
 
     private void ChangeState(bool newState) {
