@@ -3,7 +3,6 @@ using UnityEngine;
 public class ProfileManager : MonoBehaviour {
     [SerializeField] private GameObject _panel;
     [SerializeField] private MapManager _mapManager;
-    [SerializeField] private LoginManager _loginManager;
     [SerializeField] private ErrorManager _errorManager;
     [SerializeField] private ProfileInfoRenderer _infoRenderer;
     [SerializeField] private ProfileErrorsRenderer _errorsRenderer;
@@ -33,6 +32,6 @@ public class ProfileManager : MonoBehaviour {
 
     public void Logout() {
         ChangeState(false);
-        _loginManager.Logout();
+        LoginManager.Logout();
     }
 }

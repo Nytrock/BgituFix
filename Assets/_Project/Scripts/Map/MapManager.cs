@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class MapManager : MonoBehaviour {
-    [SerializeField] private LoginManager _loginManager;
     [SerializeField] private UserManager _userManager;
     [SerializeField] private MapBuildManager _buildManager;
     [SerializeField] private MapAudienceManager _audienceManager;
@@ -20,24 +19,15 @@ public class MapManager : MonoBehaviour {
     public MapData Data => _data;
 
     public event Action<bool> StateChanged;
-    public event Action MapBlocked;
     public event Action MapUpdated;
     public event Action MapGenerated;
 
     private void Awake() {
-        _userManager.ClientSetuped += CheckUserType;
+        _userManager.ClientSetuped += StartGettingMap;
     }
 
-    private void CheckUserType() {
-        if (_userManager.ClientType == UserType.None)
-            BlockMap();
-        else
-            StartCoroutine(GetMap());
-    }
-
-    private void BlockMap() {
-        ChangeState(false);
-        MapBlocked?.Invoke();
+    private void StartGettingMap() {
+        StartCoroutine(GetMapData());
     }
 
     public void ChangeState(bool newState) {
@@ -45,20 +35,19 @@ public class MapManager : MonoBehaviour {
         StateChanged?.Invoke(newState);
     }
 
-    private IEnumerator GetMap() {
-        string token = _loginManager.Token;
+    private IEnumerator GetMapData() {
+        UnityWebRequest request = APIUtility.Get(_APIPathToGetBuilds);
+        yield return request.SendWebRequestSafely();
+        Debug.Log(request.downloadHandler.text);
+        IEnumerable<BuildData> builds = request.ToData<ListData<BuildData>>().Response;
 
-        UnityWebRequest request = RequestUtility.APIGet(_APIPathToGetBuilds, token);
-        yield return request.SendWebRequest();
-        IEnumerable<BuildData> builds = request.ToData<MapData>().BuildDatas;
+        request = APIUtility.Get(_APIPathToGetAudiences);
+        yield return request.SendWebRequestSafely();
+        IEnumerable<AudienceData> audiences = request.ToData<ListData<AudienceData>>().Response;
 
-        request = RequestUtility.APIGet(_APIPathToGetAudiences, token);
-        yield return request.SendWebRequest();
-        IEnumerable<AudienceData> audiences = request.ToData<MapData>().AudienceDatas;
-
-        request = RequestUtility.APIGet(_APIPathToGetComputers, token);
-        yield return request.SendWebRequest();
-        IEnumerable<ComputerData> computers = request.ToData<MapData>().ComputerDatas;
+        request = APIUtility.Get(_APIPathToGetComputers);
+        yield return request.SendWebRequestSafely();
+        IEnumerable<ComputerData> computers = request.ToData<ListData<ComputerData>>().Response;
 
         _data = new(builds, audiences, computers);
         GenerateMap();

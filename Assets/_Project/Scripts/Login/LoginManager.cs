@@ -6,69 +6,34 @@ using UnityEngine.SceneManagement;
 
 public class LoginManager : MonoBehaviour {
     [SerializeField] private string _APIPathToLogin;
-    [SerializeField] private string _APIPathToCheckTokenValid;
-    [SerializeField] private string _fileName;
-
-    private SaveFileManager<TokenData> _fileManager;
-    private TokenData _tokenData;
-
-    public string Token => _tokenData.Token;
 
     public event Action<bool> LoginStateChanged;
     public event Action LoginError;
-    public event Action TokenLoaded;
-
-    private void Start() {
-        _fileManager = new(_fileName);
-        TryLoadTokenFromSave();
-    }
-
-    private void TryLoadTokenFromSave() {
-        _tokenData = _fileManager.Load();
-
-        if (_tokenData == null) {
-            LoginStateChanged?.Invoke(true);
-            return;
-        }
-
-        StartCoroutine(CheckTokenValid());
-    }
-
-    private IEnumerator CheckTokenValid() {
-        UnityWebRequest request = RequestUtility.APIGet(_APIPathToCheckTokenValid, _tokenData.Token);
-        yield return request.SendWebRequest();
-        ValidationData validationData = request.ToData<ValidationData>();
-
-        if (request.error != null || !validationData.IsValid) {
-            LoginStateChanged?.Invoke(true);
-            yield break;
-        }
-
-        LoginStateChanged?.Invoke(false);
-        TokenLoaded?.Invoke();
-    }
+    public static event Action OnLogout;
 
     public IEnumerator TryLogin(UserLoginData loginData) {
-        UnityWebRequest request = RequestUtility.APIPost(_APIPathToLogin, loginData);
-        yield return request.SendWebRequest();
+        UnityWebRequest request = APIUtility.Post(_APIPathToLogin, loginData);
+        yield return request.SendWebRequestSafely();
         TokenData tokenData = request.ToData<TokenData>();
 
-        if (tokenData == null) {
+        if (request.responseCode == 401) {
             LoginError?.Invoke();
             yield break;
         }
 
-        _tokenData = tokenData;
-        _fileManager.Save(_tokenData);
-
+        APIUtility.UpdateTokenData(tokenData);
         LoginStateChanged?.Invoke(false);
-        TokenLoaded?.Invoke();
     }
 
-    public void Logout() {
-        _fileManager.Delete();
+    public static void Logout() {
+        OnLogout?.Invoke();
+        OnLogout = null;
 
         string currentSceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentSceneName);
+    }
+
+    public void ChangeLoginState(bool newState) {
+        LoginStateChanged?.Invoke(newState);
     }
 }

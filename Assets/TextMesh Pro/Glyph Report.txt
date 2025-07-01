@@ -1,0 +1,38 @@
+Font: ALS Hauss  Style: Regular
+Point Size: 247   Padding: 46   SP/PD Ratio: 18,6%
+
+Characters included: 312/338
+Missing characters: 26
+Excluded characters: 0
+
+Characters missing from font file:
+----------------------------------------
+ID: 9	Hex: 9	Char [	]
+ID: 804	Hex: 324	Char [̤]
+ID: 816	Hex: 330	Char [̰]
+ID: 821	Hex: 335	Char [̵]
+ID: 822	Hex: 336	Char [̶]
+ID: 823	Hex: 337	Char [̷]
+ID: 839	Hex: 347	Char [͇]
+ID: 863	Hex: 35F	Char [͟]
+ID: 7838	Hex: 1E9E	Char [ẞ]
+ID: 8219	Hex: 201B	Char [‛]
+ID: 8223	Hex: 201F	Char [‟]
+ID: 8242	Hex: 2032	Char [′]
+ID: 8243	Hex: 2033	Char [″]
+ID: 8244	Hex: 2034	Char [‴]
+ID: 8254	Hex: 203E	Char [‾]
+ID: 8531	Hex: 2153	Char [⅓]
+ID: 8679	Hex: 21E7	Char [⇧]
+ID: 8725	Hex: 2215	Char [∕]
+ID: 8729	Hex: 2219	Char [∙]
+ID: 8960	Hex: 2300	Char [⌀]
+ID: 8963	Hex: 2303	Char [⌃]
+ID: 8984	Hex: 2318	Char [⌘]
+ID: 8997	Hex: 2325	Char [⌥]
+ID: 10003	Hex: 2713	Char [✓]
+ID: 64257	Hex: FB01	Char [ﬁ]
+ID: 64258	Hex: FB02	Char [ﬂ]
+
+Characters excluded from packing:
+----------------------------------------

@@ -6,7 +6,6 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     [SerializeField] private MapBuildFloorPool _floorPool;
 
     private readonly List<MapBuildFloor> _floors = new();
-    private CameraManager _cameraManager;
     private int _nowFloor;
 
     public int FloorsCount => _data.FloorsCount;
@@ -27,10 +26,9 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     }
 
     public void SetManagers(MapManager mapManager, MapEditManager editManager,
-        ErrorManager errorManager, UserManager userManager, CameraManager cameraManager) {
+        ErrorManager errorManager, UserManager userManager) {
 
         (_pool as EditableAudiencePool).SetManagers(mapManager, editManager);
-        _cameraManager = cameraManager;
         editManager.EditableChanged += UpdateShowingSize;
         editManager.EditStateChanged += UpdateShowingSize;
 

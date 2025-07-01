@@ -3,11 +3,11 @@ using UnityEngine;
 
 [Serializable]
 public class UserLoginData {
-    [SerializeField] private string username;
+    [SerializeField] private string name;
     [SerializeField] private string password;
 
-    public UserLoginData(string username, string password) {
-        this.username = username;
+    public UserLoginData(string name, string password) {
+        this.name = name;
         this.password = password;
     }
 }

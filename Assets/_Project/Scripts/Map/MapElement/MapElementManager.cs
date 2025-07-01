@@ -11,10 +11,7 @@ public abstract class MapElementManager<TElement, TEditable, TEditableData, TDat
     where TData : class {
 
     [SerializeField] private CameraManager _cameraManager;
-    [SerializeField] private LoginManager _loginManager;
-    [SerializeField] private string _APIPathToCreateEditable;
-    [SerializeField] private string _APIPathToChangeEditable;
-    [SerializeField] private string _APIPathToDeleteEditable;
+    [SerializeField] private string _APIPathForEditables;
 
     protected TElement _nowElement;
     protected readonly List<TElement> _mapElements = new();
@@ -58,23 +55,20 @@ public abstract class MapElementManager<TElement, TEditable, TEditableData, TDat
     }
 
     public IEnumerator DeleteEditableInDatabase(TEditableData editableData) {
-        string token = _loginManager.Token;
-        UnityWebRequest request = RequestUtility.APIDelete(_APIPathToDeleteEditable, editableData.Id, token);
-        yield return request.SendWebRequest();
+        UnityWebRequest request = APIUtility.Delete(_APIPathForEditables, editableData.Id);
+        yield return request.SendWebRequestSafely();
     }
 
     public IEnumerator CreateEditableInDatabase(TEditableData editableData) {
-        string token = _loginManager.Token;
-        UnityWebRequest request = RequestUtility.APIPost(_APIPathToCreateEditable, editableData, token);
-        yield return request.SendWebRequest();
+        UnityWebRequest request = APIUtility.Post(_APIPathForEditables, editableData);
+        yield return request.SendWebRequestSafely();
 
         IdData idData = request.ToData<IdData>();
         editableData.SetId(idData.Id);
     }
 
     public IEnumerator ChangeEditableInDatabase(TEditableData editableData) {
-        string token = _loginManager.Token;
-        UnityWebRequest request = RequestUtility.APIPut(_APIPathToChangeEditable, editableData, token);
-        yield return request.SendWebRequest();
+        UnityWebRequest request = APIUtility.Put(_APIPathForEditables, editableData, editableData.Id);
+        yield return request.SendWebRequestSafely();
     }
 }
