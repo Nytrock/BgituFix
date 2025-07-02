@@ -45,6 +45,8 @@ public class UserManager : MonoBehaviour {
             }
             byte[] contentBytes = Convert.FromBase64String(tokenBase64);
             string content = Encoding.UTF8.GetString(contentBytes);
+            content = content.Replace("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", "role");
+            content = content.Replace("fullName", "name");
 
             _clientData = JsonUtility.FromJson<UserData>(content);
             _clientData.SetupClient();
@@ -58,7 +60,7 @@ public class UserManager : MonoBehaviour {
 
         UnityWebRequest request = APIUtility.Get(_APIPathForUsers);
         yield return request.SendWebRequestSafely();
-        _usersData = request.ToData<UserManagerData>();
+        _usersData = new(request.ToData<ListData<UserData>>());
         _usersData.SetupUsers();
         UsersGetted?.Invoke();
     }

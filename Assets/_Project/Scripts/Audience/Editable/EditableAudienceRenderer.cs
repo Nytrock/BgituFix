@@ -12,8 +12,8 @@ public class EditableAudienceRenderer : EditableRenderer {
 
     private AudienceData _data;
 
-    public override void Setup(EditableData data) {
-        base.Setup(data);
+    public override void SetData(EditableData data) {
+        base.SetData(data);
 
         _data = data as AudienceData;
         UpdateName();

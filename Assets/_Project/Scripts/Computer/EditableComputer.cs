@@ -19,50 +19,50 @@ public class EditableComputer : Editable<ComputerData> {
     }
 
     protected override void UpdateSize() {
-        Vector2 oldPosition = _data.PositionVector;
-        Vector2 oldSize = _data.SizeVector;
+        Vector2 oldPosition = _data.Position;
+        Vector2 oldSize = _data.Size;
         base.UpdateSize();
         CheckNewPositionAndSize(oldPosition, oldSize);
     }
 
     protected override void UpdatePosition() {
-        Vector2 oldPosition = _data.PositionVector;
+        Vector2 oldPosition = _data.Position;
         base.UpdatePosition();
-        CheckNewPositionAndSize(oldPosition, _data.SizeVector);
+        CheckNewPositionAndSize(oldPosition, _data.Size);
     }
 
     private void CheckNewPositionAndSize(Vector2 oldPosition, Vector2 oldSize) {
-        float audienceSizeX = _audienceData.SizeVector.x / 2f;
-        float audienceSizeY = _audienceData.SizeVector.y / 2f;
-        float computerSizeX = _data.SizeVector.x / 2f;
-        float computerSizeY = _data.SizeVector.y / 2f;
+        float audienceSizeX = _audienceData.Size.x / 2f;
+        float audienceSizeY = _audienceData.Size.y / 2f;
+        float computerSizeX = _data.Size.x / 2f;
+        float computerSizeY = _data.Size.y / 2f;
 
-        if (audienceSizeX > _data.PositionVector.x + computerSizeX &&
-            -audienceSizeX < _data.PositionVector.x - computerSizeX) {
-            oldPosition.x = _data.PositionVector.x;
-            oldSize.x = _data.SizeVector.x;
+        if (audienceSizeX.NearlyEqualOrGreater(_data.Position.x + computerSizeX) &&
+            (-audienceSizeX).NearlyEqualOrLess(_data.Position.x - computerSizeX)) {
+            oldPosition.x = _data.Position.x;
+            oldSize.x = _data.Size.x;
         }
 
-        if (audienceSizeY > _data.PositionVector.y + computerSizeY &&
-            -audienceSizeY < _data.PositionVector.y - computerSizeY) {
-            oldPosition.y = _data.PositionVector.y;
-            oldSize.y = _data.SizeVector.y;
+        if (audienceSizeY.NearlyEqualOrGreater(_data.Position.y + computerSizeY) &&
+            (-audienceSizeY).NearlyEqualOrLess(_data.Position.y - computerSizeY)) {
+            oldPosition.y = _data.Position.y;
+            oldSize.y = _data.Size.y;
         }
 
-        if (oldPosition != _data.PositionVector) {
-            transform.position = oldPosition;
-            _data.UpdatePosition(oldPosition);
-        }
+        if (oldPosition != _data.Position)
+            ChangePosition(oldPosition);
 
-        if (oldSize != _data.SizeVector) {
-            _data.UpdateSize(oldSize.x, oldSize.y);
-            _renderer.SetSize(oldSize);
-        }
+        if (oldSize != _data.Size)
+            ChangeSize(oldSize.x, oldSize.y);
     }
 
     public override void Setup(ComputerData data) {
         base.Setup(data);
         _errorsRenderer.Setup();
+    }
+
+    public override void SetData(ComputerData data) {
+        base.SetData(data);
         _audienceData = _mapManager.Data.GetAudienceById(data.AudienceId);
     }
 

@@ -19,14 +19,35 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
         UpdateSize();
     }
 
+    public void UpdateData(AudienceData newData) {
+        _data = newData;
+        UpdateSize();
+    }
+
+    public void UpdateContainingComputersPositions() {
+        foreach (var computer in _editables) {
+            Vector2 computerPosition = computer.Position;
+            if (computer.LeftBottom.x < _data.Size.x / -2f)
+                computerPosition += new Vector2(_data.Size.x / -2f - computer.LeftBottom.x, 0);
+            else if (computer.LeftBottom.y < _data.Size.y / -2f)
+                computerPosition += new Vector2(0, _data.Size.y / -2f - computer.LeftBottom.y);
+            else if (computer.RightTop.x > _data.Size.x / 2f)
+                computerPosition += new Vector2(_data.Size.x / 2f - computer.RightTop.x, 0);
+            else if (computer.RightTop.y > _data.Size.y / 2f)
+                computerPosition += new Vector2(0, _data.Size.y / 2f - computer.RightTop.y);
+
+            computer.ChangePosition(computerPosition);
+        }
+    }
+
     private void Update() {
         if (!_isShowingSize)
             return;
 
-        _widthText.text = _data.SizeVector.x.ToString() + Units.SIZE_UNIT;
-        _widthText.fontSize = _data.SizeVector.x * _sizesTextsMultiplier;
-        _lengthText.text = _data.SizeVector.y.ToString() + Units.SIZE_UNIT;
-        _lengthText.fontSize = _data.SizeVector.y * _sizesTextsMultiplier;
+        _widthText.text = _data.Size.x.ToString() + Units.SIZE_UNIT;
+        _widthText.fontSize = _data.Size.x * _sizesTextsMultiplier;
+        _lengthText.text = _data.Size.y.ToString() + Units.SIZE_UNIT;
+        _lengthText.fontSize = _data.Size.y * _sizesTextsMultiplier;
     }
 
     protected override void ChangeSizeShowState(bool newState) {
@@ -35,9 +56,9 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
     }
 
     public void UpdateSize() {
-        _renderer.size = _data.SizeVector;
-        _canvas.sizeDelta = _data.SizeVector * (1 / _canvas.localScale.x);
-        _cameraSize = Mathf.Max(_data.SizeVector.x / 2f / 16f * 9, _data.SizeVector.y / 2f);
+        _renderer.size = _data.Size;
+        _canvas.sizeDelta = _data.Size * (1 / _canvas.localScale.x);
+        _cameraSize = Mathf.Max(_data.Size.x / 2f / 16f * 9, _data.Size.y / 2f);
     }
 
     protected override IEnumerable<ComputerData> GetEditablesData(MapData mapData) {

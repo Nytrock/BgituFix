@@ -42,12 +42,17 @@ public static class APIUtility {
     }
 
     public static IEnumerator SendWebRequestSafely(this UnityWebRequest request) {
-        yield return request.SendWebRequest();
-        if (request.responseCode != 400)
-            yield break;
+        UnityWebRequest spareRequest = new(request.url, request.method, request.downloadHandler, request.uploadHandler);
+        SetupRequestBeforeSend(spareRequest);
+        yield return spareRequest.SendWebRequest();
 
-        Debug.Log(2);
+        if (spareRequest.responseCode != 401) {
+            request.downloadHandler = spareRequest.downloadHandler;
+            yield break;
+        }
+
         yield return UpdateToken();
+        SetupRequestBeforeSend(request);
         yield return request.SendWebRequest();
     }
 

@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
 public class UserManagerData {
     [SerializeField] private List<UserData> users;
+
+    public UserManagerData(ListData<UserData> listData) {
+        users = listData.Response.ToList();
+    }
 
     public IEnumerable<UserData> Users => users;
 

@@ -8,28 +8,32 @@ public abstract class Editable<TData> : BaseEditable
 
     protected TData _data;
 
-    public override Vector2 Size => _data.SizeVector;
-    public override Vector2 Position => _data.PositionVector;
+    public override Vector2 Size => _data.Size;
+    public override Vector2 Position => _data.Position;
+    public Vector2 LeftBottom => _data.LeftBottom;
+    public Vector2 RightTop => _data.RightTop;
     public TData Data => _data;
 
     public event Action SizeOrPositionChanged;
 
     public virtual void Setup(TData data) {
-        _data = data;
-        transform.position = _data.PositionVector;
+        SetData(data);
+    }
 
-        _renderer.Setup(_data);
+    public virtual void SetData(TData data) {
+        _data = data;
+        _renderer.SetData(_data);
+        transform.position = _data.Position;
     }
 
     protected override void UpdatePosition() {
-        transform.position = GetSnappedPosition(CameraManager.LocalMousePosition + _mouseOffset, _gridPrecision);
-        _data.UpdatePosition(transform.position);
+        ChangePosition(GetSnappedPosition(CameraManager.LocalMousePosition + _mouseOffset, _gridPrecision));
         SizeOrPositionChanged?.Invoke();
     }
 
     protected override void UpdateSize() {
         Vector2 mousePosition = CameraManager.LocalMousePosition;
-        float width = _data.SizeVector.x, height = _data.SizeVector.y;
+        float width = _data.Size.x, height = _data.Size.y;
         float centerX = transform.position.x, centerY = transform.position.y;
 
         if (_isHorizontalResizing)
@@ -38,11 +42,8 @@ public abstract class Editable<TData> : BaseEditable
         if (_isVerticalResizing)
             Resize(ref height, ref centerY, _mouseOffset.y, mousePosition.y);
 
-        transform.position = new(centerX, centerY);
-        _data.UpdatePosition(transform.position);
-
-        _data.UpdateSize(width, height);
-        _renderer.SetSize(_data.SizeVector);
+        ChangePosition(new(centerX, centerY));
+        ChangeSize(width, height);
         SizeOrPositionChanged?.Invoke();
     }
 
@@ -66,5 +67,15 @@ public abstract class Editable<TData> : BaseEditable
 
     private float SnapToGrid(float value, float precision) {
         return Mathf.Round(value / precision) * precision;
+    }
+
+    public void ChangePosition(Vector2 newPosition) {
+        transform.position = newPosition;
+        _data.UpdatePosition(transform.position);
+    }
+
+    public void ChangeSize(float width, float height) {
+        _data.UpdateSize(width, height);
+        _renderer.SetSize(_data.Size);
     }
 }

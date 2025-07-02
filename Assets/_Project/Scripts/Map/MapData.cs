@@ -17,7 +17,10 @@ public class MapData {
         buildings = buildDatas.OrderBy(build => build.Number).ToList();
         auditoriums = audienceDatas.ToList();
         computers = computerDatas.ToList();
+        SetupVectors();
+    }
 
+    public void SetupVectors() {
         foreach (var data in auditoriums)
             data.SetupVectors();
         foreach (var data in computers)

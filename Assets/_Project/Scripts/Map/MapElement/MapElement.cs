@@ -7,7 +7,7 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
 
     [SerializeField] protected Pool<TEditable> _pool;
 
-    protected TData _data;
+    [SerializeField] protected TData _data;
     protected float _cameraSize;
     protected List<TEditable> _editables = new();
 
@@ -56,12 +56,31 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
         return GenerateEditable(data);
     }
 
+    public void DeleteEditable(TEditableData editableData) {
+        TEditable editable = FindEditableById(editableData.Id);
+        if (editable != null)
+            DeleteEditable(editable);
+    }
+
     public virtual void DeleteEditable(TEditable editable) {
         if (!_editables.Contains(editable))
             return;
 
         _editables.Remove(editable);
         _pool.PutObject(editable);
+    }
+
+    public void ChangeEditable(TEditableData editableData) {
+        TEditable editable = FindEditableById(editableData.Id);
+        if (editable != null)
+            editable.SetData(editableData);
+    }
+
+    protected TEditable FindEditableById(int id) {
+        foreach (var editable in _editables)
+            if (editable.Data.Id == id)
+                return editable;
+        return null;
     }
 
     protected abstract void ChangeSizeShowState(bool newState);

@@ -60,33 +60,28 @@ public class MapBuildFloor : MonoBehaviour {
     }
 
     public void SetupSize() {
-        Vector2 leftBottom, rigthTop;
         float minX = 0, minY = 0, maxX = 0, maxY = 0;
 
         if (_audiences.Count > 0) {
-            leftBottom = _audiences[0].Position - _audiences[0].Size / 2f;
-            rigthTop = _audiences[0].Position + _audiences[0].Size / 2f;
-            minX = leftBottom.x;
-            minY = leftBottom.y;
-            maxX = rigthTop.x;
-            maxY = rigthTop.y;
+            minX = _audiences[0].LeftBottom.x;
+            minY = _audiences[0].LeftBottom.y;
+            maxX = _audiences[0].RightTop.x;
+            maxY = _audiences[0].RightTop.y;
         }
 
         foreach (var audience in _audiences) {
-            leftBottom = audience.Position - audience.Size / 2f;
-            rigthTop = audience.Position + audience.Size / 2f;
-            if (leftBottom.y < minY)
-                minY = leftBottom.y;
-            if (leftBottom.x < minX)
-                minX = leftBottom.x;
-            if (rigthTop.y > maxY)
-                maxY = rigthTop.y;
-            if (rigthTop.x > maxX)
-                maxX = rigthTop.x;
+            if (audience.LeftBottom.y < minY)
+                minY = audience.LeftBottom.y;
+            if (audience.LeftBottom.x < minX)
+                minX = audience.LeftBottom.x;
+            if (audience.RightTop.y > maxY)
+                maxY = audience.RightTop.y;
+            if (audience.RightTop.x > maxX)
+                maxX = audience.RightTop.x;
         }
 
-        leftBottom = new(minX - _offset, minY - _offset);
-        rigthTop = new(maxX + _offset, maxY + _offset);
+        Vector2 leftBottom = new(minX - _offset, minY - _offset);
+        Vector2 rigthTop = new(maxX + _offset, maxY + _offset);
         _renderer.size = rigthTop - leftBottom;
         _renderer.transform.position = (rigthTop + leftBottom) / 2f;
         _canvas.sizeDelta = _renderer.size * (1 / _canvas.localScale.x);

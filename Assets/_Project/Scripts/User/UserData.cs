@@ -4,27 +4,28 @@ using UnityEngine;
 [Serializable]
 public class UserData {
     [SerializeField] private int id;
-    [SerializeField] private string username;
+    [SerializeField] private int sub;
+    [SerializeField] private string name;
     [SerializeField] private string email;
     [SerializeField] private string role;
-    [SerializeField] private string sub;
     [SerializeField] private string password;
+    [SerializeField] private bool sentNotifications;
 
     private UserType _userType;
 
     public int Id => id;
-    public string Name => username;
+    public string Name => name;
     public string Email => email;
     public UserType UserType => _userType;
 
     public UserData() {
-        username = "Not found";
+        name = "Not found";
         _userType = UserType.None;
     }
 
-    public UserData(string username, string password, string email, bool isAdmin) {
+    public UserData(string name, string password, string email, bool isAdmin) {
         id = -1;
-        this.username = username;
+        this.name = name;
         this.email = email;
         this.password = password;
 
@@ -38,7 +39,7 @@ public class UserData {
     }
 
     public void SetupClient() {
-        username = sub;
+        id = sub;
         SetupRole();
     }
 

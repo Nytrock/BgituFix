@@ -8,12 +8,11 @@ public class MapBuildManager : MapElementManager<MapBuild, EditableAudience, Aud
     public event Action<MapBuild> BuildAdded;
     public event Action<MapBuild> BuildChanged;
 
-    public void GenerateBuilds(MapManager mapManager) {
-        MapData mapData = mapManager.Data;
+    public void GenerateBuilds(MapData mapData) {
         foreach (var buildData in mapData.BuildDatas)
             GenerateBuild(mapData, buildData);
 
-        UpdateElement(_mapElements[0]);
+        SelectElement(_mapElements[0]);
     }
 
     private void GenerateBuild(MapData mapData, BuildData buildData) {
@@ -26,7 +25,7 @@ public class MapBuildManager : MapElementManager<MapBuild, EditableAudience, Aud
     public void ChangeBuild(int id) {
         foreach (var build in _mapElements) {
             if (build.Id == id) {
-                UpdateElement(build);
+                SelectElement(build);
                 break;
             }
         }
@@ -35,11 +34,11 @@ public class MapBuildManager : MapElementManager<MapBuild, EditableAudience, Aud
     public override void ChangeState(bool newState) {
         base.ChangeState(newState);
         if (newState)
-            UpdateElement(_mapElements[0]);
+            SelectElement(_mapElements[0]);
     }
 
-    protected override void UpdateElement(MapBuild build) {
-        base.UpdateElement(build);
+    protected override void SelectElement(MapBuild build) {
+        base.SelectElement(build);
         BuildChanged?.Invoke(build);
     }
 }

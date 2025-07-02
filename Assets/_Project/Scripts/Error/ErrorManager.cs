@@ -26,7 +26,7 @@ public class ErrorManager : MonoBehaviour {
     public event Action<ComputerErrorData> ErrorDeleted;
 
     private void Awake() {
-        _tokenManager.TokenLoaded += delegate { SSESetup(); };
+        ErrorsLoaded += delegate { SSESetup(); };
     }
 
     public IEnumerator GetErrors(MapData mapData) {
@@ -46,7 +46,7 @@ public class ErrorManager : MonoBehaviour {
     }
 
     private void SSESetup() {
-        Uri uri = new(APIUtility.API_URL + _APIPathToSSE);
+        Uri uri = new($"{APIUtility.API_URL}/{_APIPathToSSE}");
         HttpClient client = new();
         client.SetToken();
         client.SetHeaders();
@@ -91,7 +91,7 @@ public class ErrorManager : MonoBehaviour {
     }
 
     public IEnumerator ChangeErrorSolveInDatabase(ComputerErrorData error, bool isSolved) {
-        BoolChangeData dataToSend = new(error.Id, isSolved);
+        ErrorChangeData dataToSend = new(error.Id, isSolved);
         UnityWebRequest request = APIUtility.Put(_APIPathForErrors, dataToSend, error.Id);
         yield return request.SendWebRequestSafely();
     }
@@ -104,6 +104,7 @@ public class ErrorManager : MonoBehaviour {
     public IEnumerator CreateErrorInDatabase(ComputerErrorType type, string comment, int computerId) {
         int clientId = _userManager.ClientId;
         ComputerErrorData newError = new(computerId, clientId, type, comment);
+
         UnityWebRequest request = APIUtility.Post(_APIPathForErrors, newError);
         yield return request.SendWebRequestSafely();
     }

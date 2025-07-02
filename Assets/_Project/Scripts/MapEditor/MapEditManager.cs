@@ -19,9 +19,10 @@ public class MapEditManager : MonoBehaviour {
 
     private void Awake() {
         _mapManager.MapGenerated += delegate { ChangeState(false); };
+        _userManager.ClientSetuped += delegate { SetPermission(); };
     }
 
-    private void ChangePermission() {
+    private void SetPermission() {
         _isAdmin = _userManager.ClientType == UserType.Admin;
         PermissionChanged?.Invoke(_isAdmin);
     }
@@ -32,25 +33,22 @@ public class MapEditManager : MonoBehaviour {
 
         string oldMapDataJson = JsonUtility.ToJson(_mapManager.Data);
         _oldMapData = JsonUtility.FromJson<MapData>(oldMapDataJson);
+        _oldMapData.SetupVectors();
     }
 
     public void SaveChanges() {
         _isEdit = false;
-        StartCoroutine(_mapManager.CheckUpdatedData(_oldMapData));
+        StartCoroutine(_mapManager.SubmitMapDataChanges(_oldMapData));
         ChangeState(false);
     }
 
     public void CancelChanges() {
         _isEdit = false;
-        StartCoroutine(_mapManager.RevertMapData(_oldMapData));
+        _mapManager.RevertMapDataChanges(_oldMapData);
         ChangeState(false);
     }
 
     private void ChangeState(bool newState) {
-        ChangePermission();
-        if (!_isAdmin)
-            return;
-
         if (!newState) {
             _oldMapData = null;
             if (_nowEditable != null)
@@ -60,7 +58,7 @@ public class MapEditManager : MonoBehaviour {
         EditStateChanged?.Invoke(newState);
     }
 
-    public void SetEditable(BaseEditable editable) {
+    public void SelectEditable(BaseEditable editable) {
         ChangeCameraMoving(true);
         if (_nowEditable == editable) {
             _nowEditable.ChangeEditingMode(false);
@@ -77,34 +75,34 @@ public class MapEditManager : MonoBehaviour {
     }
 
     public void CreateNewAudience() {
-        EditableAudience audience = _mapManager.CreateNewAudience();
-        SetEditable(audience);
+        EditableAudience audience = _mapManager.CreateEmptyAudience();
+        SelectEditable(audience);
     }
 
     public void CreateAudience(AudienceData audienceData) {
         EditableAudience audience = _mapManager.CreateAudience(audienceData);
-        SetEditable(audience);
+        SelectEditable(audience);
     }
 
     public void DeleteAudience(EditableAudience audience) {
         if (_nowEditable == audience)
-            SetEditable(audience);
+            SelectEditable(audience);
         _mapManager.DeleteAudience(audience);
     }
 
     public void CreateNewComputer() {
-        EditableComputer computer = _mapManager.CreateNewComputer();
-        SetEditable(computer);
+        EditableComputer computer = _mapManager.CreateEmptyComputer();
+        SelectEditable(computer);
     }
 
     public void CreateComputer(ComputerData computerData) {
         EditableComputer computer = _mapManager.CreateComputer(computerData);
-        SetEditable(computer);
+        SelectEditable(computer);
     }
 
     public void DeleteComputer(EditableComputer computer) {
         if (_nowEditable == computer)
-            SetEditable(computer);
+            SelectEditable(computer);
         _mapManager.DeleteComputer(computer);
     }
 

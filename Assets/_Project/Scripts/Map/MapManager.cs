@@ -38,7 +38,6 @@ public class MapManager : MonoBehaviour {
     private IEnumerator GetMapData() {
         UnityWebRequest request = APIUtility.Get(_APIPathToGetBuilds);
         yield return request.SendWebRequestSafely();
-        Debug.Log(request.downloadHandler.text);
         IEnumerable<BuildData> builds = request.ToData<ListData<BuildData>>().Response;
 
         request = APIUtility.Get(_APIPathToGetAudiences);
@@ -54,8 +53,8 @@ public class MapManager : MonoBehaviour {
     }
 
     private void GenerateMap() {
-        _buildManager.GenerateBuilds(this);
-        _audienceManager.GenerateAudiences(this);
+        _buildManager.GenerateBuilds(_data);
+        _audienceManager.GenerateAudiences(_data);
         MapGenerated?.Invoke();
 
         StartCoroutine(_errorManager.GetErrors(_data));
@@ -72,7 +71,7 @@ public class MapManager : MonoBehaviour {
         _audienceManager.OpenAudience(audience);
     }
 
-    public EditableAudience CreateNewAudience() {
+    public EditableAudience CreateEmptyAudience() {
         int buildId = _buildManager.NowElement.Id;
         int floorIndex = _buildManager.NowElement.NowFloor;
         int audiencesCount = _data.AudienceDatas.Count();
@@ -81,19 +80,15 @@ public class MapManager : MonoBehaviour {
 
     public EditableAudience CreateAudience(AudienceData audienceData) {
         _data.AddAudience(audienceData);
-        return _buildManager.CreateEditable(audienceData);
+        return _buildManager.CreateEditableOnMap(audienceData);
     }
 
     public void DeleteAudience(EditableAudience audience) {
-        foreach (var computerData in _data.GetComputersByAudience(audience.Data))
-            _errorManager.DeleteErrorsByComputerId(computerData);
-
-        _buildManager.DeleteEditable(audience);
-        _audienceManager.DeleteAudience(audience.Data);
+        _buildManager.DeleteEditableOnMap(audience);
         _data.DeleteAudience(audience.Data);
     }
 
-    public EditableComputer CreateNewComputer() {
+    public EditableComputer CreateEmptyComputer() {
         int audienceId = _audienceManager.NowElement.Id;
         int computersCount = _data.ComputerDatas.Count();
         return CreateComputer(new(audienceId, computersCount));
@@ -101,22 +96,66 @@ public class MapManager : MonoBehaviour {
 
     public EditableComputer CreateComputer(ComputerData computerData) {
         _data.AddComputer(computerData);
-        return _audienceManager.CreateEditable(computerData);
+        return _audienceManager.CreateEditableOnMap(computerData);
     }
 
     public void DeleteComputer(EditableComputer computer) {
-        _audienceManager.DeleteEditable(computer);
-        _errorManager.DeleteErrorsByComputerId(computer.Data);
+        _audienceManager.DeleteEditableOnMap(computer);
         _data.DeleteComputer(computer.Data);
     }
 
-    public IEnumerator RevertMapData(MapData _) {
-        yield break;
+    public void RevertMapDataChanges(MapData oldMapData) {
+        if (_buildManager.NowElement != null)
+            RevertBuildDataChanges(oldMapData);
+
+        if (_audienceManager.NowElement != null)
+            RevertAudienceDataChanges(oldMapData);
+
+        _data = oldMapData;
+        MapUpdated?.Invoke();
     }
 
-    public IEnumerator CheckUpdatedData(MapData oldMapData) {
+    private void RevertBuildDataChanges(MapData oldMapData) {
         foreach (var oldData in oldMapData.AudienceDatas) {
             if (!_data.ContainsAudience(oldData)) {
+                _buildManager.CreateEditableOnMap(oldData);
+            } else {
+                _buildManager.ChangeEditableOnMap(oldData);
+                _audienceManager.UpdateAudienceById(oldData);
+            }
+        }
+
+        foreach (var newData in _data.AudienceDatas)
+            if (!oldMapData.ContainsAudience(newData))
+                _buildManager.DeleteEditableOnMap(newData);
+    }
+
+    private void RevertAudienceDataChanges(MapData oldMapData) {
+        foreach (var oldData in oldMapData.ComputerDatas) {
+            if (!_data.ContainsComputer(oldData))
+                _audienceManager.CreateEditableOnMap(oldData);
+            else
+                _audienceManager.ChangeEditableOnMap(oldData);
+        }
+
+        foreach (var newData in _data.ComputerDatas)
+            if (!oldMapData.ContainsComputer(newData))
+                _audienceManager.DeleteEditableOnMap(newData);
+    }
+
+    public IEnumerator SubmitMapDataChanges(MapData oldMapData) {
+        _audienceManager.UpdateAudiences();
+        yield return SubmitBuildDataChanges(oldMapData);
+        yield return SubmitAudienceDataChanges(oldMapData);
+        MapUpdated?.Invoke();
+    }
+
+    private IEnumerator SubmitBuildDataChanges(MapData oldMapData) {
+        foreach (var oldData in oldMapData.AudienceDatas) {
+            if (!_data.ContainsAudience(oldData)) {
+                foreach (var computerData in _data.GetComputersByAudience(oldData))
+                    _errorManager.DeleteErrorsByComputerId(computerData);
+                _audienceManager.DeleteAudience(oldData);
                 yield return _buildManager.DeleteEditableInDatabase(oldData);
             } else {
                 AudienceData newData = _data.GetAudienceById(oldData.Id);
@@ -131,9 +170,12 @@ public class MapManager : MonoBehaviour {
                 _audienceManager.GenerateAudience(_data, newData);
             }
         }
+    }
 
+    private IEnumerator SubmitAudienceDataChanges(MapData oldMapData) {
         foreach (var oldData in oldMapData.ComputerDatas) {
             if (!_data.ContainsComputer(oldData)) {
+                _errorManager.DeleteErrorsByComputerId(oldData);
                 yield return _audienceManager.DeleteEditableInDatabase(oldData);
             } else {
                 ComputerData newData = _data.GetComputerById(oldData.Id);
@@ -145,7 +187,5 @@ public class MapManager : MonoBehaviour {
         foreach (var newData in _data.ComputerDatas)
             if (newData.Id == -1)
                 yield return _audienceManager.CreateEditableInDatabase(newData);
-
-        MapUpdated?.Invoke();
     }
 }

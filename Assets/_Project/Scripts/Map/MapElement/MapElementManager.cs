@@ -38,7 +38,7 @@ public abstract class MapElementManager<TElement, TEditable, TEditableData, TDat
         return null;
     }
 
-    protected virtual void UpdateElement(TElement newElememt) {
+    protected virtual void SelectElement(TElement newElememt) {
         if (_nowElement != null)
             _nowElement.ChangeState(false);
         _nowElement = newElememt;
@@ -46,12 +46,20 @@ public abstract class MapElementManager<TElement, TEditable, TEditableData, TDat
         UpdateCamera();
     }
 
-    public void DeleteEditable(TEditable editable) {
+    public void DeleteEditableOnMap(TEditable editable) {
         _nowElement.DeleteEditable(editable);
     }
 
-    public TEditable CreateEditable(TEditableData editableData) {
+    public void DeleteEditableOnMap(TEditableData editableData) {
+        _nowElement.DeleteEditable(editableData);
+    }
+
+    public TEditable CreateEditableOnMap(TEditableData editableData) {
         return _nowElement.CreateEditable(editableData);
+    }
+
+    public virtual void ChangeEditableOnMap(TEditableData editableData) {
+        _nowElement.ChangeEditable(editableData);
     }
 
     public IEnumerator DeleteEditableInDatabase(TEditableData editableData) {

@@ -41,7 +41,7 @@ public abstract class BaseEditable : MonoBehaviour {
 
         _oldIsEditing = _isEditing;
         if (!_isEditing)
-            _editManager.SetEditable(this);
+            _editManager.SelectEditable(this);
         _mouseTime = 0;
         ChangeEditState(true);
     }
@@ -51,7 +51,7 @@ public abstract class BaseEditable : MonoBehaviour {
             return;
 
         if (_mouseTime < 0.15f && _oldIsEditing)
-            _editManager.SetEditable(this);
+            _editManager.SelectEditable(this);
         ChangeEditState(false);
     }
 
@@ -63,7 +63,7 @@ public abstract class BaseEditable : MonoBehaviour {
         _editManager.ChangeCameraMoving(!_canvas.IsInfoOpen);
 
         if (!_isEditing)
-            _editManager.SetEditable(this);
+            _editManager.SelectEditable(this);
     }
 
     public void ChangeEditState(bool isEdit) {

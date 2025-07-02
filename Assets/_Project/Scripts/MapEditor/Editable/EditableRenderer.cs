@@ -18,9 +18,9 @@ public class EditableRenderer : MonoBehaviour {
         _canvasRect = _canvas.GetComponent<RectTransform>();
     }
 
-    public virtual void Setup(EditableData data) {
+    public virtual void SetData(EditableData data) {
         GetComponents();
-        SetSize(data.SizeVector);
+        SetSize(data.Size);
     }
 
     public virtual void SetSize(Vector2 size) {

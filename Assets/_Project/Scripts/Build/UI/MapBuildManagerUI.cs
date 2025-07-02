@@ -15,6 +15,7 @@ public class MapBuildManagerUI : MonoBehaviour {
         _buildManager.BuildAdded += AddBuild;
         _buildManager.BuildChanged += UpdateFloor;
         _buildManager.StateChanged += ChangeState;
+        ChangeState(false);
     }
 
     private void UpdateFloor(MapBuild build) {

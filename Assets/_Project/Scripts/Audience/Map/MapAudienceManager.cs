@@ -3,22 +3,15 @@ using UnityEngine;
 public class MapAudienceManager : MapElementManager<MapAudience, EditableComputer, ComputerData, AudienceData> {
 
     [SerializeField] protected MapAudiencePool _audiencePool;
-    [SerializeField] private MapEditManager _editManager;
 
-    private void Awake() {
-        _editManager.EditStateChanged += UpdateAudiences;
-    }
-
-    private void UpdateAudiences(bool isEditMode) {
-        if (isEditMode)
-            return;
-
-        foreach (var audience in _mapElements)
+    public void UpdateAudiences() {
+        foreach (var audience in _mapElements) {
             audience.UpdateSize();
+            audience.UpdateContainingComputersPositions();
+        }
     }
 
-    public void GenerateAudiences(MapManager mapManager) {
-        MapData mapData = mapManager.Data;
+    public void GenerateAudiences(MapData mapData) {
         foreach (var audienceData in mapData.AudienceDatas)
             GenerateAudience(mapData, audienceData);
     }
@@ -32,7 +25,7 @@ public class MapAudienceManager : MapElementManager<MapAudience, EditableCompute
     public void OpenAudience(AudienceData audience) {
         foreach (var mapAudience in _mapElements) {
             if (mapAudience.Id == audience.Id) {
-                UpdateElement(mapAudience);
+                SelectElement(mapAudience);
                 break;
             }
         }
@@ -44,6 +37,15 @@ public class MapAudienceManager : MapElementManager<MapAudience, EditableCompute
             if (audience.Id == data.Id) {
                 audience.Delete();
                 _audiencePool.PutObject(audience);
+                break;
+            }
+        }
+    }
+
+    public void UpdateAudienceById(AudienceData data) {
+        foreach (var audience in _mapElements) {
+            if (audience.Id == data.Id) {
+                audience.UpdateData(data);
                 break;
             }
         }
