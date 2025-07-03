@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -10,8 +11,6 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
     [SerializeField] private TextMeshProUGUI _lengthText;
 
     private bool _isShowingSize;
-
-    public override int Id => _data.Id;
 
     public override void Setup(MapData mapData, AudienceData data) {
         base.Setup(mapData, data);
@@ -66,11 +65,10 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
     }
 
     public void SetManagers(MapManager mapManager, ComputerUIManager computerUI,
-        ErrorManager errorManager, MapEditManager editManager) {
+        ErrorManager errorManager, MapEditManager editManager, SelectManager selectManager) {
 
-        (_pool as EditableComputerPool).SetManagers(mapManager, computerUI, editManager);
+        (_pool as EditableComputerPool).SetManagers(mapManager, computerUI, editManager, selectManager);
 
-        editManager.EditableChanged += UpdateShowingSize;
         editManager.EditStateChanged += UpdateShowingSize;
         errorManager.ErrorAdded += CheckNewError;
         errorManager.ErrorChanged += CheckChangedError;
@@ -96,5 +94,10 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
         foreach (var computer in _editables)
             _pool.PutObject(computer);
         _editables.Clear();
+    }
+
+    protected override ComputerData GenerateEmptyEditableData() {
+        int computersCount = _mapData.ComputerDatas.Count();
+        return new(_data.Id, computersCount);
     }
 }

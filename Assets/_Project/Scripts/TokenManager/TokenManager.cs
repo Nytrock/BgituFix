@@ -29,7 +29,13 @@ public class TokenManager : MonoBehaviour {
         }
 
         APIUtility.SetTokenData(tokenData);
+        APIUtility.TokenUpdated += InitialTokenUpdated;
         StartCoroutine(APIUtility.UpdateToken());
+
+    }
+
+    private void InitialTokenUpdated(TokenData data) {
+        APIUtility.TokenUpdated -= InitialTokenUpdated;
         TokenLoaded?.Invoke();
     }
 

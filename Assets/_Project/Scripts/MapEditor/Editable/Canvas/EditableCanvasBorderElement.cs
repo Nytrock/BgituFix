@@ -5,6 +5,10 @@ using UnityEngine.EventSystems;
 public class EditableCanvasBorderElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler {
     [SerializeField] private CursorType _cursorType;
 
+    public bool IsHover { get; private set; }
+
+    public CursorType CursorType => _cursorType;
+
     public event Action<CursorType> CursorTypeChanged;
     public event Action LeftButtonClick;
 
@@ -16,10 +20,12 @@ public class EditableCanvasBorderElement : MonoBehaviour, IPointerEnterHandler, 
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
+        IsHover = true;
         CursorTypeChanged?.Invoke(_cursorType);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
+        IsHover = false;
         CursorTypeChanged?.Invoke(CursorType.Default);
     }
 }

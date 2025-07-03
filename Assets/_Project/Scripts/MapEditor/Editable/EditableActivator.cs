@@ -1,23 +1,33 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class EditableActivator : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
-    [SerializeField] private BaseEditable _editable;
+[RequireComponent(typeof(BoxCollider2D))]
+public class EditableActivator : MonoBehaviour {
+    private BaseEditable _editable;
+    private SelectManager _selectManager;
+    private BoxCollider2D _collider;
+
+    public BaseEditable Editable => _editable;
+
+    private void OnMouseEnter() {
+        _selectManager.SetEditable(_editable);
+    }
+
+    private void OnMouseExit() {
+        _selectManager.ResetEditable();
+    }
 
     public void Update() {
         if (Input.GetMouseButtonUp(0) && _editable.IsResizing)
-            _editable.ChangeEditState(false);
+            _editable.ChangeResisingAndMovingState(false);
     }
 
-    public void OnPointerDown(PointerEventData eventData) {
-        if (eventData.button == PointerEventData.InputButton.Left)
-            _editable.LeftButtonDown();
+    public void Setup(BaseEditable editable, SelectManager selectManager) {
+        _editable = editable;
+        _selectManager = selectManager;
+        _collider = GetComponent<BoxCollider2D>();
     }
 
-    public void OnPointerUp(PointerEventData eventData) {
-        if (eventData.button == PointerEventData.InputButton.Left)
-            _editable.LeftButtonUp();
-        else if (eventData.button == PointerEventData.InputButton.Right)
-            _editable.RightButtonUp();
+    public void SetSize(Vector2 size) {
+        _collider.size = size;
     }
 }

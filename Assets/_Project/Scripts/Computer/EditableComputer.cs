@@ -18,16 +18,16 @@ public class EditableComputer : Editable<ComputerData> {
         _computerUIManager.OpenComputer(_data);
     }
 
-    protected override void UpdateSize() {
+    protected override void ChangeSizeByMouse() {
         Vector2 oldPosition = _data.Position;
         Vector2 oldSize = _data.Size;
-        base.UpdateSize();
+        base.ChangeSizeByMouse();
         CheckNewPositionAndSize(oldPosition, oldSize);
     }
 
-    protected override void UpdatePosition() {
+    protected override void ChangePositionByMouse() {
         Vector2 oldPosition = _data.Position;
-        base.UpdatePosition();
+        base.ChangePositionByMouse();
         CheckNewPositionAndSize(oldPosition, _data.Size);
     }
 
@@ -56,8 +56,8 @@ public class EditableComputer : Editable<ComputerData> {
             ChangeSize(oldSize.x, oldSize.y);
     }
 
-    public override void Setup(ComputerData data) {
-        base.Setup(data);
+    public override void Setup(ComputerData data, BaseMapElement parent) {
+        base.Setup(data, parent);
         _errorsRenderer.Setup();
     }
 
@@ -92,21 +92,12 @@ public class EditableComputer : Editable<ComputerData> {
         }
     }
 
-    public void SetManagers(MapManager mapManager, ComputerUIManager computerUI, MapEditManager editManager) {
+    public void SetManagers(MapManager mapManager, ComputerUIManager computerUI, MapEditManager editManager, SelectManager selectManager) {
         _computerUIManager = computerUI;
-        SetManagers(mapManager, editManager);
+        SetManagers(mapManager, editManager, selectManager);
     }
 
     public void UpdateNumber(string newNumber) {
         _data.UpdateNumber(newNumber);
-    }
-
-    public override void Copy() {
-        ComputerData computerData = new(_data, _gridPrecision * 2);
-        _editManager.CreateComputer(computerData);
-    }
-
-    public override void Delete() {
-        _editManager.DeleteComputer(this);
     }
 }

@@ -12,7 +12,7 @@ public class MapBuildButton : MonoBehaviour {
         _build = build;
         _button.SetText(_buildText + ' ' + build.Number);
         _button.onClick.AddListener(delegate {
-            buildManager.ChangeBuild(build.Id);
+            buildManager.OpenBuild(build.Id);
         });
         buildManager.BuildChanged += UpdateStyle;
     }

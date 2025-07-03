@@ -2,15 +2,13 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class EditableData {
-    [SerializeField] protected int id;
+public class EditableData : IdData {
     [SerializeField] protected string position;
     [SerializeField] protected string size;
 
     protected Vector2 _positionVector;
     protected Vector2 _sizeVector;
 
-    public int Id => id;
     public Vector2 Position => _positionVector;
     public Vector2 Size => _sizeVector;
     public Vector2 LeftBottom => Position - Size / 2f;

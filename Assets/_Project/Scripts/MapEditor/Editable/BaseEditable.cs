@@ -3,9 +3,13 @@ using UnityEngine;
 public abstract class BaseEditable : MonoBehaviour {
     [SerializeField] protected EditableRenderer _renderer;
     [SerializeField] protected EditableCanvas _canvas;
+    [SerializeField] protected EditableActivator _activator;
+    [SerializeField, Min(0)] protected float _gridPrecision;
 
     protected MapManager _mapManager;
     protected MapEditManager _editManager;
+    protected SelectManager _selectManager;
+    protected BaseMapElement _parent;
 
     protected bool _oldIsEditing;
     protected bool _isEditing;
@@ -18,21 +22,23 @@ public abstract class BaseEditable : MonoBehaviour {
     protected float _mouseTime = 0;
 
     public bool IsResizing => _isResizing;
+    public float Precision => _gridPrecision;
     public abstract Vector2 Size { get; }
     public abstract Vector2 Position { get; }
 
-    protected virtual void Awake() {
-        _canvas.SetEditable(this);
-    }
-
-    private void Update() {
+    protected void Update() {
         _mouseTime += Time.deltaTime;
 
         if (_isMoving)
-            UpdatePosition();
+            ChangePositionByMouse();
 
         if (_isResizing)
-            UpdateSize();
+            ChangeSizeByMouse();
+    }
+
+    protected void BaseSetup(BaseMapElement parent) {
+        _parent = parent;
+        _canvas.Setup(this, _selectManager);
     }
 
     public virtual void LeftButtonDown() {
@@ -41,9 +47,9 @@ public abstract class BaseEditable : MonoBehaviour {
 
         _oldIsEditing = _isEditing;
         if (!_isEditing)
-            _editManager.SelectEditable(this);
+            ChangeSelectState();
         _mouseTime = 0;
-        ChangeEditState(true);
+        ChangeResisingAndMovingState(true);
     }
 
     public virtual void LeftButtonUp() {
@@ -51,8 +57,8 @@ public abstract class BaseEditable : MonoBehaviour {
             return;
 
         if (_mouseTime < 0.15f && _oldIsEditing)
-            _editManager.SelectEditable(this);
-        ChangeEditState(false);
+            ChangeSelectState();
+        ChangeResisingAndMovingState(false);
     }
 
     public void RightButtonUp() {
@@ -63,10 +69,10 @@ public abstract class BaseEditable : MonoBehaviour {
         _editManager.ChangeCameraMoving(!_canvas.IsInfoOpen);
 
         if (!_isEditing)
-            _editManager.SelectEditable(this);
+            ChangeSelectState();
     }
 
-    public void ChangeEditState(bool isEdit) {
+    public void ChangeResisingAndMovingState(bool isEdit) {
         if (_isVerticalResizing || _isHorizontalResizing || _isResizing)
             _isResizing = isEdit;
         else
@@ -74,10 +80,10 @@ public abstract class BaseEditable : MonoBehaviour {
 
         _mouseOffset = transform.position - CameraManager.LocalMousePosition;
         if (!isEdit)
-            _canvas.ChangeResizeSettings(CursorType.Default);
+            _canvas.StopResizing();
     }
 
-    public void ChangeEditingMode(bool isEditing) {
+    public void ChangeEditingState(bool isEditing) {
         _isEditing = isEditing;
         _canvas.ChangeBorderState(_isEditing);
         _renderer.ChangeEditingMode(_isEditing);
@@ -85,10 +91,12 @@ public abstract class BaseEditable : MonoBehaviour {
             _canvas.ChangeInfoState(false);
     }
 
-    public void SetManagers(MapManager mapManager, MapEditManager editManager) {
+    public void SetManagers(MapManager mapManager, MapEditManager editManager, SelectManager selectManager) {
         _mapManager = mapManager;
         _editManager = editManager;
+        _selectManager = selectManager;
         _editManager.EditStateChanged += UpdateEditState;
+        _activator.Setup(this, selectManager);
     }
 
     protected virtual void UpdateEditState(bool isEdit) {
@@ -101,8 +109,14 @@ public abstract class BaseEditable : MonoBehaviour {
         _isHorizontalResizing = horizontalResizing;
     }
 
-    public abstract void Copy();
-    public abstract void Delete();
-    protected abstract void UpdatePosition();
-    protected abstract void UpdateSize();
+    public void ChangeSelectState() {
+        _editManager.ChangeSelectStateOfSingleEditable(this);
+        bool isSelected = _editManager.IsEditableSelected(this);
+        _parent.UpdateShowingSize(isSelected);
+    }
+
+    protected abstract void ChangePositionByMouse();
+    public abstract void ChangePosition(Vector2 newPosition);
+    protected abstract void ChangeSizeByMouse();
+    public abstract void ChangeSize(float width, float height);
 }

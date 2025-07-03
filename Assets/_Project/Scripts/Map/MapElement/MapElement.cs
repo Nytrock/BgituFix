@@ -1,59 +1,65 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviour
+public abstract class MapElement<TEditable, TEditableData, TData> : BaseMapElement
     where TEditable : Editable<TEditableData>
-    where TEditableData : EditableData {
+    where TEditableData : EditableData
+    where TData : IdData {
 
     [SerializeField] protected Pool<TEditable> _pool;
 
-    [SerializeField] protected TData _data;
-    protected float _cameraSize;
+    protected TData _data;
+    protected MapData _mapData;
     protected List<TEditable> _editables = new();
 
-    public float CameraSize => _cameraSize;
     public TData Data => _data;
-    public abstract int Id { get; }
+    public int Id => _data.Id;
 
     public virtual void Setup(MapData mapData, TData data) {
         _data = data;
-        GenerateEditables(mapData);
+        _mapData = mapData;
+        GenerateEditables();
     }
 
-    protected virtual void GenerateEditables(MapData mapData) {
-        foreach (var data in GetEditablesData(mapData))
+    protected virtual void GenerateEditables() {
+        foreach (var data in GetEditablesData(_mapData))
             GenerateEditable(data);
     }
 
-    protected void UpdateShowingSize(BaseEditable editable) {
-        if (!gameObject.activeSelf)
-            return;
-
-        bool isShowSizes = _editables.Contains(editable as TEditable);
-        ChangeSizeShowState(isShowSizes);
-    }
-
-    protected void UpdateShowingSize(bool isEdit) {
-        if (!gameObject.activeSelf)
-            return;
-
-        if (!isEdit)
-            ChangeSizeShowState(false);
-    }
-
-    public virtual TEditable GenerateEditable(TEditableData data) {
+    public virtual TEditable GenerateEditable(TEditableData data, bool neeedOverlapCheck = false) {
         TEditable editable = _pool.GetObject();
-        editable.Setup(data);
+        editable.Setup(data, this);
         _editables.Add(editable);
+        if (neeedOverlapCheck)
+            CheckEditableOverlap(editable);
         return editable;
     }
 
-    public virtual void ChangeState(bool newState) {
-        gameObject.SetActive(newState);
+    private void CheckEditableOverlap(TEditable checkingEditable) {
+        Vector2 offset = new(checkingEditable.Precision / 2f, -checkingEditable.Precision / 2f);
+
+        while (true) {
+            bool overlap = false;
+            foreach (var editable in _editables) {
+                if (editable == checkingEditable) continue;
+
+                if (editable.Position == checkingEditable.Position) {
+
+                    overlap = true;
+                    checkingEditable.ChangePosition(checkingEditable.Position + offset);
+                }
+            }
+
+            if (!overlap) break;
+        }
     }
 
-    public virtual TEditable CreateEditable(TEditableData data) {
-        return GenerateEditable(data);
+    public TEditable CreateEmptyEditable() {
+        TEditableData data = GenerateEmptyEditableData();
+        TEditable editable = GenerateEditable(data, true);
+
+        editable.ChangeSelectState();
+        return editable;
     }
 
     public void DeleteEditable(TEditableData editableData) {
@@ -83,6 +89,6 @@ public abstract class MapElement<TEditable, TEditableData, TData> : MonoBehaviou
         return null;
     }
 
-    protected abstract void ChangeSizeShowState(bool newState);
     protected abstract IEnumerable<TEditableData> GetEditablesData(MapData mapData);
+    protected abstract TEditableData GenerateEmptyEditableData();
 }

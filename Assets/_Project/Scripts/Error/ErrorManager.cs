@@ -8,7 +8,6 @@ using UnityEngine.Networking;
 
 public class ErrorManager : MonoBehaviour {
     [SerializeField] private TokenManager _tokenManager;
-    [SerializeField] private MapAudienceManager _audienceManager;
     [SerializeField] private UserManager _userManager;
     [SerializeField] private string _APIPathForErrors;
     [SerializeField] private string _APIPathToSSE;

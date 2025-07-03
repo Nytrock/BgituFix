@@ -10,14 +10,6 @@ public class EditableCanvasInfo : MonoBehaviour {
         _editable = editable;
     }
 
-    public void CopyEditable() {
-        _editable.Copy();
-    }
-
-    public void DeleteEditable() {
-        _editable.Delete();
-    }
-
     public void ChangeState() {
         _isActive = !_isActive;
         UpdateState();

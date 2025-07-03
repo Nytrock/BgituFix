@@ -21,12 +21,12 @@ public class AudienceData : EditableData {
         name = $"Аудитория {audiencesCount + 1}";
     }
 
-    public AudienceData(AudienceData data, float offset) : base(data._positionVector + new Vector2(offset, -offset), data._sizeVector) {
+    public AudienceData(AudienceData data) : base(data._positionVector, data._sizeVector) {
         id = -1;
         buildingId = data.buildingId;
         floor = data.floor;
         isComputer = data.isComputer;
-        name = data.name + " (Копия)";
+        name = data.name;
     }
 
     public void UpdateIsComputer(bool isComputer) {

@@ -9,6 +9,7 @@ public class EditableCanvas : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI _widthText;
     [SerializeField] private TextMeshProUGUI _lengthText;
 
+    private SelectManager _selectManager;
     private BaseEditable _editable;
     private bool _isResizing;
 
@@ -27,8 +28,9 @@ public class EditableCanvas : MonoBehaviour {
         _lengthText.text = _editable.Size.y.ToString() + Units.SIZE_UNIT;
     }
 
-    public void SetEditable(BaseEditable editable) {
+    public void Setup(BaseEditable editable, SelectManager selectManager) {
         _editable = editable;
+        _selectManager = selectManager;
         _infoPanel.SetEditable(editable);
         SetupBorderElements();
     }
@@ -36,12 +38,14 @@ public class EditableCanvas : MonoBehaviour {
     private void SetupBorderElements() {
         foreach (var borderElement in _borderElements) {
             borderElement.CursorTypeChanged += ChangeResizeSettings;
-            borderElement.LeftButtonClick += _editable.LeftButtonDown;
+            borderElement.LeftButtonClick += delegate {
+                _selectManager.SetEditable(_editable);
+            };
         }
     }
 
     public void ChangeResizeSettings(CursorType type) {
-        if (_editable.IsResizing)
+        if (_editable.IsResizing || _selectManager.IsSelectorActive)
             return;
 
         CursorManager.Instance.SetType(type);
@@ -78,5 +82,16 @@ public class EditableCanvas : MonoBehaviour {
     public void ChangeBorderState(bool isEditing) {
         _border.SetActive(isEditing);
         _isResizing = isEditing;
+    }
+
+    public void StopResizing() {
+        foreach (var borderElement in _borderElements) {
+            if (borderElement.IsHover) {
+                ChangeResizeSettings(borderElement.CursorType);
+                return;
+            }
+        }
+
+        ChangeResizeSettings(CursorType.Default);
     }
 }

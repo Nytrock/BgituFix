@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -15,12 +14,15 @@ public class MapManager : MonoBehaviour {
     [SerializeField] private string _APIPathToGetComputers;
 
     [SerializeField] private MapData _data;
+    private MapState _state;
 
     public MapData Data => _data;
+    public MapState State => _state;
 
     public event Action<bool> StateChanged;
     public event Action MapUpdated;
     public event Action MapGenerated;
+    public event Action MapLocationChanged;
 
     private void Awake() {
         _userManager.ClientSetuped += StartGettingMap;
@@ -53,8 +55,8 @@ public class MapManager : MonoBehaviour {
     }
 
     private void GenerateMap() {
-        _buildManager.GenerateBuilds(_data);
-        _audienceManager.GenerateAudiences(_data);
+        _buildManager.GenerateMapElements(_data);
+        _audienceManager.GenerateMapElements(_data);
         MapGenerated?.Invoke();
 
         StartCoroutine(_errorManager.GetErrors(_data));
@@ -64,128 +66,76 @@ public class MapManager : MonoBehaviour {
     public void OpenBuilds() {
         _buildManager.ChangeState(true);
         _audienceManager.ChangeState(false);
+        _state = MapState.Build;
+        MapLocationChanged?.Invoke();
     }
 
     public void OpenAudience(AudienceData audience) {
         _buildManager.ChangeState(false);
         _audienceManager.OpenAudience(audience);
-    }
-
-    public EditableAudience CreateEmptyAudience() {
-        int buildId = _buildManager.NowElement.Id;
-        int floorIndex = _buildManager.NowElement.NowFloor;
-        int audiencesCount = _data.AudienceDatas.Count();
-        return CreateAudience(new(buildId, floorIndex, audiencesCount));
-    }
-
-    public EditableAudience CreateAudience(AudienceData audienceData) {
-        _data.AddAudience(audienceData);
-        return _buildManager.CreateEditableOnMap(audienceData);
-    }
-
-    public void DeleteAudience(EditableAudience audience) {
-        _buildManager.DeleteEditableOnMap(audience);
-        _data.DeleteAudience(audience.Data);
-    }
-
-    public EditableComputer CreateEmptyComputer() {
-        int audienceId = _audienceManager.NowElement.Id;
-        int computersCount = _data.ComputerDatas.Count();
-        return CreateComputer(new(audienceId, computersCount));
-    }
-
-    public EditableComputer CreateComputer(ComputerData computerData) {
-        _data.AddComputer(computerData);
-        return _audienceManager.CreateEditableOnMap(computerData);
-    }
-
-    public void DeleteComputer(EditableComputer computer) {
-        _audienceManager.DeleteEditableOnMap(computer);
-        _data.DeleteComputer(computer.Data);
+        _state = MapState.Audience;
+        MapLocationChanged?.Invoke();
     }
 
     public void RevertMapDataChanges(MapData oldMapData) {
-        if (_buildManager.NowElement != null)
-            RevertBuildDataChanges(oldMapData);
+        if (_state == MapState.Build)
+            _buildManager.RevertEditingChanges(oldMapData);
 
-        if (_audienceManager.NowElement != null)
-            RevertAudienceDataChanges(oldMapData);
+        if (_state == MapState.Audience)
+            _audienceManager.RevertEditingChanges(oldMapData);
 
-        _data = oldMapData;
+        _data.CopyData(oldMapData);
         MapUpdated?.Invoke();
-    }
-
-    private void RevertBuildDataChanges(MapData oldMapData) {
-        foreach (var oldData in oldMapData.AudienceDatas) {
-            if (!_data.ContainsAudience(oldData)) {
-                _buildManager.CreateEditableOnMap(oldData);
-            } else {
-                _buildManager.ChangeEditableOnMap(oldData);
-                _audienceManager.UpdateAudienceById(oldData);
-            }
-        }
-
-        foreach (var newData in _data.AudienceDatas)
-            if (!oldMapData.ContainsAudience(newData))
-                _buildManager.DeleteEditableOnMap(newData);
-    }
-
-    private void RevertAudienceDataChanges(MapData oldMapData) {
-        foreach (var oldData in oldMapData.ComputerDatas) {
-            if (!_data.ContainsComputer(oldData))
-                _audienceManager.CreateEditableOnMap(oldData);
-            else
-                _audienceManager.ChangeEditableOnMap(oldData);
-        }
-
-        foreach (var newData in _data.ComputerDatas)
-            if (!oldMapData.ContainsComputer(newData))
-                _audienceManager.DeleteEditableOnMap(newData);
     }
 
     public IEnumerator SubmitMapDataChanges(MapData oldMapData) {
         _audienceManager.UpdateAudiences();
-        yield return SubmitBuildDataChanges(oldMapData);
-        yield return SubmitAudienceDataChanges(oldMapData);
+        yield return _buildManager.SubmitEditingChanges(oldMapData);
+        yield return _audienceManager.SubmitEditingChanges(oldMapData);
         MapUpdated?.Invoke();
     }
 
-    private IEnumerator SubmitBuildDataChanges(MapData oldMapData) {
-        foreach (var oldData in oldMapData.AudienceDatas) {
-            if (!_data.ContainsAudience(oldData)) {
-                foreach (var computerData in _data.GetComputersByAudience(oldData))
-                    _errorManager.DeleteErrorsByComputerId(computerData);
-                _audienceManager.DeleteAudience(oldData);
-                yield return _buildManager.DeleteEditableInDatabase(oldData);
-            } else {
-                AudienceData newData = _data.GetAudienceById(oldData.Id);
-                if (!newData.Equals(oldData))
-                    yield return _buildManager.ChangeEditableInDatabase(newData);
-            }
+    public void CreateEmptyEditable() {
+        if (_state == MapState.Build) {
+            EditableAudience audience = _buildManager.CreateEmptyEditableOnMap();
+            _data.AddAudience(audience.Data);
         }
 
-        foreach (var newData in _data.AudienceDatas) {
-            if (newData.Id == -1) {
-                yield return _buildManager.CreateEditableInDatabase(newData);
-                _audienceManager.GenerateAudience(_data, newData);
+        if (_state == MapState.Audience) {
+            EditableComputer computer = _audienceManager.CreateEmptyEditableOnMap();
+            _data.AddComputer(computer.Data);
+        }
+    }
+
+    public IEnumerable<BaseEditable> PasteEditables(IEnumerable<EditableData> clipboard) {
+        foreach (var data in clipboard) {
+            if (_state == MapState.Build) {
+                AudienceData audienceData = new(data as AudienceData);
+                _data.CheckCopyAudienceData(audienceData);
+                EditableAudience audience = _buildManager.CreateEditableOnMap(audienceData, true);
+                _data.AddAudience(audience.Data);
+                yield return audience;
+            }
+
+            if (_state == MapState.Audience) {
+                ComputerData computerData = new(data as ComputerData);
+                _data.CheckCopyComputerData(computerData);
+                EditableComputer computer = _audienceManager.CreateEditableOnMap(computerData, true);
+                _data.AddComputer(computer.Data);
+                yield return computer;
             }
         }
     }
 
-    private IEnumerator SubmitAudienceDataChanges(MapData oldMapData) {
-        foreach (var oldData in oldMapData.ComputerDatas) {
-            if (!_data.ContainsComputer(oldData)) {
-                _errorManager.DeleteErrorsByComputerId(oldData);
-                yield return _audienceManager.DeleteEditableInDatabase(oldData);
-            } else {
-                ComputerData newData = _data.GetComputerById(oldData.Id);
-                if (!newData.Equals(oldData))
-                    yield return _audienceManager.ChangeEditableInDatabase(newData);
-            }
+    public void DeleteEditables(IEnumerable<BaseEditable> editables) {
+        if (_state == MapState.Build) {
+            foreach (var editable in editables)
+                _buildManager.DeleteEditableOnMap(editable as EditableAudience);
         }
 
-        foreach (var newData in _data.ComputerDatas)
-            if (newData.Id == -1)
-                yield return _audienceManager.CreateEditableInDatabase(newData);
+        if (_state == MapState.Audience) {
+            foreach (var editable in editables)
+                _audienceManager.DeleteEditableOnMap(editable as EditableComputer);
+        }
     }
 }

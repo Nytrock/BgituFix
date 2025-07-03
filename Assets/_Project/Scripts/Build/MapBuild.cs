@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
@@ -9,15 +10,14 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     private int _nowFloor;
 
     public int FloorsCount => _data.FloorsCount;
-    public override int Id => _data.Id;
     public int Number => _data.Number;
     public int NowFloor => _nowFloor;
 
     public event Action<int> FloorChanged;
 
-    protected override void GenerateEditables(MapData mapData) {
+    protected override void GenerateEditables() {
         GenerateFloors();
-        base.GenerateEditables(mapData);
+        base.GenerateEditables();
         SetupFloorsSizes();
     }
 
@@ -26,10 +26,9 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
     }
 
     public void SetManagers(MapManager mapManager, MapEditManager editManager,
-        ErrorManager errorManager, UserManager userManager) {
+        ErrorManager errorManager, UserManager userManager, SelectManager selectManager) {
 
-        (_pool as EditableAudiencePool).SetManagers(mapManager, editManager);
-        editManager.EditableChanged += UpdateShowingSize;
+        (_pool as EditableAudiencePool).SetManagers(mapManager, editManager, selectManager);
         editManager.EditStateChanged += UpdateShowingSize;
 
         if (userManager.ClientType != UserType.Admin)
@@ -95,12 +94,6 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
         FloorChanged?.Invoke(_nowFloor);
     }
 
-    public override EditableAudience CreateEditable(AudienceData data) {
-        EditableAudience audience = base.CreateEditable(data);
-        SetupFloorSize(data.Floor - 1);
-        return audience;
-    }
-
     public override void DeleteEditable(EditableAudience editable) {
         base.DeleteEditable(editable);
         int floorIndex = editable.Floor - 1;
@@ -108,16 +101,22 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
         SetupFloorSize(floorIndex);
     }
 
-    public override EditableAudience GenerateEditable(AudienceData data) {
-        EditableAudience audience = base.GenerateEditable(data);
+    public override EditableAudience GenerateEditable(AudienceData data, bool neeedOverlapCheck = false) {
+        EditableAudience audience = base.GenerateEditable(data, neeedOverlapCheck);
         _floors[data.Floor - 1].AddAudience(audience);
         audience.SizeOrPositionChanged += delegate {
             SetupFloorSize(audience.Floor - 1);
         };
+        SetupFloorSize(data.Floor - 1);
         return audience;
     }
 
     protected override IEnumerable<AudienceData> GetEditablesData(MapData mapData) {
         return mapData.GetAudiencesByBuild(_data);
+    }
+
+    protected override AudienceData GenerateEmptyEditableData() {
+        int audiencesCount = _mapData.AudienceDatas.Count();
+        return new(_data.Id, _nowFloor, audiencesCount);
     }
 }

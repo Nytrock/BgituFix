@@ -65,6 +65,7 @@ public static class APIUtility {
     public static IEnumerator UpdateToken() {
         UnityWebRequest request = UnityWebRequest.Post(API_URL + TOKEN_UPDATE_PATH, _tokenData.ToJson(), "json");
         SetHeaders(request);
+
         yield return request.SendWebRequest();
 
         if (request.responseCode == 200) {

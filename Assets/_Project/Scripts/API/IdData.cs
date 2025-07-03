@@ -3,7 +3,7 @@ using UnityEngine;
 
 [Serializable]
 public class IdData {
-    [SerializeField] private int id;
+    [SerializeField] protected int id;
 
     public int Id => id;
 }

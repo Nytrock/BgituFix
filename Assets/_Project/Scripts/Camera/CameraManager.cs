@@ -9,7 +9,9 @@ public class CameraManager : MonoBehaviour {
 
     private Camera _camera;
     private bool _isHover;
-    [SerializeField] private bool _isMoving = true;
+    private bool _isMoving = true;
+
+    public bool IsHover => _isHover;
 
     public static Vector3 LocalMousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
