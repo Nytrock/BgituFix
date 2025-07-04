@@ -15,9 +15,10 @@ public abstract class MapElement<TEditable, TEditableData, TData> : BaseMapEleme
     public TData Data => _data;
     public int Id => _data.Id;
 
-    public virtual void Setup(MapData mapData, TData data) {
+    public virtual void Setup(MapData mapData, TData data, float precision) {
         _data = data;
         _mapData = mapData;
+        _precision = precision;
         GenerateEditables();
     }
 
@@ -36,7 +37,7 @@ public abstract class MapElement<TEditable, TEditableData, TData> : BaseMapEleme
     }
 
     private void CheckEditableOverlap(TEditable checkingEditable) {
-        Vector2 offset = new(checkingEditable.Precision / 2f, -checkingEditable.Precision / 2f);
+        Vector2 offset = new(_precision / 2f, -_precision / 2f);
 
         while (true) {
             bool overlap = false;

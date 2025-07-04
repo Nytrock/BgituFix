@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(CameraHoverTrigger))]
 public class MapBuildFloorButton : MonoBehaviour {
     [SerializeField] private ButtonWithText _button;
     [SerializeField] private ComputerErrorRenderer _errorRenderer;
@@ -19,6 +20,10 @@ public class MapBuildFloorButton : MonoBehaviour {
 
         MapBuildFloor floor = build.GetFloor(floorIndex);
         floor.ErrorUpdated += UpdateError;
+    }
+
+    public void SetManagers(CameraManager cameraManager) {
+        GetComponent<CameraHoverTrigger>().SetManager(cameraManager);
     }
 
     private void CheckFloor(int floorIndex) {

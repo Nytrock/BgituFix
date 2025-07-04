@@ -5,4 +5,5 @@ public enum CursorType {
     VerticalResize,
     DiagonalResizeLeftUp,
     DiagonalResizeLeftDown,
+    Ruler
 }

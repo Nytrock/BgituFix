@@ -2135,7 +2135,7 @@ MonoBehaviour:
   _renderer: {fileID: 8451016626976818549}
   _canvas: {fileID: 3700747297323265377}
   _activator: {fileID: 7082824699357298709}
-  _gridPrecision: 0.05
+  _freePrecision: 0.0001
   _errorsRenderer: {fileID: 245126031400107094}
 --- !u!1 &5438587070263879777
 GameObject:
@@ -3470,8 +3470,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f284006a67839524794fcb0929c267a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _defaultSpriteLayer: 2
-  _editSpriteLayer: 4
+  _defaultSpriteLayer: 3
+  _editSpriteLayer: 5
   _canvas: {fileID: 6957755539835456743}
   _infoPanel: {fileID: 5185928329317360877}
   _infoPanelMultiplier: 3.3

@@ -15,4 +15,8 @@ public class CameraHoverTrigger : MonoBehaviour, IPointerEnterHandler, IPointerE
     public void OnDisable() {
         _cameraManager.UpdateHover(false);
     }
+
+    public void SetManager(CameraManager cameraManager) {
+        _cameraManager = cameraManager;
+    }
 }

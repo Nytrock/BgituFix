@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MapEditManager : MonoBehaviour {
+    [SerializeField] private GameObject _submitChangesPanel;
     [SerializeField] private UserManager _userManager;
+    [SerializeField] private RulerManager _rulerManager;
+    [SerializeField] private GridManager _gridManager;
+    [SerializeField] private HelpManager _helpManager;
     [SerializeField] private MapManager _mapManager;
     [SerializeField] private CameraManager _cameraManager;
 
@@ -19,10 +23,17 @@ public class MapEditManager : MonoBehaviour {
     public event Action<BaseEditable> EditableRemoved;
 
     public bool IsEdit => _isEdit;
+    public bool IsRulerActive => _rulerManager.IsActive;
 
     private void Awake() {
-        _mapManager.MapGenerated += delegate { ChangeState(false); };
+        _mapManager.MapGenerated += delegate { EndEdit(); };
         _userManager.ClientSetuped += delegate { SetPermission(); };
+        _rulerManager.StateChanged += CheckRulerState;
+    }
+
+    private void CheckRulerState() {
+        if (_rulerManager.IsActive)
+            DeselectAllNowEditables();
     }
 
     private void SetPermission() {
@@ -33,32 +44,58 @@ public class MapEditManager : MonoBehaviour {
     public void StartEdit() {
         _isEdit = true;
         ChangeState(true);
+        _gridManager.SetPrecision(_mapManager.GetPrecision());
 
         string oldMapDataJson = JsonUtility.ToJson(_mapManager.Data);
         _oldMapData = JsonUtility.FromJson<MapData>(oldMapDataJson);
         _oldMapData.SetupVectors();
     }
 
-    public void SaveChanges() {
+    public void EndEdit() {
         _isEdit = false;
-        StartCoroutine(_mapManager.SubmitMapDataChanges(_oldMapData));
+        CloseSubmitPanel();
         ChangeState(false);
+
+        _oldMapData = null;
+        if (_nowEditables.Count != 0)
+            DeselectAllNowEditables();
+        _nowEditables.Clear();
+        _clipboard.Clear();
+        _mapManager.UpdateLocationSizeShow(false);
+        _rulerManager.ChangeState(false);
+    }
+
+    public void OpenSubmitPanel() {
+        if (_oldMapData.Equals(_mapManager.Data)) {
+            EndEdit();
+            return;
+        }
+
+        ChangeSubmitPanelState(true);
+    }
+
+    public void CloseSubmitPanel() {
+        ChangeSubmitPanelState(false);
+    }
+
+    private void ChangeSubmitPanelState(bool newState) {
+        _submitChangesPanel.SetActive(newState);
+    }
+
+    public void SaveChanges() {
+        StartCoroutine(_mapManager.SubmitMapDataChanges(_oldMapData));
+        EndEdit();
     }
 
     public void CancelChanges() {
-        _isEdit = false;
         _mapManager.RevertMapDataChanges(_oldMapData);
-        ChangeState(false);
+        EndEdit();
     }
 
     private void ChangeState(bool newState) {
-        if (!newState) {
-            _oldMapData = null;
-            if (_nowEditables.Count != 0)
-                DeselectAllNowEditables();
-            _nowEditables.Clear();
-            _clipboard.Clear();
-        }
+        _helpManager.ChangeState(false);
+        _cameraManager.ChangeEditState(newState);
+        _gridManager.ChangeState(newState);
         EditStateChanged?.Invoke(newState);
     }
 
@@ -67,13 +104,14 @@ public class MapEditManager : MonoBehaviour {
 
         if (_nowEditables.Count == 1 && _nowEditables[0] == editable) {
             DeselectAllNowEditables();
-            return;
+        } else {
+            if (_nowEditables.Count != 0)
+                DeselectAllNowEditables();
+            _nowEditables.Add(editable);
+            editable.ChangeEditingState(true);
         }
 
-        if (_nowEditables.Count != 0)
-            DeselectAllNowEditables();
-        _nowEditables.Add(editable);
-        editable.ChangeEditingState(true);
+        _mapManager.UpdateLocationSizeShow(_nowEditables.Count != 0);
     }
 
     public void ChangeSelectStateOfAdditionalEditable(BaseEditable editable) {
@@ -82,11 +120,12 @@ public class MapEditManager : MonoBehaviour {
         if (_nowEditables.Contains(editable)) {
             _nowEditables.Remove(editable);
             editable.ChangeEditingState(false);
-            return;
+        } else {
+            _nowEditables.Add(editable);
+            editable.ChangeEditingState(true);
         }
 
-        _nowEditables.Add(editable);
-        editable.ChangeEditingState(true);
+        _mapManager.UpdateLocationSizeShow(_nowEditables.Count != 0);
     }
 
     public void ChangeEditablesPosition(Vector3 offset) {
@@ -124,11 +163,11 @@ public class MapEditManager : MonoBehaviour {
 
     public void Delete() {
         _mapManager.DeleteEditables(_nowEditables);
-        _nowEditables.Clear();
+        DeselectAllNowEditables();
     }
 
     public void ChangeCameraMoving(bool isMoving) {
-        _cameraManager.ChangeMovingState(isMoving);
+        _cameraManager.ChangeMoveState(isMoving);
     }
 
     public void DeselectAllNowEditables() {
@@ -137,6 +176,7 @@ public class MapEditManager : MonoBehaviour {
             EditableRemoved?.Invoke(editable);
         });
         _nowEditables.Clear();
+        _mapManager.UpdateLocationSizeShow(false);
     }
 
     public void DeselectAllNowEditablesExceptOne(BaseEditable singleEditable) {
@@ -151,6 +191,7 @@ public class MapEditManager : MonoBehaviour {
         });
         _nowEditables.Clear();
         _nowEditables.Add(singleEditable);
+        _mapManager.UpdateLocationSizeShow(true);
     }
 
     public bool IsEditableSelected(BaseEditable editable) {

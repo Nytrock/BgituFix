@@ -11,7 +11,7 @@ public class EditableRenderer : MonoBehaviour {
     protected SpriteRenderer _renderer;
     protected RectTransform _canvasRect;
 
-    private void GetComponents() {
+    public void Setup() {
         if (_renderer != null) return;
 
         _renderer = GetComponent<SpriteRenderer>();
@@ -19,7 +19,6 @@ public class EditableRenderer : MonoBehaviour {
     }
 
     public virtual void SetData(EditableData data) {
-        GetComponents();
         SetSize(data.Size);
     }
 

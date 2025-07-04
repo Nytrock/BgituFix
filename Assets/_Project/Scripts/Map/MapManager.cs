@@ -95,6 +95,14 @@ public class MapManager : MonoBehaviour {
         MapUpdated?.Invoke();
     }
 
+    public void UpdateLocationSizeShow(bool isShow) {
+        if (_state == MapState.Build)
+            _buildManager.UpdateNowElementShowingSize(isShow);
+
+        if (_state == MapState.Audience)
+            _audienceManager.UpdateNowElementShowingSize(isShow);
+    }
+
     public void CreateEmptyEditable() {
         if (_state == MapState.Build) {
             EditableAudience audience = _buildManager.CreateEmptyEditableOnMap();
@@ -111,7 +119,7 @@ public class MapManager : MonoBehaviour {
         foreach (var data in clipboard) {
             if (_state == MapState.Build) {
                 AudienceData audienceData = new(data as AudienceData);
-                _data.CheckCopyAudienceData(audienceData);
+                _data.CheckCopyAudienceData(audienceData, _buildManager.NowElement);
                 EditableAudience audience = _buildManager.CreateEditableOnMap(audienceData, true);
                 _data.AddAudience(audience.Data);
                 yield return audience;
@@ -137,5 +145,11 @@ public class MapManager : MonoBehaviour {
             foreach (var editable in editables)
                 _audienceManager.DeleteEditableOnMap(editable as EditableComputer);
         }
+    }
+
+    public float GetPrecision() {
+        if (_state == MapState.Build)
+            return _buildManager.GridPrecision;
+        return _audienceManager.GridPrecision;
     }
 }

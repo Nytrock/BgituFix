@@ -106,7 +106,7 @@ public class MapData {
         computers = oldMapData.computers;
     }
 
-    public void CheckCopyAudienceData(AudienceData copyAudience) {
+    public void CheckCopyAudienceData(AudienceData copyAudience, MapBuild nowBuild) {
         int counter = 0;
         string originalName = copyAudience.Name.RemoveCopyName();
 
@@ -114,6 +114,7 @@ public class MapData {
             if (audience.Name.StartsWith(originalName))
                 counter++;
 
+        copyAudience.ChangeBuild(nowBuild.Id, nowBuild.NowFloor);
         copyAudience.UpdateName($"{originalName} ({counter})");
     }
 
@@ -126,5 +127,21 @@ public class MapData {
                 counter++;
 
         copyComputer.UpdateNumber($"{originalName} ({counter})");
+    }
+
+    public bool Equals(MapData other) {
+        foreach (var audience in auditoriums) {
+            AudienceData otherAudience = other.GetAudienceById(audience.Id);
+            if (otherAudience == null) return false;
+            if (!otherAudience.Equals(audience)) return false;
+        }
+
+        foreach (var computer in computers) {
+            ComputerData otherComputer = other.GetComputerById(computer.Id);
+            if (otherComputer == null) return false;
+            if (!otherComputer.Equals(computer)) return false;
+        }
+
+        return true;
     }
 }

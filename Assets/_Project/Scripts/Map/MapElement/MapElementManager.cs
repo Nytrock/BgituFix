@@ -12,11 +12,15 @@ public abstract class MapElementManager<TElement, TEditable, TEditableData, TEle
 
     [SerializeField] protected Pool<TElement> _pool;
     [SerializeField] private CameraManager _cameraManager;
+    [SerializeField] private float _gridPrecision;
     [SerializeField] private string _APIPathForEditables;
 
     protected TElement _nowElement;
     protected MapData _mapData;
     protected readonly List<TElement> _mapElements = new();
+
+    public TElement NowElement => _nowElement;
+    public float GridPrecision => _gridPrecision;
 
     public event Action<bool> StateChanged;
 
@@ -28,8 +32,12 @@ public abstract class MapElementManager<TElement, TEditable, TEditableData, TEle
 
     public virtual void GenerateMapElement(TElementData elementData) {
         TElement mapElement = _pool.GetObject();
-        mapElement.Setup(_mapData, elementData);
+        mapElement.Setup(_mapData, elementData, _gridPrecision);
         _mapElements.Add(mapElement);
+    }
+
+    public void UpdateNowElementShowingSize(bool isShow) {
+        _nowElement.UpdateShowingSize(isShow);
     }
 
     protected void UpdateCamera() {

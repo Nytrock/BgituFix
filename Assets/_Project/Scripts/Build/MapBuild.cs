@@ -29,8 +29,6 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
         ErrorManager errorManager, UserManager userManager, SelectManager selectManager) {
 
         (_pool as EditableAudiencePool).SetManagers(mapManager, editManager, selectManager);
-        editManager.EditStateChanged += UpdateShowingSize;
-
         if (userManager.ClientType != UserType.Admin)
             return;
 

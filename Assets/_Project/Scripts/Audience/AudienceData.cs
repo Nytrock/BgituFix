@@ -37,6 +37,11 @@ public class AudienceData : EditableData {
         this.name = name;
     }
 
+    public void ChangeBuild(int nowBuild, int nowFloor) {
+        buildingId = nowBuild;
+        floor = nowFloor;
+    }
+
     public bool Equals(AudienceData other) {
         return name == other.name && isComputer == other.isComputer && base.Equals(other);
     }

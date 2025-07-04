@@ -34,7 +34,7 @@ public class MapBuildManagerUI : MonoBehaviour {
 
     private void AddBuild(MapBuild build) {
         MapBuildButton buildButton = _buildsButtonsPool.GetObject();
-        buildButton.Setup(build, _buildManager);
+        buildButton.SetBuild(build);
 
         MapBuildFloorUI floorUI = _floorUIPool.GetObject();
         floorUI.GenerateButtons(build);

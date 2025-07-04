@@ -12,8 +12,8 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
 
     private bool _isShowingSize;
 
-    public override void Setup(MapData mapData, AudienceData data) {
-        base.Setup(mapData, data);
+    public override void Setup(MapData mapData, AudienceData data, float precision) {
+        base.Setup(mapData, data, precision);
         ChangeSizeShowState(false);
         UpdateSize();
     }
@@ -69,7 +69,6 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
 
         (_pool as EditableComputerPool).SetManagers(mapManager, computerUI, editManager, selectManager);
 
-        editManager.EditStateChanged += UpdateShowingSize;
         errorManager.ErrorAdded += CheckNewError;
         errorManager.ErrorChanged += CheckChangedError;
         errorManager.ErrorDeleted += CheckDeletedError;

@@ -8,8 +8,8 @@ public static class CalculationUtils {
             return;
 
         float rawWidth = Mathf.Abs(border - mousePosition);
-        length = SnapToGrid(rawWidth, precision * 2f);
-        length = Mathf.Max(length, precision * 2);
+        length = SnapToGrid(rawWidth, precision);
+        length = Mathf.Max(length, precision);
         center = border - length / 2f * sign;
     }
 
@@ -31,6 +31,10 @@ public static class CalculationUtils {
 
     public static float SnapToGrid(float value, float precision) {
         return Mathf.Round(value / precision) * precision;
+    }
+
+    public static Vector2 SnapToGrid(Vector2 value, float precision) {
+        return new(SnapToGrid(value.x, precision), SnapToGrid(value.y, precision));
     }
 
     public static bool RectContainsRect(Vector2 bigBottomLeft, Vector2 bigTopRight, Vector2 smallBottomLeft, Vector2 smallTopRight) {

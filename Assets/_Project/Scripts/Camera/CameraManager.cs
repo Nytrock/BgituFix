@@ -5,31 +5,39 @@ public class CameraManager : MonoBehaviour {
     [SerializeField] private float _cameraOffset;
     [SerializeField] private float _minSize;
     [SerializeField] private float _scrollSensivity;
-    [SerializeField] private float _keySpeed;
 
     private Camera _camera;
+    private float _startZoom;
     private bool _isHover;
-    private bool _isMoving = true;
+    private bool _isEdit;
+    private bool _canMove = true;
+    private Vector3 _mouseOffset;
 
     public bool IsHover => _isHover;
-
+    public float Zoom => _startZoom / _camera.orthographicSize;
+    public Vector3 Size => new(_camera.orthographicSize * 2 / 9 * 16, _camera.orthographicSize * 2);
     public static Vector3 LocalMousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
     private void Awake() {
         _camera = GetComponent<Camera>();
+        _startZoom = _camera.orthographicSize;
     }
 
     private void Update() {
         if (_isHover)
             return;
 
-        if (_isMoving)
+        if (_canMove)
             UpdatePosition();
         UpdateSize();
     }
 
     public void UpdateHover(bool isHover) {
         _isHover = isHover;
+    }
+
+    public void ChangeEditState(bool isEdit) {
+        _isEdit = isEdit;
     }
 
     private void UpdateSize() {
@@ -43,9 +51,14 @@ public class CameraManager : MonoBehaviour {
     }
 
     private void UpdatePosition() {
-        float horizontalAxis = Input.GetAxis("Horizontal");
-        float verticalAxis = Input.GetAxis("Vertical");
-        transform.position += _camera.orthographicSize * Time.deltaTime * _keySpeed * new Vector3(horizontalAxis, verticalAxis);
+        int buttonCode = _isEdit ? 2 : 0;
+        if (Input.GetMouseButtonDown(buttonCode))
+            _mouseOffset = LocalMousePosition;
+
+        if (Input.GetMouseButton(buttonCode)) {
+            Vector3 direction = _mouseOffset - LocalMousePosition;
+            transform.position += direction;
+        }
     }
 
     public void ForceSetSize(float size) {
@@ -56,7 +69,7 @@ public class CameraManager : MonoBehaviour {
         transform.position = new(0, 0, -10);
     }
 
-    public void ChangeMovingState(bool isMoving) {
-        _isMoving = isMoving;
+    public void ChangeMoveState(bool isMoving) {
+        _canMove = isMoving;
     }
 }

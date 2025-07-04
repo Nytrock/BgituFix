@@ -3,13 +3,16 @@ using UnityEngine;
 public abstract class BaseMapElement : MonoBehaviour {
 
     protected float _cameraSize;
-    public float CameraSize => _cameraSize;
+    protected float _precision;
 
-    public void UpdateShowingSize(bool isEdit) {
+    public float CameraSize => _cameraSize;
+    public float Precision => _precision;
+
+    public void UpdateShowingSize(bool isShow) {
         if (!gameObject.activeSelf)
             return;
 
-        ChangeSizeShowState(isEdit);
+        ChangeSizeShowState(isShow);
     }
 
     public virtual void ChangeState(bool newState) {

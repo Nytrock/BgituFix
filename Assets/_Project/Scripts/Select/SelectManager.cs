@@ -7,8 +7,10 @@ public class SelectManager : MonoBehaviour {
     [SerializeField] private Selector _selector;
 
     private BaseEditable _editable;
+
     private bool _leftWasHeldBeforeEditable;
     private bool _rightWasHeldBeforeEditable;
+    private bool _onHoverWasOnDown;
 
     public bool IsSelectorActive => _selector.IsActive;
 
@@ -27,26 +29,32 @@ public class SelectManager : MonoBehaviour {
     }
 
     private void Update() {
+        if (_onHoverWasOnDown) {
+            if (!_cameraManager.IsHover)
+                _onHoverWasOnDown = false;
+            return;
+        }
+
+        if (_editManager.IsRulerActive)
+            return;
+
         if (Input.GetMouseButtonUp(0))
             LeftButtonUp();
 
         if (Input.GetMouseButtonUp(1))
             RightButtonUp();
 
-        if (_cameraManager.IsHover)
-            return;
-
         if (Input.GetMouseButtonDown(0))
             LeftButtonDown();
     }
 
     private void LeftButtonUp() {
-        if (_leftWasHeldBeforeEditable) {
+        if (_leftWasHeldBeforeEditable && !_selector.IsActive) {
             _leftWasHeldBeforeEditable = false;
             return;
         }
 
-        if (_editable == null) {
+        if (_editable == null || _selector.IsActive) {
             _selector.ChangeState(false);
             return;
         }
@@ -67,6 +75,10 @@ public class SelectManager : MonoBehaviour {
     }
 
     private void LeftButtonDown() {
+        _onHoverWasOnDown = _cameraManager.IsHover;
+        if (_onHoverWasOnDown)
+            return;
+
         if (_editable != null) {
             _editable.LeftButtonDown();
             return;

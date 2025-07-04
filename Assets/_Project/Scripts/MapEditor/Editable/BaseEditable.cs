@@ -4,7 +4,7 @@ public abstract class BaseEditable : MonoBehaviour {
     [SerializeField] protected EditableRenderer _renderer;
     [SerializeField] protected EditableCanvas _canvas;
     [SerializeField] protected EditableActivator _activator;
-    [SerializeField, Min(0)] protected float _gridPrecision;
+    [SerializeField, Min(0)] protected float _freePrecision;
 
     protected MapManager _mapManager;
     protected MapEditManager _editManager;
@@ -22,7 +22,6 @@ public abstract class BaseEditable : MonoBehaviour {
     protected float _mouseTime = 0;
 
     public bool IsResizing => _isResizing;
-    public float Precision => _gridPrecision;
     public abstract Vector2 Size { get; }
     public abstract Vector2 Position { get; }
 
@@ -38,7 +37,9 @@ public abstract class BaseEditable : MonoBehaviour {
 
     protected void BaseSetup(BaseMapElement parent) {
         _parent = parent;
+        _renderer.Setup();
         _canvas.Setup(this, _selectManager);
+        ChangeEditingState(false);
     }
 
     public virtual void LeftButtonDown() {
@@ -111,12 +112,10 @@ public abstract class BaseEditable : MonoBehaviour {
 
     public void ChangeSelectState() {
         _editManager.ChangeSelectStateOfSingleEditable(this);
-        bool isSelected = _editManager.IsEditableSelected(this);
-        _parent.UpdateShowingSize(isSelected);
     }
 
     protected abstract void ChangePositionByMouse();
-    public abstract void ChangePosition(Vector2 newPosition);
+    public abstract void ChangePosition(Vector3 newPosition);
     protected abstract void ChangeSizeByMouse();
     public abstract void ChangeSize(float width, float height);
 }
