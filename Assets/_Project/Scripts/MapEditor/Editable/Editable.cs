@@ -14,6 +14,12 @@ public abstract class Editable<TData> : BaseEditable
 
     public event Action SizeOrPositionChanged;
 
+    private float GetPresicion() {
+        if (Input.GetKey(KeyCode.LeftShift))
+            return _freePrecision;
+        return _parent.Precision;
+    }
+
     public virtual void Setup(TData data, BaseMapElement parent) {
         BaseSetup(parent);
         SetData(data);
@@ -29,7 +35,7 @@ public abstract class Editable<TData> : BaseEditable
 
     protected override void ChangePositionByMouse() {
         Vector3 mousePosition = CameraManager.LocalMousePosition + _mouseOffset;
-        mousePosition = CalculationUtils.GetSnappedPosition(mousePosition, _gridPrecision);
+        mousePosition = CalculationUtils.GetSnappedEditablePosition(mousePosition, _data.Size, GetPresicion());
         _editManager.ChangeEditablesPosition(mousePosition - transform.position);
     }
 
@@ -40,24 +46,32 @@ public abstract class Editable<TData> : BaseEditable
         float centerX = transform.position.x, centerY = transform.position.y;
 
         if (_isHorizontalResizing)
-            CalculationUtils.Resize(ref width, ref centerX, _mouseOffset.x, mousePosition.x, _gridPrecision);
+            CalculationUtils.Resize(ref width, ref centerX, _mouseOffset.x, mousePosition.x, GetPresicion());
 
         if (_isVerticalResizing)
-            CalculationUtils.Resize(ref height, ref centerY, _mouseOffset.y, mousePosition.y, _gridPrecision);
+            CalculationUtils.Resize(ref height, ref centerY, _mouseOffset.y, mousePosition.y, GetPresicion());
 
         ChangePosition(new(centerX, centerY));
         ChangeSize(width, height);
     }
 
-    public override void ChangePosition(Vector2 newPosition) {
+    public override void ChangePosition(Vector3 newPosition) {
+        if (newPosition == transform.position)
+            return;
+
         transform.position = newPosition;
         _data.UpdatePosition(transform.position);
+        _mouseTime += 0.2f;
         SizeOrPositionChanged?.Invoke();
     }
 
     public override void ChangeSize(float width, float height) {
+        if (_data.Size == new Vector2(width, height))
+            return;
+
         _data.UpdateSize(width, height);
         _renderer.SetSize(_data.Size);
+        _mouseTime += 0.2f;
         SizeOrPositionChanged?.Invoke();
     }
 }

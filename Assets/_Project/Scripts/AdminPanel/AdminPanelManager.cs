@@ -1,18 +1,20 @@
-using System;
 using UnityEngine;
 
-public class AdminPanelManager : MonoBehaviour {
-    [SerializeField] private GameObject _panel;
+public class AdminPanelManager : StateMachine {
     [SerializeField] private UserManager _userManager;
-    [SerializeField] private MapManager _mapManager;
+    [SerializeField] private AdminPanelAddUser _userForm;
     [SerializeField] private AdminPanelStatistics _stats;
     [SerializeField] private AdminPanelUsersList _usersList;
-
-    public event Action<bool> StateChanged;
 
     private void Awake() {
         _userManager.ClientSetuped += Setup;
         ChangeState(false);
+    }
+
+    public override void ChangeState(bool newState) {
+        base.ChangeState(newState);
+        if (newState)
+            ChangeUserFormState(false);
     }
 
     private void Setup() {
@@ -23,24 +25,14 @@ public class AdminPanelManager : MonoBehaviour {
         _usersList.Setup(_userManager);
     }
 
-    private void ChangeState(bool newState) {
-        _panel.SetActive(newState);
-        StateChanged?.Invoke(newState);
-    }
-
-    public void Open() {
-        ChangeState(true);
-        _mapManager.ChangeState(false);
-    }
-
-    public void Close() {
-        ChangeState(false);
-        _mapManager.ChangeState(true);
-    }
-
     public void CreateUser(UserData userData) {
         _usersList.AddUser(userData);
         _stats.AddUser();
+        ChangeUserFormState(false);
         StartCoroutine(_userManager.CreateUser(userData));
+    }
+
+    public void ChangeUserFormState(bool newState) {
+        _userForm.ChangeState(newState);
     }
 }

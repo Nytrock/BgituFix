@@ -13,6 +13,10 @@ public class GridToggle : MonoBehaviour {
         _toggle.onValueChanged.AddListener(_gridManager.ChangeStateSilently);
     }
 
+    private void OnEnable() {
+        UpdateToggle();
+    }
+
     private void UpdateToggle() {
         _toggle.SetIsOnWithoutNotify(_gridManager.IsActive);
     }

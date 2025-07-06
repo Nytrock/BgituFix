@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 564995717037473975}
   - component: {fileID: 7360702923521126724}
   - component: {fileID: 6080714404277808002}
-  - component: {fileID: 4838950111568097860}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -122,23 +121,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _text: {fileID: 1792017349155920643}
---- !u!114 &4838950111568097860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 279761126828868546}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0dcf7050c10216949aa87ed12fb38171, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shadowColor: {r: 0, g: 0, b: 0, a: 0.32941177}
-  shadowDistance: {x: 0, y: 0}
-  m_UseGraphicAlpha: 1
-  iterations: 10
-  shadowSpread: {x: 10, y: 10}
 --- !u!1 &947287451782732837
 GameObject:
   m_ObjectHideFlags: 0
@@ -177,7 +159,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 120, y: 120}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3649178451361259250
 CanvasRenderer:
@@ -202,11 +184,11 @@ MonoBehaviour:
   _button: {fileID: 6080714404277808002}
   _errorRenderer: {fileID: 846798030267628504}
   _selectedStyle:
-    _backgroundColor: {r: 0.22745098, g: 0.45882353, b: 0.7647059, a: 1}
-    _textColor: {r: 1, g: 1, b: 1, a: 1}
+    _backgroundColor: 0
+    _textColor: 5
   _deselectedStyle:
-    _backgroundColor: {r: 0.76862746, g: 0.84705883, b: 0.88235295, a: 1}
-    _textColor: {r: 0.22745098, g: 0.45882353, b: 0.7647059, a: 1}
+    _backgroundColor: 4
+    _textColor: 5
 --- !u!1 &1532274163603962323
 GameObject:
   m_ObjectHideFlags: 0
@@ -241,8 +223,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 20, y: 0}
+  m_SizeDelta: {x: -40, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4597610800715385185
 CanvasRenderer:
@@ -272,10 +254,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 44b81face26d429419866537508ee29a, type: 2}
-  m_sharedMaterial: {fileID: -6671237734387001969, guid: 44b81face26d429419866537508ee29a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a502619983a62494db9e72e924425492, type: 2}
+  m_sharedMaterial: {fileID: -6767015813882327158, guid: a502619983a62494db9e72e924425492, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -299,8 +281,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -378,8 +360,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -10, y: -10}
-  m_SizeDelta: {x: 30, y: 30}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7799210170669915754
 CanvasRenderer:
@@ -431,10 +413,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ac061c1c646c724482933e54e0ad84c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _styles:
-  - _errorType: 1
-    _color: {r: 0.99215686, g: 0.74509805, b: 0.12941177, a: 1}
-  - _errorType: 2
-    _color: {r: 1, g: 0.4392157, b: 0.2, a: 1}
-  - _errorType: 3
-    _color: {r: 1, g: 0.23529412, b: 0.23529412, a: 1}

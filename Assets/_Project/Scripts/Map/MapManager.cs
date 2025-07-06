@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class MapManager : MonoBehaviour {
+public class MapManager : StateMachine {
     [SerializeField] private UserManager _userManager;
     [SerializeField] private MapBuildManager _buildManager;
     [SerializeField] private MapAudienceManager _audienceManager;
@@ -19,7 +19,6 @@ public class MapManager : MonoBehaviour {
     public MapData Data => _data;
     public MapState State => _state;
 
-    public event Action<bool> StateChanged;
     public event Action MapUpdated;
     public event Action MapGenerated;
     public event Action MapLocationChanged;
@@ -30,11 +29,6 @@ public class MapManager : MonoBehaviour {
 
     private void StartGettingMap() {
         StartCoroutine(GetMapData());
-    }
-
-    public void ChangeState(bool newState) {
-        gameObject.SetActive(newState);
-        StateChanged?.Invoke(newState);
     }
 
     private IEnumerator GetMapData() {

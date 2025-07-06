@@ -10,8 +10,6 @@ public class Singleton<TObject> : MonoBehaviour
     protected virtual void Awake() => InitializeSingleton();
 
     protected virtual void InitializeSingleton() {
-        if (!Application.isPlaying) return;
-
         if (_instance != null) {
             Destroy(gameObject);
             return;

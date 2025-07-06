@@ -6,13 +6,12 @@ public class ComputerInfoUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI _audienceText;
     [SerializeField] private string _audienceMessage = "Аудитория: ";
     [SerializeField] private TextMeshProUGUI _serialNumberText;
-    [SerializeField] private string _serialNumberMessage = "Серийный номер: ";
     [SerializeField] private ComputerErrorsUI _errorsUI;
 
     public void Open(ComputerData data) {
         AudienceData audienceData = _audienceManager.GetElementDataById(data.AudienceId);
         _audienceText.text = _audienceMessage + audienceData.Name;
-        _serialNumberText.text = _serialNumberMessage + data.SerialNumber;
+        _serialNumberText.text = data.SerialNumber;
         _errorsUI.SetupErrorsList(data);
         ChangeState(true);
     }

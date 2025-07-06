@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 20}
+  m_SizeDelta: {x: 0, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6616736754708452555
 CanvasRenderer:
@@ -65,10 +65,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u041A\u043E\u0440\u043F\u0443\u0441 \u21161"
+  m_text: 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 44b81face26d429419866537508ee29a, type: 2}
-  m_sharedMaterial: {fileID: -6671237734387001969, guid: 44b81face26d429419866537508ee29a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a502619983a62494db9e72e924425492, type: 2}
+  m_sharedMaterial: {fileID: -6767015813882327158, guid: a502619983a62494db9e72e924425492, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -92,15 +92,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -148,7 +148,6 @@ GameObject:
   - component: {fileID: 7973853971448491675}
   - component: {fileID: 2567159637804152438}
   - component: {fileID: 278261657061287534}
-  - component: {fileID: 7599693870084722013}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -258,23 +257,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _text: {fileID: 5643220811553086270}
---- !u!114 &7599693870084722013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7861943902584510815}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0dcf7050c10216949aa87ed12fb38171, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shadowColor: {r: 0, g: 0, b: 0, a: 0.32941177}
-  shadowDistance: {x: 0, y: 0}
-  m_UseGraphicAlpha: 1
-  iterations: 10
-  shadowSpread: {x: 4, y: 15}
 --- !u!1 &8455674460167803956
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,7 +294,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 278, y: 120}
+  m_SizeDelta: {x: 160, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &892626741201837638
 CanvasRenderer:
@@ -334,11 +316,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f0e035ffc9ea004c9c18257a5500a24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _buildText: "\u041A\u043E\u0440\u043F\u0443\u0441 \u2116"
   _button: {fileID: 278261657061287534}
   _selectedStyle:
-    _backgroundColor: {r: 0.22745098, g: 0.45882353, b: 0.7647059, a: 1}
-    _textColor: {r: 1, g: 1, b: 1, a: 1}
+    _backgroundColor: 0
+    _textColor: 5
   _deselectedStyle:
-    _backgroundColor: {r: 0.76862746, g: 0.84705883, b: 0.88235295, a: 1}
-    _textColor: {r: 0.22745098, g: 0.45882353, b: 0.7647059, a: 1}
+    _backgroundColor: 4
+    _textColor: 5

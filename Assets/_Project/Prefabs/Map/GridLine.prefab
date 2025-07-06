@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4959597115377887444}
   - component: {fileID: 1793388741859595472}
+  - component: {fileID: 9024046131252123176}
   m_Layer: 0
   m_Name: GridLine
   m_TagString: Untagged
@@ -124,7 +125,7 @@ LineRenderer:
       atime5: 0
       atime6: 0
       atime7: 0
-      m_Mode: 0
+      m_Mode: 1
       m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
@@ -139,3 +140,16 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &9024046131252123176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920677266795912757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adc74b70cf30b7c4a86021a62d106b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _variable: 6

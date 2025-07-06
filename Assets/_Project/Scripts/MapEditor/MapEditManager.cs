@@ -45,7 +45,10 @@ public class MapEditManager : MonoBehaviour {
         _isEdit = true;
         ChangeState(true);
         _gridManager.SetPrecision(_mapManager.GetPrecision());
+        SetOldMapData();
+    }
 
+    private void SetOldMapData() {
         string oldMapDataJson = JsonUtility.ToJson(_mapManager.Data);
         _oldMapData = JsonUtility.FromJson<MapData>(oldMapDataJson);
         _oldMapData.SetupVectors();
@@ -80,6 +83,11 @@ public class MapEditManager : MonoBehaviour {
 
     private void ChangeSubmitPanelState(bool newState) {
         _submitChangesPanel.SetActive(newState);
+    }
+
+    public void SaveChangesWithoutEndingEdit() {
+        StartCoroutine(_mapManager.SubmitMapDataChanges(_oldMapData));
+        SetOldMapData();
     }
 
     public void SaveChanges() {

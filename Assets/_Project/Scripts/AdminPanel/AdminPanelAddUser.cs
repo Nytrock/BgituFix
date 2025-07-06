@@ -21,4 +21,17 @@ public class AdminPanelAddUser : MonoBehaviour {
         UserData userData = new(name, password, email, isAdmin);
         _adminManager.CreateUser(userData);
     }
+
+    public void ChangeState(bool newState) {
+        gameObject.SetActive(newState);
+        if (newState)
+            ClearForm();
+    }
+
+    private void ClearForm() {
+        _nameInput.text = string.Empty;
+        _emailInput.text = string.Empty;
+        _passwordInput.text = string.Empty;
+        _isAdminToggle.isOn = false;
+    }
 }

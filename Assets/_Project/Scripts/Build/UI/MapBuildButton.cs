@@ -1,8 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(CameraHoverTrigger))]
 public class MapBuildButton : MonoBehaviour {
-    [SerializeField] private string _buildText;
     [SerializeField] private ButtonWithText _button;
     [SerializeField] private StateStyle _selectedStyle;
     [SerializeField] private StateStyle _deselectedStyle;
@@ -15,12 +13,10 @@ public class MapBuildButton : MonoBehaviour {
         _button.onClick.AddListener(delegate {
             _buildManager.OpenBuild(build.Id);
         });
-        _button.SetText(_buildText + ' ' + build.Number);
+        _button.SetText(build.Number.ToString());
     }
 
-    public void SetupManagers(MapBuildManager buildManager, CameraManager cameraManager) {
-        GetComponent<CameraHoverTrigger>().SetManager(cameraManager);
-
+    public void SetupManagers(MapBuildManager buildManager) {
         _buildManager = buildManager;
         buildManager.BuildChanged += UpdateStyle;
     }

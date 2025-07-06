@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public static class APIUtility {
-    public const string API_URL = "https://bgitusec.online:7111/api";
+    public const string API_URL = "https://bgitu-fix.ru:7111/api";
     public const string TOKEN_UPDATE_PATH = "/auth/refresh-token";
     private const string TOKEN_HEADER = "Authorization";
     private const string TOKEN_TEXT = "Bearer ";

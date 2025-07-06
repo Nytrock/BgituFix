@@ -23,10 +23,10 @@ public static class CalculationUtils {
         center = border - length / 2f * sign;
     }
 
-    public static Vector3 GetSnappedPosition(Vector3 rawPosition, float precision) {
-        float x = SnapToGrid(rawPosition.x, precision);
-        float y = SnapToGrid(rawPosition.y, precision);
-        return new(x, y);
+    public static Vector3 GetSnappedEditablePosition(Vector3 rawPosition, Vector3 size, float precision) {
+        Vector3 leftBottom = rawPosition - size / 2f;
+        leftBottom = SnapToGrid(leftBottom, precision);
+        return leftBottom + size / 2f;
     }
 
     public static float SnapToGrid(float value, float precision) {
