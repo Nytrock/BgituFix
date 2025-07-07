@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 
 public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceData> {
     [SerializeField] private SpriteRenderer _renderer;
     [SerializeField] private RectTransform _canvas;
     [SerializeField] private float _sizesTextsMultiplier;
-    [SerializeField] private TextMeshProUGUI _widthText;
-    [SerializeField] private TextMeshProUGUI _lengthText;
+    [SerializeField] private EditableTextSize _widthText;
+    [SerializeField] private EditableTextSize _lengthText;
 
     private bool _isShowingSize;
 
@@ -43,10 +42,8 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
         if (!_isShowingSize)
             return;
 
-        _widthText.text = _data.Size.x.ToString() + Units.SIZE_UNIT;
-        _widthText.fontSize = _data.Size.x * _sizesTextsMultiplier;
-        _lengthText.text = _data.Size.y.ToString() + Units.SIZE_UNIT;
-        _lengthText.fontSize = _data.Size.y * _sizesTextsMultiplier;
+        _widthText.SetSize(_data.Size.x);
+        _lengthText.SetSize(_data.Size.y);
     }
 
     protected override void ChangeSizeShowState(bool newState) {

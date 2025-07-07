@@ -22,6 +22,7 @@ public abstract class BaseEditable : MonoBehaviour {
     protected float _mouseTime = 0;
 
     public bool IsResizing => _isResizing;
+    public bool MouseTimeTooBig => _mouseTime > 0.15f;
     public abstract Vector2 Size { get; }
     public abstract Vector2 Position { get; }
 
@@ -43,13 +44,13 @@ public abstract class BaseEditable : MonoBehaviour {
     }
 
     public virtual void LeftButtonDown() {
+        _mouseTime = 0;
         if (!_editManager.IsEdit)
             return;
 
         _oldIsEditing = _isEditing;
         if (!_isEditing)
             ChangeSelectState();
-        _mouseTime = 0;
         ChangeResisingAndMovingState(true);
     }
 
@@ -57,20 +58,9 @@ public abstract class BaseEditable : MonoBehaviour {
         if (!_editManager.IsEdit)
             return;
 
-        if (_mouseTime < 0.15f && _oldIsEditing)
+        if (!MouseTimeTooBig && _oldIsEditing)
             ChangeSelectState();
         ChangeResisingAndMovingState(false);
-    }
-
-    public void RightButtonUp() {
-        if (!_editManager.IsEdit)
-            return;
-
-        _canvas.ChangeInfoState();
-        _editManager.ChangeCameraMoving(!_canvas.IsInfoOpen);
-
-        if (!_isEditing)
-            ChangeSelectState();
     }
 
     public void ChangeResisingAndMovingState(bool isEdit) {
@@ -88,8 +78,6 @@ public abstract class BaseEditable : MonoBehaviour {
         _isEditing = isEditing;
         _canvas.ChangeBorderState(_isEditing);
         _renderer.ChangeEditingMode(_isEditing);
-        if (!_isEditing)
-            _canvas.ChangeInfoState(false);
     }
 
     public void SetManagers(MapManager mapManager, MapEditManager editManager, SelectManager selectManager) {

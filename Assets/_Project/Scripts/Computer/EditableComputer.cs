@@ -1,18 +1,14 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EditableComputer : Editable<ComputerData> {
-    [SerializeField] private EditableComputerErrorsRenderer _errorsRenderer;
-
     private ComputerUIManager _computerUIManager;
     private AudienceData _audienceData;
-    private readonly List<ComputerErrorData> _errors = new();
 
     public string SerialNumber => _data.SerialNumber;
 
     public override void LeftButtonUp() {
         base.LeftButtonUp();
-        if (_editManager.IsEdit)
+        if (_editManager.IsEdit || MouseTimeTooBig)
             return;
 
         _computerUIManager.OpenComputer(_data);
@@ -56,40 +52,9 @@ public class EditableComputer : Editable<ComputerData> {
             ChangeSize(oldSize.x, oldSize.y);
     }
 
-    public override void Setup(ComputerData data, BaseMapElement parent) {
-        base.Setup(data, parent);
-        _errorsRenderer.Setup();
-    }
-
     public override void SetData(ComputerData data) {
         base.SetData(data);
         _audienceData = _mapManager.Data.GetAudienceById(data.AudienceId);
-    }
-
-    protected override void UpdateEditState(bool isEdit) {
-        base.UpdateEditState(isEdit);
-        _errorsRenderer.ChangeState(!isEdit);
-    }
-
-    public void CheckChangedError(ComputerErrorData errorData) {
-        if (errorData.IsSolved)
-            CheckDeletedError(errorData);
-        else
-            CheckNewError(errorData);
-    }
-
-    public void CheckNewError(ComputerErrorData errorData) {
-        if (_data.Id == errorData.ComputerId && !errorData.IsSolved) {
-            _errors.Add(errorData);
-            _errorsRenderer.AddError(errorData);
-        }
-    }
-
-    public void CheckDeletedError(ComputerErrorData errorData) {
-        if (_errors.Contains(errorData)) {
-            _errors.Remove(errorData);
-            _errorsRenderer.RemoveError(errorData);
-        }
     }
 
     public void SetManagers(MapManager mapManager, ComputerUIManager computerUI, MapEditManager editManager, SelectManager selectManager) {
@@ -99,5 +64,12 @@ public class EditableComputer : Editable<ComputerData> {
 
     public void UpdateNumber(string newNumber) {
         _data.UpdateNumber(newNumber);
+    }
+
+    public override void CheckNewError(ComputerErrorData errorData) {
+        if (_data.Id == errorData.ComputerId && !errorData.IsSolved) {
+            _errors.Add(errorData);
+            _errorsRenderer.AddError(errorData);
+        }
     }
 }

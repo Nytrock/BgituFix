@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Editable<TData> : BaseEditable
-    where TData : EditableData {
+public abstract class Editable<TData> : BaseEditable where TData : EditableData {
+    [SerializeField] protected EditableErrorsRenderer _errorsRenderer;
 
     protected TData _data;
+    protected readonly List<ComputerErrorData> _errors = new();
 
     public override Vector2 Size => _data.Size;
     public override Vector2 Position => _data.Position;
@@ -23,6 +25,7 @@ public abstract class Editable<TData> : BaseEditable
     public virtual void Setup(TData data, BaseMapElement parent) {
         BaseSetup(parent);
         SetData(data);
+        _errorsRenderer.Setup();
     }
 
     public virtual void SetData(TData data) {
@@ -73,5 +76,26 @@ public abstract class Editable<TData> : BaseEditable
         _renderer.SetSize(_data.Size);
         _mouseTime += 0.2f;
         SizeOrPositionChanged?.Invoke();
+    }
+
+    protected override void UpdateEditState(bool isEdit) {
+        base.UpdateEditState(isEdit);
+        _errorsRenderer.ChangeEditState(isEdit);
+    }
+
+    public void CheckChangedError(ComputerErrorData errorData) {
+        if (errorData.IsSolved)
+            CheckDeletedError(errorData);
+        else
+            CheckNewError(errorData);
+    }
+
+    public abstract void CheckNewError(ComputerErrorData errorData);
+
+    public void CheckDeletedError(ComputerErrorData errorData) {
+        if (_errors.Contains(errorData)) {
+            _errors.Remove(errorData);
+            _errorsRenderer.RemoveError(errorData);
+        }
     }
 }

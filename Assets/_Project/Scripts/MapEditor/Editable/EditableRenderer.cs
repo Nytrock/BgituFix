@@ -5,8 +5,7 @@ public class EditableRenderer : MonoBehaviour {
     [SerializeField] private int _defaultSpriteLayer;
     [SerializeField] private int _editSpriteLayer;
     [SerializeField] private Canvas _canvas;
-    [SerializeField] private RectTransform _infoPanel;
-    [SerializeField] private float _infoPanelMultiplier;
+    [SerializeField] private EditableErrorsRendererResizer _errorsResizer;
 
     protected SpriteRenderer _renderer;
     protected RectTransform _canvasRect;
@@ -25,9 +24,7 @@ public class EditableRenderer : MonoBehaviour {
     public virtual void SetSize(Vector2 size) {
         _renderer.size = size;
         _canvasRect.sizeDelta = size * (1 / _canvasRect.localScale.x);
-
-        float infoSize = (size.x + size.y) / 2f * _infoPanelMultiplier;
-        _infoPanel.localScale = new(infoSize, infoSize);
+        _errorsResizer.Resize(size);
     }
 
     public void ChangeEditingMode(bool isEditing) {

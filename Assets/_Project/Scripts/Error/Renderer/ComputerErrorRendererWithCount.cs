@@ -5,10 +5,7 @@ public class ComputerErrorRendererWithCount : ComputerErrorRenderer {
     [SerializeField] private TextMeshProUGUI _countText;
     private int _count = 0;
 
-    public void SetCount(int count) {
-        _count = count;
-        UpdateText();
-    }
+    public int Count => _count;
 
     public void AddToCount() {
         _count++;

@@ -51,7 +51,7 @@ public class CameraManager : MonoBehaviour {
     }
 
     private void UpdatePosition() {
-        int buttonCode = _isEdit ? 2 : 0;
+        int buttonCode = _isEdit ? 1 : 0;
         if (Input.GetMouseButtonDown(buttonCode))
             _mouseOffset = LocalMousePosition;
 

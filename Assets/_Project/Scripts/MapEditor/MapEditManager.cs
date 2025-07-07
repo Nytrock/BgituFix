@@ -66,6 +66,7 @@ public class MapEditManager : MonoBehaviour {
         _clipboard.Clear();
         _mapManager.UpdateLocationSizeShow(false);
         _rulerManager.ChangeState(false);
+        _gridManager.ChangeState(false);
     }
 
     public void OpenSubmitPanel() {
@@ -103,7 +104,6 @@ public class MapEditManager : MonoBehaviour {
     private void ChangeState(bool newState) {
         _helpManager.ChangeState(false);
         _cameraManager.ChangeEditState(newState);
-        _gridManager.ChangeState(newState);
         EditStateChanged?.Invoke(newState);
     }
 

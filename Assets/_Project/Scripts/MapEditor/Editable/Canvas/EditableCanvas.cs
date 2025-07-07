@@ -1,22 +1,17 @@
-using TMPro;
 using UnityEngine;
 
 public class EditableCanvas : MonoBehaviour {
     [SerializeField] private GameObject _panel;
-    [SerializeField] private EditableCanvasInfo _infoPanel;
     [SerializeField] private GameObject _border;
     [SerializeField] private EditableCanvasBorderElement[] _borderElements;
-    [SerializeField] private TextMeshProUGUI _widthText;
-    [SerializeField] private TextMeshProUGUI _lengthText;
+    [SerializeField] private EditableTextSize _widthText;
+    [SerializeField] private EditableTextSize _lengthText;
 
     private SelectManager _selectManager;
     private BaseEditable _editable;
     private bool _isResizing;
 
-    public bool IsInfoOpen => _infoPanel.IsActive;
-
     private void Awake() {
-        ChangeInfoState(false);
         ChangeBorderState(false);
     }
 
@@ -24,14 +19,13 @@ public class EditableCanvas : MonoBehaviour {
         if (!_isResizing)
             return;
 
-        _widthText.text = _editable.Size.x.ToString() + Units.SIZE_UNIT;
-        _lengthText.text = _editable.Size.y.ToString() + Units.SIZE_UNIT;
+        _widthText.SetSize(_editable.Size.x);
+        _lengthText.SetSize(_editable.Size.y);
     }
 
     public void Setup(BaseEditable editable, SelectManager selectManager) {
         _editable = editable;
         _selectManager = selectManager;
-        _infoPanel.SetEditable(editable);
         SetupBorderElements();
     }
 
@@ -39,7 +33,7 @@ public class EditableCanvas : MonoBehaviour {
         foreach (var borderElement in _borderElements) {
             borderElement.CursorTypeChanged += ChangeResizeSettings;
             borderElement.LeftButtonClick += delegate {
-                _selectManager.SetEditable(_editable);
+                _selectManager.SetEditable(_editable, false);
             };
         }
     }
@@ -68,15 +62,6 @@ public class EditableCanvas : MonoBehaviour {
 
     public void ChangeState(bool newState) {
         _panel.SetActive(newState);
-        _infoPanel.ChangeState(false);
-    }
-
-    public void ChangeInfoState() {
-        _infoPanel.ChangeState();
-    }
-
-    public void ChangeInfoState(bool newState) {
-        _infoPanel.ChangeState(newState);
     }
 
     public void ChangeBorderState(bool isEditing) {

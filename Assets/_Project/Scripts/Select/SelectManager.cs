@@ -8,8 +8,7 @@ public class SelectManager : MonoBehaviour {
 
     private BaseEditable _editable;
 
-    private bool _leftWasHeldBeforeEditable;
-    private bool _rightWasHeldBeforeEditable;
+    private bool _buttonWasHeldBeforeEditable;
     private bool _onHoverWasOnDown;
 
     public bool IsSelectorActive => _selector.IsActive;
@@ -18,9 +17,9 @@ public class SelectManager : MonoBehaviour {
         _mapManager.MapLocationChanged += ResetEditable;
     }
 
-    public void SetEditable(BaseEditable editable) {
-        _leftWasHeldBeforeEditable = Input.GetMouseButton(0);
-        _rightWasHeldBeforeEditable = Input.GetMouseButton(1);
+    public void SetEditable(BaseEditable editable, bool checkButtonHeld = true) {
+        if (checkButtonHeld)
+            _buttonWasHeldBeforeEditable = Input.GetMouseButton(0);
         _editable = editable;
     }
 
@@ -41,16 +40,13 @@ public class SelectManager : MonoBehaviour {
         if (Input.GetMouseButtonUp(0))
             LeftButtonUp();
 
-        if (Input.GetMouseButtonUp(1))
-            RightButtonUp();
-
         if (Input.GetMouseButtonDown(0))
             LeftButtonDown();
     }
 
     private void LeftButtonUp() {
-        if (_leftWasHeldBeforeEditable && !_selector.IsActive) {
-            _leftWasHeldBeforeEditable = false;
+        if (_buttonWasHeldBeforeEditable && !_selector.IsActive) {
+            _buttonWasHeldBeforeEditable = false;
             return;
         }
 
@@ -60,18 +56,6 @@ public class SelectManager : MonoBehaviour {
         }
 
         _editable.LeftButtonUp();
-    }
-
-    private void RightButtonUp() {
-        if (_rightWasHeldBeforeEditable) {
-            _rightWasHeldBeforeEditable = false;
-            return;
-        }
-
-        if (_editable == null || _selector.IsActive)
-            return;
-
-        _editable.RightButtonUp();
     }
 
     private void LeftButtonDown() {
