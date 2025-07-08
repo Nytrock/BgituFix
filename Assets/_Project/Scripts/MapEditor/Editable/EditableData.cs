@@ -2,41 +2,39 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class EditableData {
-    [SerializeField] protected int id;
+public class EditableData : IdData {
     [SerializeField] protected string position;
     [SerializeField] protected string size;
 
     protected Vector2 _positionVector;
     protected Vector2 _sizeVector;
 
-    public int Id => id;
-    public Vector2 PositionVector => _positionVector;
-    public Vector2 SizeVector => _sizeVector;
-    public string Position => position;
-    public string Size => size;
+    public Vector2 Position => _positionVector;
+    public Vector2 Size => _sizeVector;
+    public Vector2 LeftBottom => Position - Size / 2f;
+    public Vector2 RightTop => Position + Size / 2f;
 
     public EditableData(Vector2 position, Vector2 size) {
         _positionVector = position;
-        this.position = position.VectorToString();
+        this.position = position.ToSerializableString();
 
         _sizeVector = size;
-        this.size = size.VectorToString();
+        this.size = size.ToSerializableString();
     }
 
     public void UpdatePosition(Vector2 position) {
         _positionVector = position;
-        this.position = _positionVector.VectorToString();
+        this.position = _positionVector.ToSerializableString();
     }
 
     public void UpdateSize(float width, float heigth) {
         _sizeVector = new(width, heigth);
-        size = _sizeVector.VectorToString();
+        size = _sizeVector.ToSerializableString();
     }
 
     public void SetupVectors() {
-        _positionVector = position.StringToVector();
-        _sizeVector = size.StringToVector();
+        _positionVector = position.ToVector();
+        _sizeVector = size.ToVector();
     }
 
     public void SetId(int id) {
@@ -46,7 +44,7 @@ public class EditableData {
         this.id = id;
     }
 
-    public bool Equals(EditableData other) {
+    public virtual bool Equals(EditableData other) {
         return id == other.id && position == other.position && size == other.size;
     }
 }

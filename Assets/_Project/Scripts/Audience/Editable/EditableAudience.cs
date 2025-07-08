@@ -1,68 +1,35 @@
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-
 public class EditableAudience : Editable<AudienceData> {
-    [SerializeField] private ComputerErrorRenderer _errorRenderer;
+    private EditableAudienceRenderer _audienceRenderer;
 
-    private readonly List<ComputerErrorData> _errors = new();
-    private EditableAudienceRenderer _audienceActivator;
-
-    public ComputerErrorType ErrorType => _errorRenderer.Type;
+    public ComputerErrorType ErrorType => _errorsRenderer.GetMaxError();
     public int Floor => _data.Floor;
-    public bool IsComputer => _data.IsComputer;
-    public string Name => _data.Name;
 
     protected void Awake() {
-        _audienceActivator = _renderer as EditableAudienceRenderer;
+        _audienceRenderer = _renderer as EditableAudienceRenderer;
     }
 
-    public override void Click() {
-        if (!_data.IsComputer)
+    public override void LeftButtonUp() {
+        base.LeftButtonUp();
+        if (_editManager.IsEdit || _data.Type != AudienceType.Computer || MouseTimeTooBig)
             return;
 
         _mapManager.OpenAudience(_data);
     }
 
-    public override void Setup(AudienceData data) {
-        base.Setup(data);
-        _errorRenderer.ChangeState(false);
-    }
-
-    public void CheckChangedError(ComputerErrorData data) {
-        if (data.IsSolved)
-            CheckDeletedError(data);
-        else
-            CheckNewError(data);
-    }
-
-    public void CheckNewError(ComputerErrorData data) {
+    public override void CheckNewError(ComputerErrorData data) {
         if (data.AudienceId == _data.Id && !data.IsSolved) {
             _errors.Add(data);
-            UpdateRenderer();
+            _errorsRenderer.AddError(data);
         }
     }
 
-    public void CheckDeletedError(ComputerErrorData data) {
-        if (_errors.Contains(data)) {
-            _errors.Remove(data);
-            UpdateRenderer();
-        }
-    }
-
-    private void UpdateRenderer() {
-        _errorRenderer.ChangeState(_errors.Count != 0);
-        if (_errors.Count > 0)
-            _errorRenderer.SetType(_errors.Select(error => error.Type).Max());
-    }
-
-    public void UpdateIsComputer(bool isComputer) {
-        _data.UpdateIsComputer(isComputer);
-        _audienceActivator.UpdateStyle();
+    public void UpdateType(AudienceType type) {
+        _data.UpdateType(type);
+        _audienceRenderer.UpdateStyle();
     }
 
     public void UpdateName(string newName) {
         _data.UpdateName(newName);
-        _audienceActivator.UpdateName();
+        _audienceRenderer.UpdateName();
     }
 }

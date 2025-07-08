@@ -1,14 +1,12 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
 public class ComputerErrorRenderer : MonoBehaviour {
-    [SerializeField] private ComputerErrorTypeStyle[] _styles;
-
     private Image _image;
-    private bool _isActive;
-    private ComputerErrorType _type;
+    protected ComputerErrorType _type;
+
+    protected bool _isEdit;
 
     public ComputerErrorType Type => _type;
 
@@ -24,32 +22,20 @@ public class ComputerErrorRenderer : MonoBehaviour {
 
     public virtual void SetType(ComputerErrorType type) {
         _type = type;
-        if (_type == ComputerErrorType.None) {
-            ChangeState(false);
+        UpdateState();
+        if (_type == ComputerErrorType.None)
             return;
-        }
 
-        foreach (var style in _styles)
-            if (style.ErrorType == type)
-                SetStyle(style);
-    }
-
-    private void SetStyle(ComputerErrorTypeStyle style) {
         CheckImage();
-        _image.color = style.Color;
+        _image.color = ThemeManager.Instance.GetErrorColor(type);
     }
 
-    public void ChangeState(bool newState) {
-        _isActive = newState;
-        gameObject.SetActive(newState);
+    public void SetEditState(bool isEdit) {
+        _isEdit = isEdit;
+        UpdateState();
     }
-}
 
-[Serializable]
-public class ComputerErrorTypeStyle {
-    [SerializeField] private ComputerErrorType _errorType;
-    [SerializeField] private Color _color;
-
-    public ComputerErrorType ErrorType => _errorType;
-    public Color Color => _color;
+    public virtual void UpdateState() {
+        gameObject.SetActive(_type != ComputerErrorType.None && !_isEdit);
+    }
 }

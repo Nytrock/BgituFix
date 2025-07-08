@@ -7,11 +7,13 @@ public class ComputerErrorFormUI : MonoBehaviour {
     [SerializeField] private TMP_Dropdown _errorType;
     [SerializeField] private TMP_InputField _errorDescription;
     [SerializeField] private Button _closeButton;
+    [SerializeField] private StateMachine _helpPanel;
 
     private ComputerData _computerData;
 
     public void ChangeState(bool newState) {
         gameObject.SetActive(newState);
+        _helpPanel.ChangeState(false);
         if (!newState)
             ClearForm();
     }
@@ -37,5 +39,10 @@ public class ComputerErrorFormUI : MonoBehaviour {
 
     public void Close() {
         _computerData = null;
+    }
+
+    public void ChangeHelpState(bool newState) {
+        _helpPanel.ChangeState(newState);
+        gameObject.SetActive(!newState);
     }
 }

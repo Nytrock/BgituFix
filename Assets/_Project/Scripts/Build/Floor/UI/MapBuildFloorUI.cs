@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class MapBuildFloorUI : MonoBehaviour {
     [SerializeField] private MapBuildFloorButtonPool _buttonsPool;
+
     private MapBuild _build;
 
     public int Id => _build.Id;
@@ -14,6 +15,10 @@ public class MapBuildFloorUI : MonoBehaviour {
 
         _build = build;
         ChangeState(false);
+    }
+
+    public void SetManagers(CameraManager cameraManager, MapEditManager editManager) {
+        _buttonsPool.SetManagers(cameraManager, editManager);
     }
 
     public void ChangeState(bool newState) {

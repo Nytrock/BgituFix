@@ -1,70 +1,101 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Editable<TData> : BaseEditable
-    where TData : EditableData {
-
-    [SerializeField, Min(0)] protected float _gridPrecision;
+public abstract class Editable<TData> : BaseEditable where TData : EditableData {
+    [SerializeField] protected EditableErrorsRenderer _errorsRenderer;
 
     protected TData _data;
+    protected readonly List<ComputerErrorData> _errors = new();
 
-    public override Vector2 Size => _data.SizeVector;
-    public override Vector2 Position => _data.PositionVector;
+    public override Vector2 Size => _data.Size;
+    public override Vector2 Position => _data.Position;
+    public Vector2 LeftBottom => _data.LeftBottom;
+    public Vector2 RightTop => _data.RightTop;
     public TData Data => _data;
 
     public event Action SizeOrPositionChanged;
 
-    public virtual void Setup(TData data) {
-        _data = data;
-        transform.position = _data.PositionVector;
-
-        _renderer.Setup(_data);
+    private float GetPresicion() {
+        if (Input.GetKey(KeyCode.LeftShift))
+            return _freePrecision;
+        return _parent.Precision;
     }
 
-    protected override void UpdatePosition() {
-        transform.position = GetSnappedPosition(CameraManager.LocalMousePosition + _mouseOffset, _gridPrecision);
-        _data.UpdatePosition(transform.position);
+    public virtual void Setup(TData data, BaseMapElement parent) {
+        BaseSetup(parent);
+        SetData(data);
+        _errorsRenderer.Setup();
+    }
+
+    public virtual void SetData(TData data) {
+        _data = data;
+        _renderer.SetData(_data);
+        _activator.SetSize(_data.Size);
+        transform.position = _data.Position;
         SizeOrPositionChanged?.Invoke();
     }
 
-    protected override void UpdateSize() {
+    protected override void ChangePositionByMouse() {
+        Vector3 mousePosition = CameraManager.LocalMousePosition + _mouseOffset;
+        mousePosition = CalculationUtils.GetSnappedEditablePosition(mousePosition, _data.Size, GetPresicion());
+        _editManager.ChangeEditablesPosition(mousePosition - transform.position);
+    }
+
+    protected override void ChangeSizeByMouse() {
+        _editManager.DeselectAllNowEditablesExceptOne(this);
         Vector2 mousePosition = CameraManager.LocalMousePosition;
-        float width = _data.SizeVector.x, height = _data.SizeVector.y;
+        float width = _data.Size.x, height = _data.Size.y;
         float centerX = transform.position.x, centerY = transform.position.y;
 
         if (_isHorizontalResizing)
-            Resize(ref width, ref centerX, _mouseOffset.x, mousePosition.x);
+            CalculationUtils.Resize(ref width, ref centerX, _mouseOffset.x, mousePosition.x, GetPresicion());
 
         if (_isVerticalResizing)
-            Resize(ref height, ref centerY, _mouseOffset.y, mousePosition.y);
+            CalculationUtils.Resize(ref height, ref centerY, _mouseOffset.y, mousePosition.y, GetPresicion());
 
-        transform.position = new(centerX, centerY);
+        ChangePosition(new(centerX, centerY));
+        ChangeSize(width, height);
+    }
+
+    public override void ChangePosition(Vector3 newPosition) {
+        if (newPosition == transform.position)
+            return;
+
+        transform.position = newPosition;
         _data.UpdatePosition(transform.position);
-
-        _data.UpdateSize(width, height);
-        _renderer.SetSize(_data.SizeVector);
+        _mouseTime += 0.2f;
         SizeOrPositionChanged?.Invoke();
     }
 
-    private void Resize(ref float length, ref float center, float mouseOffset, float mousePosition) {
-        int sign = mouseOffset > 0 ? 1 : -1;
-        float border = center + length / 2f * sign;
-        if (border * sign < mousePosition * sign)
+    public override void ChangeSize(float width, float height) {
+        if (_data.Size == new Vector2(width, height))
             return;
 
-        float rawWidth = Mathf.Abs(border - mousePosition);
-        length = SnapToGrid(rawWidth, _gridPrecision * 2f);
-        length = Mathf.Max(length, _gridPrecision * 2);
-        center = border - length / 2f * sign;
+        _data.UpdateSize(width, height);
+        _renderer.SetSize(_data.Size);
+        _mouseTime += 0.2f;
+        SizeOrPositionChanged?.Invoke();
     }
 
-    protected Vector3 GetSnappedPosition(Vector3 rawPosition, float precision) {
-        float x = SnapToGrid(rawPosition.x, precision);
-        float y = SnapToGrid(rawPosition.y, precision);
-        return new(x, y);
+    protected override void UpdateEditState(bool isEdit) {
+        base.UpdateEditState(isEdit);
+        _errorsRenderer.ChangeEditState(isEdit);
     }
 
-    private float SnapToGrid(float value, float precision) {
-        return Mathf.Round(value / precision) * precision;
+    public void CheckChangedError(ComputerErrorData errorData) {
+        if (errorData.IsSolved)
+            CheckDeletedError(errorData);
+        else
+            CheckNewError(errorData);
+    }
+
+    public abstract void CheckNewError(ComputerErrorData errorData);
+
+    public void CheckDeletedError(ComputerErrorData errorData) {
+        if (_errors.Contains(errorData)) {
+            _errors.Remove(errorData);
+            _errorsRenderer.RemoveError(errorData);
+        }
     }
 }

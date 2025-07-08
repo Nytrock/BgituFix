@@ -5,9 +5,11 @@ using UnityEngine;
 public class ComputerData : EditableData {
     [SerializeField] private string serialNumber;
     [SerializeField] private int auditoriumId;
+    [SerializeField] private ComputerType type;
 
     public string SerialNumber => serialNumber;
     public int AudienceId => auditoriumId;
+    public ComputerType Type => type;
 
     public ComputerData(int audienceId, int computersCount) : base(Vector2.zero, new(0.3f, 0.3f)) {
         id = -1;
@@ -15,17 +17,27 @@ public class ComputerData : EditableData {
         auditoriumId = audienceId;
     }
 
-    public ComputerData(ComputerData data, float offset) : base(data._positionVector + new Vector2(offset, -offset), data._sizeVector) {
+    public ComputerData(ComputerData data) : base(data._positionVector, data._sizeVector) {
         id = -1;
-        serialNumber = data.serialNumber + " (Копия)";
         auditoriumId = data.auditoriumId;
+        serialNumber = data.serialNumber;
     }
 
     public void UpdateNumber(string newNumber) {
         serialNumber = newNumber;
     }
 
+    public override bool Equals(EditableData other) {
+        if (other is not ComputerData otherComputer)
+            return base.Equals(other);
+        return Equals(otherComputer);
+    }
+
     public bool Equals(ComputerData other) {
         return serialNumber == other.serialNumber && base.Equals(other);
+    }
+
+    public void UpdateType(ComputerType computerType) {
+        type = computerType;
     }
 }

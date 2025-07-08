@@ -7,11 +7,10 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class UserManager : MonoBehaviour {
-    [SerializeField] private LoginManager _loginManager;
+    [SerializeField] private TokenManager _tokenManager;
     [SerializeField] private ProfileManager _profileManager;
     [SerializeField] private string _APIPathToCreateUser;
-    [SerializeField] private string _APIPathToDeleteUser;
-    [SerializeField] private string _APIPathToGetUsers;
+    [SerializeField] private string _APIPathForUsers;
 
     [SerializeField] private UserData _clientData;
     [SerializeField] private UserManagerData _usersData;
@@ -26,7 +25,7 @@ public class UserManager : MonoBehaviour {
     public event Action UsersCountChanged;
 
     private void Awake() {
-        _loginManager.TokenLoaded += delegate { StartCoroutine(UpdateUserData()); };
+        _tokenManager.TokenLoaded += delegate { StartCoroutine(UpdateUserData()); };
     }
 
     public UserData GetUserDataById(int userId) {
@@ -37,10 +36,8 @@ public class UserManager : MonoBehaviour {
     }
 
     private IEnumerator UpdateUserData() {
-        string token = _loginManager.Token;
-
         try {
-            string tokenContentEncoded = token.Split('.')[1];
+            string tokenContentEncoded = APIUtility.Token.Split('.')[1];
             string tokenBase64 = tokenContentEncoded.Replace('_', '/').Replace('-', '+');
             switch (tokenBase64.Length % 4) {
                 case 2: tokenBase64 += "=="; break;
@@ -49,6 +46,8 @@ public class UserManager : MonoBehaviour {
 
             byte[] contentBytes = Convert.FromBase64String(tokenBase64);
             string content = Encoding.UTF8.GetString(contentBytes);
+            content = content.Replace("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", "role");
+            content = content.Replace("fullName", "name");
 
             _clientData = JsonUtility.FromJson<UserData>(content);
             _clientData.SetupClient();
@@ -60,28 +59,26 @@ public class UserManager : MonoBehaviour {
             ClientSetuped?.Invoke();
         }
 
-        UnityWebRequest request = RequestUtility.APIGet(_APIPathToGetUsers, token);
-        yield return request.SendWebRequest();
-        _usersData = request.ToData<UserManagerData>();
+        UnityWebRequest request = APIUtility.Get(_APIPathForUsers);
+        yield return request.SendWebRequestSafely();
+        _usersData = new(request.ToData<ListData<UserData>>());
         _usersData.SetupUsers();
         UsersGetted?.Invoke();
     }
 
     public IEnumerator CreateUser(UserData newUser) {
-        string token = _loginManager.Token;
-        UnityWebRequest request = RequestUtility.APIPost(_APIPathToCreateUser, newUser, token);
-        yield return request.SendWebRequest();
-
+        UnityWebRequest request = APIUtility.Post(_APIPathToCreateUser, newUser);
+        yield return request.SendWebRequestSafely();
         IdData idData = request.ToData<IdData>();
+
         newUser.SetId(idData.Id);
         _usersData.AddUser(newUser);
         UsersCountChanged?.Invoke();
     }
 
     public IEnumerator DeleteUser(UserData userData) {
-        string token = _loginManager.Token;
-        UnityWebRequest request = RequestUtility.APIDelete(_APIPathToDeleteUser, userData.Id, token);
-        yield return request.SendWebRequest();
+        UnityWebRequest request = APIUtility.Delete(_APIPathForUsers, userData.Id);
+        yield return request.SendWebRequestSafely();
 
         _usersData.DeleteUser(userData);
         UsersCountChanged?.Invoke();

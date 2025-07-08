@@ -4,52 +4,59 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour {
     [SerializeField] private float _cameraOffset;
     [SerializeField] private float _minSize;
-    [SerializeField] private float _zoomSensivity;
+    [SerializeField] private float _scrollSensivity;
 
     private Camera _camera;
-    private Vector3 _touchOffset;
-    private bool _isHover;
+    private float _startZoom;
+    [SerializeField] private bool _isHover;
+    private bool _isEdit;
+    private bool _canMove = true;
+    private Vector3 _mouseOffset;
 
+    public bool IsHover => _isHover;
+    public float Zoom => _startZoom / _camera.orthographicSize;
+    public Vector3 Size => new(_camera.orthographicSize * 2 / 9 * 16, _camera.orthographicSize * 2);
     public static Vector3 LocalMousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
     private void Awake() {
         _camera = GetComponent<Camera>();
+        _startZoom = _camera.orthographicSize;
     }
 
     private void Update() {
         if (_isHover)
             return;
 
-        if (Input.touchCount == 1)
+        if (_canMove)
             UpdatePosition();
-        else if (Input.touchCount == 2)
-            UpdateSize();
+        UpdateSize();
     }
 
     public void UpdateHover(bool isHover) {
         _isHover = isHover;
     }
 
+    public void ChangeEditState(bool isEdit) {
+        _isEdit = isEdit;
+    }
+
     private void UpdateSize() {
-        Touch touchZero = Input.GetTouch(0);
-        Touch touchOne = Input.GetTouch(1);
+        float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
+        if (scrollAxis == 0)
+            return;
 
-        Vector2 touchZeroPrev = touchZero.position - touchZero.deltaPosition;
-        Vector2 touchOnePrev = touchOne.position - touchOne.deltaPosition;
-
-        float prevMagnitude = (touchZeroPrev - touchOnePrev).magnitude;
-        float nowMagnitude = (touchZero.position - touchOne.position).magnitude;
-
-        float difference = nowMagnitude - prevMagnitude;
-        _camera.orthographicSize = Mathf.Max(_camera.orthographicSize - difference * _zoomSensivity, _minSize);
+        _camera.orthographicSize = Mathf.Max(
+            _camera.orthographicSize - scrollAxis * _scrollSensivity, _minSize
+        );
     }
 
     private void UpdatePosition() {
-        if (Input.GetMouseButtonDown(0))
-            _touchOffset = LocalMousePosition;
+        int buttonCode = _isEdit ? 1 : 0;
+        if (Input.GetMouseButtonDown(buttonCode))
+            _mouseOffset = LocalMousePosition;
 
-        if (Input.GetMouseButton(0)) {
-            Vector3 direction = _touchOffset - LocalMousePosition;
+        if (Input.GetMouseButton(buttonCode)) {
+            Vector3 direction = _mouseOffset - LocalMousePosition;
             transform.position += direction;
         }
     }
@@ -60,5 +67,9 @@ public class CameraManager : MonoBehaviour {
 
     public void ResetPosition() {
         transform.position = new(0, 0, -10);
+    }
+
+    public void ChangeMoveState(bool isMoving) {
+        _canMove = isMoving;
     }
 }

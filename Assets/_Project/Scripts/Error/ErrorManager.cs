@@ -7,13 +7,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class ErrorManager : MonoBehaviour {
-    [SerializeField] private LoginManager _loginManager;
-    [SerializeField] private MapAudienceManager _audienceManager;
+    [SerializeField] private TokenManager _tokenManager;
     [SerializeField] private UserManager _userManager;
-    [SerializeField] private string _APIPathToGetErrors;
-    [SerializeField] private string _APIPathToChangeError;
-    [SerializeField] private string _APIPathToDeleteError;
-    [SerializeField] private string _APIPathToAddError;
+    [SerializeField] private string _APIPathForErrors;
     [SerializeField] private string _APIPathToSSE;
 
     [SerializeField] private ErrorManagerData _data;
@@ -29,17 +25,16 @@ public class ErrorManager : MonoBehaviour {
     public event Action<ComputerErrorData> ErrorDeleted;
 
     private void Awake() {
-        _loginManager.TokenLoaded += delegate { SSESetup(); };
+        ErrorsLoaded += delegate { SSESetup(); };
     }
 
     public IEnumerator GetErrors(MapData mapData) {
         _mapData = mapData;
 
-        string token = _loginManager.Token;
-        UnityWebRequest request = RequestUtility.APIGet(_APIPathToGetErrors, token);
-        yield return request.SendWebRequest();
-
+        UnityWebRequest request = APIUtility.Get(_APIPathForErrors);
+        yield return request.SendWebRequestSafely();
         _data = request.ToData<ErrorManagerData>();
+
         GenerateErrors();
         ErrorsLoaded?.Invoke();
     }
@@ -50,12 +45,9 @@ public class ErrorManager : MonoBehaviour {
     }
 
     private void SSESetup() {
-        if (_loginManager.Token == string.Empty)
-            return;
-
-        Uri uri = new(RequestUtility.API_URL + _APIPathToSSE);
+        Uri uri = new($"{APIUtility.API_URL}/{_APIPathToSSE}");
         HttpClient client = new();
-        client.SetToken(_loginManager.Token);
+        client.SetToken();
         client.SetHeaders();
 
         EventSourceReader evt = new EventSourceReader(uri, client).Start();
@@ -68,8 +60,12 @@ public class ErrorManager : MonoBehaviour {
             if (!Application.isPlaying)
                 return;
 
-            Debug.Log($"Переподключение: {e.ReconnectDelay} - Ошибка: {e.Exception}");
-            evt.Start();
+            if (e.Exception.Message.Contains("Not Found")) {
+                Debug.Log($"Ошибка, SSE сервис не найден");
+            } else {
+                Debug.Log($"Переподключение: {e.ReconnectDelay} - Ошибка: {e.Exception}");
+                evt.Start();
+            }
         };
     }
 
@@ -94,25 +90,22 @@ public class ErrorManager : MonoBehaviour {
     }
 
     public IEnumerator ChangeErrorSolveInDatabase(ComputerErrorData error, bool isSolved) {
-        string token = _loginManager.Token;
-        BoolChangeData dataToSend = new(error.Id, isSolved);
-        UnityWebRequest www = RequestUtility.APIPut(_APIPathToChangeError, dataToSend, token);
-        yield return www.SendWebRequest();
+        ErrorChangeData dataToSend = new(error.Id, isSolved);
+        UnityWebRequest request = APIUtility.Put(_APIPathForErrors, dataToSend, error.Id);
+        yield return request.SendWebRequestSafely();
     }
 
     public IEnumerator DeleteErrorInDatabase(ComputerErrorData error) {
-        string token = _loginManager.Token;
-        UnityWebRequest www = RequestUtility.APIDelete(_APIPathToDeleteError, error.Id, token);
-        yield return www.SendWebRequest();
+        UnityWebRequest request = APIUtility.Delete(_APIPathForErrors, error.Id);
+        yield return request.SendWebRequestSafely();
     }
 
     public IEnumerator CreateErrorInDatabase(ComputerErrorType type, string comment, int computerId) {
         int clientId = _userManager.ClientId;
         ComputerErrorData newError = new(computerId, clientId, type, comment);
 
-        string token = _loginManager.Token;
-        UnityWebRequest request = RequestUtility.APIPost(_APIPathToAddError, newError, token);
-        yield return request.SendWebRequest();
+        UnityWebRequest request = APIUtility.Post(_APIPathForErrors, newError);
+        yield return request.SendWebRequestSafely();
     }
 
     private void AddError(ComputerErrorData newError) {

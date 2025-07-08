@@ -5,15 +5,12 @@ public class ComputerErrorRendererWithCount : ComputerErrorRenderer {
     [SerializeField] private TextMeshProUGUI _countText;
     private int _count = 0;
 
-    public void SetCount(int count) {
-        _count = count;
-        UpdateText();
-    }
+    public int Count => _count;
 
     public void AddToCount() {
         _count++;
         UpdateText();
-        ChangeState(true);
+        UpdateState();
     }
 
     public void RemoveFromCount() {
@@ -22,12 +19,14 @@ public class ComputerErrorRendererWithCount : ComputerErrorRenderer {
 
         _count--;
         UpdateText();
-
-        if (_count == 0)
-            ChangeState(false);
+        UpdateState();
     }
 
     private void UpdateText() {
         _countText.text = _count.ToString();
+    }
+
+    public override void UpdateState() {
+        gameObject.SetActive(_type != ComputerErrorType.None && _count > 0 && _isEdit);
     }
 }

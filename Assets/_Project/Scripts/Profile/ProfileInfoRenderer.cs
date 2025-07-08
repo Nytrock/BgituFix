@@ -5,7 +5,7 @@ public class ProfileInfoRenderer : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private TextMeshProUGUI _emailText;
     [SerializeField] private TextMeshProUGUI _errorsFoundText;
-    [SerializeField] private TextMeshProUGUI _errorsFixedText;
+    [SerializeField] private TextMeshProUGUI _errorsLeftText;
 
     private UserData _clientData;
     private int _errorsFound;
@@ -55,6 +55,6 @@ public class ProfileInfoRenderer : MonoBehaviour {
 
     private void UpdateErrorFields() {
         _errorsFoundText.text = _errorsFound.ToString();
-        _errorsFixedText.text = _errorsFixed.ToString();
+        _errorsLeftText.text = (_errorsFound - _errorsFixed).ToString();
     }
 }
