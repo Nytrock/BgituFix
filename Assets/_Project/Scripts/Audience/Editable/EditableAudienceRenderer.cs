@@ -1,9 +1,7 @@
-using TMPro;
 using UnityEngine;
 
 public class EditableAudienceRenderer : EditableRenderer {
-    [SerializeField] private TextMeshProUGUI _nameText;
-    [SerializeField] private float _nameTextMultiplier;
+    [SerializeField] private EditableAudienceCenterGraphic _centerGraphic;
     [SerializeField] private StateStyle _computerStyle;
     [SerializeField] private StateStyle _nonComputerStyle;
 
@@ -19,20 +17,19 @@ public class EditableAudienceRenderer : EditableRenderer {
 
     public override void SetSize(Vector2 size) {
         base.SetSize(size);
-        float avgSize = (size.x + size.y) / 2f;
-        _nameText.fontSize = avgSize * _nameTextMultiplier;
+        _centerGraphic.ChangeSize(size);
     }
 
     public void UpdateName() {
-        _nameText.text = _data.Name;
+        _centerGraphic.SetText(_data.Name);
     }
 
     public void UpdateStyle() {
         StateStyle style = _nonComputerStyle;
-        if (_data.IsComputer)
+        if (_data.Type == AudienceType.Computer)
             style = _computerStyle;
 
         _renderer.color = style.BackgroundColor;
-        _nameText.color = style.TextColor;
+        _centerGraphic.SetStyle(_data.Type, style.TextColor);
     }
 }

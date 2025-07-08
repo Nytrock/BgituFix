@@ -11,6 +11,8 @@ public class ThemeImage : ThemeElement<Image> {
     }
 
     protected override void SetColor() {
+        if (_element == null)
+            Debug.Log(_name);
         _element.color = ThemeManager.Instance.GetColor(_variable);
     }
 }

@@ -7,7 +7,7 @@ public class MapEditManager : MonoBehaviour {
     [SerializeField] private UserManager _userManager;
     [SerializeField] private RulerManager _rulerManager;
     [SerializeField] private GridManager _gridManager;
-    [SerializeField] private HelpManager _helpManager;
+    [SerializeField] private StateMachine _helpPanel;
     [SerializeField] private MapManager _mapManager;
     [SerializeField] private CameraManager _cameraManager;
 
@@ -20,10 +20,11 @@ public class MapEditManager : MonoBehaviour {
 
     public event Action<bool> EditStateChanged;
     public event Action<bool> PermissionChanged;
-    public event Action<BaseEditable> EditableRemoved;
+    public event Action EditablesChanged;
 
     public bool IsEdit => _isEdit;
     public bool IsRulerActive => _rulerManager.IsActive;
+    public IEnumerable<BaseEditable> NowEditables => _nowEditables;
 
     private void Awake() {
         _mapManager.MapGenerated += delegate { EndEdit(); };
@@ -64,7 +65,6 @@ public class MapEditManager : MonoBehaviour {
             DeselectAllNowEditables();
         _nowEditables.Clear();
         _clipboard.Clear();
-        _mapManager.UpdateLocationSizeShow(false);
         _rulerManager.ChangeState(false);
         _gridManager.ChangeState(false);
     }
@@ -102,7 +102,7 @@ public class MapEditManager : MonoBehaviour {
     }
 
     private void ChangeState(bool newState) {
-        _helpManager.ChangeState(false);
+        _helpPanel.ChangeState(false);
         _cameraManager.ChangeEditState(newState);
         EditStateChanged?.Invoke(newState);
     }
@@ -119,7 +119,7 @@ public class MapEditManager : MonoBehaviour {
             editable.ChangeEditingState(true);
         }
 
-        _mapManager.UpdateLocationSizeShow(_nowEditables.Count != 0);
+        OnEditablesChanged();
     }
 
     public void ChangeSelectStateOfAdditionalEditable(BaseEditable editable) {
@@ -133,7 +133,7 @@ public class MapEditManager : MonoBehaviour {
             editable.ChangeEditingState(true);
         }
 
-        _mapManager.UpdateLocationSizeShow(_nowEditables.Count != 0);
+        OnEditablesChanged();
     }
 
     public void ChangeEditablesPosition(Vector3 offset) {
@@ -181,10 +181,9 @@ public class MapEditManager : MonoBehaviour {
     public void DeselectAllNowEditables() {
         _nowEditables.ForEach(editable => {
             editable.ChangeEditingState(false);
-            EditableRemoved?.Invoke(editable);
         });
         _nowEditables.Clear();
-        _mapManager.UpdateLocationSizeShow(false);
+        OnEditablesChanged();
     }
 
     public void DeselectAllNowEditablesExceptOne(BaseEditable singleEditable) {
@@ -194,15 +193,19 @@ public class MapEditManager : MonoBehaviour {
         _nowEditables.ForEach(editable => {
             if (editable != singleEditable) {
                 editable.ChangeEditingState(false);
-                EditableRemoved?.Invoke(editable);
             }
         });
         _nowEditables.Clear();
         _nowEditables.Add(singleEditable);
-        _mapManager.UpdateLocationSizeShow(true);
+        OnEditablesChanged();
     }
 
-    public bool IsEditableSelected(BaseEditable editable) {
-        return _nowEditables.Contains(editable);
+    private void OnEditablesChanged() {
+        EditablesChanged?.Invoke();
+        _mapManager.UpdateLocationSizeShow(_nowEditables.Count != 0);
+    }
+
+    public BaseEditable GetEditable(int index) {
+        return _nowEditables[index];
     }
 }

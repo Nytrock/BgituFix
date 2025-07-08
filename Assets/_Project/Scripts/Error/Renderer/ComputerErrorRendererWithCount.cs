@@ -10,7 +10,7 @@ public class ComputerErrorRendererWithCount : ComputerErrorRenderer {
     public void AddToCount() {
         _count++;
         UpdateText();
-        ChangeState(true);
+        UpdateState();
     }
 
     public void RemoveFromCount() {
@@ -19,12 +19,14 @@ public class ComputerErrorRendererWithCount : ComputerErrorRenderer {
 
         _count--;
         UpdateText();
-
-        if (_count == 0)
-            ChangeState(false);
+        UpdateState();
     }
 
     private void UpdateText() {
         _countText.text = _count.ToString();
+    }
+
+    public override void UpdateState() {
+        gameObject.SetActive(_type != ComputerErrorType.None && _count > 0 && _isEdit);
     }
 }

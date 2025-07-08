@@ -1,18 +1,16 @@
 public class EditableAudience : Editable<AudienceData> {
-    private EditableAudienceRenderer _audienceActivator;
+    private EditableAudienceRenderer _audienceRenderer;
 
     public ComputerErrorType ErrorType => _errorsRenderer.GetMaxError();
     public int Floor => _data.Floor;
-    public bool IsComputer => _data.IsComputer;
-    public string Name => _data.Name;
 
     protected void Awake() {
-        _audienceActivator = _renderer as EditableAudienceRenderer;
+        _audienceRenderer = _renderer as EditableAudienceRenderer;
     }
 
     public override void LeftButtonUp() {
         base.LeftButtonUp();
-        if (_editManager.IsEdit || !_data.IsComputer || MouseTimeTooBig)
+        if (_editManager.IsEdit || _data.Type != AudienceType.Computer || MouseTimeTooBig)
             return;
 
         _mapManager.OpenAudience(_data);
@@ -25,13 +23,13 @@ public class EditableAudience : Editable<AudienceData> {
         }
     }
 
-    public void UpdateIsComputer(bool isComputer) {
-        _data.UpdateIsComputer(isComputer);
-        _audienceActivator.UpdateStyle();
+    public void UpdateType(AudienceType type) {
+        _data.UpdateType(type);
+        _audienceRenderer.UpdateStyle();
     }
 
     public void UpdateName(string newName) {
         _data.UpdateName(newName);
-        _audienceActivator.UpdateName();
+        _audienceRenderer.UpdateName();
     }
 }

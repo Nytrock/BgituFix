@@ -4,7 +4,9 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public class ComputerErrorRenderer : MonoBehaviour {
     private Image _image;
-    private ComputerErrorType _type;
+    protected ComputerErrorType _type;
+
+    protected bool _isEdit;
 
     public ComputerErrorType Type => _type;
 
@@ -20,7 +22,7 @@ public class ComputerErrorRenderer : MonoBehaviour {
 
     public virtual void SetType(ComputerErrorType type) {
         _type = type;
-        ChangeState(_type != ComputerErrorType.None);
+        UpdateState();
         if (_type == ComputerErrorType.None)
             return;
 
@@ -28,7 +30,12 @@ public class ComputerErrorRenderer : MonoBehaviour {
         _image.color = ThemeManager.Instance.GetErrorColor(type);
     }
 
-    public void ChangeState(bool newState) {
-        gameObject.SetActive(newState);
+    public void SetEditState(bool isEdit) {
+        _isEdit = isEdit;
+        UpdateState();
+    }
+
+    public virtual void UpdateState() {
+        gameObject.SetActive(_type != ComputerErrorType.None && !_isEdit);
     }
 }

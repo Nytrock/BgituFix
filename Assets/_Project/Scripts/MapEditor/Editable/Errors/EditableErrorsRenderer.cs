@@ -11,7 +11,7 @@ public class EditableErrorsRenderer : MonoBehaviour {
         int enumCount = Enum.GetValues(typeof(ComputerErrorType)).Length - 1;
         for (int i = 0; i < enumCount; i++) {
             _errorRenderers[i].SetType((ComputerErrorType)(i + 1));
-            _errorRenderers[i].ChangeState(false);
+            _errorRenderers[i].UpdateState();
         }
         CheckEmpty();
     }

@@ -8,7 +8,7 @@ public class CameraManager : MonoBehaviour {
 
     private Camera _camera;
     private float _startZoom;
-    private bool _isHover;
+    [SerializeField] private bool _isHover;
     private bool _isEdit;
     private bool _canMove = true;
     private Vector3 _mouseOffset;

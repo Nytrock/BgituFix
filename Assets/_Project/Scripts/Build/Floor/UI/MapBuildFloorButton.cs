@@ -15,10 +15,18 @@ public class MapBuildFloorButton : MonoBehaviour {
 
         _button.SetText(floorIndex.ToString());
         _button.onClick.AddListener(delegate { build.ChangeFloor(floorIndex); });
-        _errorRenderer.ChangeState(false);
+        _errorRenderer.UpdateState();
 
         MapBuildFloor floor = build.GetFloor(floorIndex);
         floor.ErrorUpdated += UpdateError;
+    }
+
+    public void SetManagers(MapEditManager editManager) {
+        editManager.EditStateChanged += ChangeErrorRendererState;
+    }
+
+    private void ChangeErrorRendererState(bool isEdit) {
+        _errorRenderer.SetEditState(isEdit);
     }
 
     private void CheckFloor(int floorIndex) {

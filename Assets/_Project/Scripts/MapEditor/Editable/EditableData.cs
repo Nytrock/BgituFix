@@ -44,7 +44,7 @@ public class EditableData : IdData {
         this.id = id;
     }
 
-    public bool Equals(EditableData other) {
+    public virtual bool Equals(EditableData other) {
         return id == other.id && position == other.position && size == other.size;
     }
 }

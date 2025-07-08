@@ -10,4 +10,8 @@ public class StateMachine : MonoBehaviour {
         _panel.SetActive(newState);
         StateChanged?.Invoke(newState);
     }
+
+    public void ChangeState() {
+        _panel.SetActive(!_panel.activeSelf);
+    }
 }

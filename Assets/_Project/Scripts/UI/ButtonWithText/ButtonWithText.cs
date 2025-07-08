@@ -10,7 +10,8 @@ public class ButtonWithText : Button {
     }
 
     public void SetStyle(StateStyle style) {
-        image.color = style.BackgroundColor;
+        if (image != null)
+            image.color = style.BackgroundColor;
         _text.color = style.TextColor;
     }
 }

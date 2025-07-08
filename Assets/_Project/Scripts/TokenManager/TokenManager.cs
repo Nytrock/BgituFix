@@ -51,7 +51,6 @@ public class TokenManager : MonoBehaviour {
     }
 
     private void DeleteToken() {
-        Debug.Log("NOOO FUCK");
         _fileManager.Delete();
     }
 }

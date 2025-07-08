@@ -3,8 +3,8 @@ using UnityEngine;
 public class MapBuildButtonPool : Pool<MapBuildButton> {
     [SerializeField] private MapBuildManager _buildManager;
 
-    public override MapBuildButton GetObject() {
-        MapBuildButton button = base.GetObject();
+    protected override MapBuildButton CreateObject() {
+        MapBuildButton button = base.CreateObject();
         button.SetupManagers(_buildManager);
         return button;
     }

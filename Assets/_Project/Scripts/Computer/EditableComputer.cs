@@ -1,10 +1,14 @@
 using UnityEngine;
 
 public class EditableComputer : Editable<ComputerData> {
+    private EditableComputerRenderer _computerRenderer;
+
     private ComputerUIManager _computerUIManager;
     private AudienceData _audienceData;
 
-    public string SerialNumber => _data.SerialNumber;
+    protected void Awake() {
+        _computerRenderer = _renderer as EditableComputerRenderer;
+    }
 
     public override void LeftButtonUp() {
         base.LeftButtonUp();
@@ -71,5 +75,10 @@ public class EditableComputer : Editable<ComputerData> {
             _errors.Add(errorData);
             _errorsRenderer.AddError(errorData);
         }
+    }
+
+    public void UpdateType(ComputerType computerType) {
+        _data.UpdateType(computerType);
+        _computerRenderer.UpdateType(computerType);
     }
 }
