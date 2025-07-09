@@ -43,7 +43,6 @@ public class UserManager : MonoBehaviour {
                 case 2: tokenBase64 += "=="; break;
                 case 3: tokenBase64 += "="; break;
             }
-
             byte[] contentBytes = Convert.FromBase64String(tokenBase64);
             string content = Encoding.UTF8.GetString(contentBytes);
             content = content.Replace("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", "role");

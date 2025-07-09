@@ -9,8 +9,7 @@ public class EditableAudience : Editable<AudienceData> {
     }
 
     public override void LeftButtonUp() {
-        base.LeftButtonUp();
-        if (_editManager.IsEdit || _data.Type != AudienceType.Computer || MouseTimeTooBig)
+        if (_data.Type != AudienceType.Computer || MouseTimeTooBig)
             return;
 
         _mapManager.OpenAudience(_data);

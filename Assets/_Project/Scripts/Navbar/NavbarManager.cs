@@ -28,6 +28,7 @@ public class NavbarManager : MonoBehaviour {
 
     private void ChangeButtonsState(bool isLogin) {
         _buttonsContainer.SetActive(!isLogin);
+        _logoutButton.gameObject.SetActive(!isLogin);
     }
 
     private void SetupElements() {

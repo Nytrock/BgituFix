@@ -17,8 +17,8 @@ public class MapBuildFloorUI : MonoBehaviour {
         ChangeState(false);
     }
 
-    public void SetManagers(CameraManager cameraManager, MapEditManager editManager) {
-        _buttonsPool.SetManagers(cameraManager, editManager);
+    public void SetManagers(CameraManager cameraManager) {
+        _buttonsPool.SetManagers(cameraManager);
     }
 
     public void ChangeState(bool newState) {

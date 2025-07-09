@@ -2,15 +2,13 @@ using UnityEngine;
 
 public class MapAudiencePool : Pool<MapAudience> {
     [SerializeField] private MapManager _mapManager;
-    [SerializeField] private MapEditManager _editManager;
     [SerializeField] private ComputerUIManager _computerUIManager;
     [SerializeField] private ErrorManager _errorManager;
     [SerializeField] private SelectManager _selectManager;
 
     protected override MapAudience CreateObject() {
         MapAudience audience = base.CreateObject();
-        audience.SetManagers(_mapManager, _computerUIManager,
-            _errorManager, _editManager, _selectManager);
+        audience.SetManagers(_mapManager, _computerUIManager, _errorManager, _selectManager);
         return audience;
     }
 

@@ -15,10 +15,9 @@ public abstract class MapElement<TEditable, TEditableData, TData> : BaseMapEleme
     public TData Data => _data;
     public int Id => _data.Id;
 
-    public virtual void Setup(MapData mapData, TData data, float precision) {
+    public virtual void Setup(MapData mapData, TData data) {
         _data = data;
         _mapData = mapData;
-        _precision = precision;
         GenerateEditables();
     }
 
@@ -27,39 +26,10 @@ public abstract class MapElement<TEditable, TEditableData, TData> : BaseMapEleme
             GenerateEditable(data);
     }
 
-    public virtual TEditable GenerateEditable(TEditableData data, bool neeedOverlapCheck = false) {
+    public virtual TEditable GenerateEditable(TEditableData data) {
         TEditable editable = _pool.GetObject();
-        editable.Setup(data, this);
+        editable.Setup(data);
         _editables.Add(editable);
-        if (neeedOverlapCheck)
-            CheckEditableOverlap(editable);
-        return editable;
-    }
-
-    private void CheckEditableOverlap(TEditable checkingEditable) {
-        Vector2 offset = new(_precision / 2f, -_precision / 2f);
-
-        while (true) {
-            bool overlap = false;
-            foreach (var editable in _editables) {
-                if (editable == checkingEditable) continue;
-
-                if (editable.Position == checkingEditable.Position) {
-
-                    overlap = true;
-                    checkingEditable.ChangePosition(checkingEditable.Position + offset);
-                }
-            }
-
-            if (!overlap) break;
-        }
-    }
-
-    public TEditable CreateEmptyEditable() {
-        TEditableData data = GenerateEmptyEditableData();
-        TEditable editable = GenerateEditable(data, true);
-
-        editable.ChangeSelectState();
         return editable;
     }
 

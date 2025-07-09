@@ -21,14 +21,9 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
         SetupFloorsSizes();
     }
 
-    protected override void ChangeSizeShowState(bool newState) {
-        _floors[_nowFloor - 1].ChangeSizeShowState(newState);
-    }
+    public void SetManagers(MapManager mapManager, ErrorManager errorManager, UserManager userManager, SelectManager selectManager) {
 
-    public void SetManagers(MapManager mapManager, MapEditManager editManager,
-        ErrorManager errorManager, UserManager userManager, SelectManager selectManager) {
-
-        (_pool as EditableAudiencePool).SetManagers(mapManager, editManager, selectManager);
+        (_pool as EditableAudiencePool).SetManagers(mapManager, selectManager);
         if (userManager.ClientType != UserType.Admin)
             return;
 
@@ -60,7 +55,6 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
 
     private void GenerateFloor() {
         MapBuildFloor floor = _floorPool.GetObject();
-        floor.ChangeSizeShowState(false);
         _floors.Add(floor);
         floor.ChangeState(false);
     }
@@ -99,8 +93,8 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
         SetupFloorSize(floorIndex);
     }
 
-    public override EditableAudience GenerateEditable(AudienceData data, bool neeedOverlapCheck = false) {
-        EditableAudience audience = base.GenerateEditable(data, neeedOverlapCheck);
+    public override EditableAudience GenerateEditable(AudienceData data) {
+        EditableAudience audience = base.GenerateEditable(data);
         _floors[data.Floor - 1].AddAudience(audience);
         audience.SizeOrPositionChanged += delegate {
             SetupFloorSize(audience.Floor - 1);

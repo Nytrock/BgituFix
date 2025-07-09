@@ -6,8 +6,6 @@ public class ComputerErrorRenderer : MonoBehaviour {
     private Image _image;
     protected ComputerErrorType _type;
 
-    protected bool _isEdit;
-
     public ComputerErrorType Type => _type;
 
     private void Awake() {
@@ -30,12 +28,7 @@ public class ComputerErrorRenderer : MonoBehaviour {
         _image.color = ThemeManager.Instance.GetErrorColor(type);
     }
 
-    public void SetEditState(bool isEdit) {
-        _isEdit = isEdit;
-        UpdateState();
-    }
-
     public virtual void UpdateState() {
-        gameObject.SetActive(_type != ComputerErrorType.None && !_isEdit);
+        gameObject.SetActive(_type != ComputerErrorType.None);
     }
 }

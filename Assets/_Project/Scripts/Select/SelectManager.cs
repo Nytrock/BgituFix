@@ -2,16 +2,12 @@ using UnityEngine;
 
 public class SelectManager : MonoBehaviour {
     [SerializeField] private MapManager _mapManager;
-    [SerializeField] private MapEditManager _editManager;
     [SerializeField] private CameraManager _cameraManager;
-    [SerializeField] private Selector _selector;
 
     private BaseEditable _editable;
 
     private bool _buttonWasHeldBeforeEditable;
     private bool _onHoverWasOnDown;
-
-    public bool IsSelectorActive => _selector.IsActive;
 
     private void Awake() {
         _mapManager.MapLocationChanged += ResetEditable;
@@ -34,9 +30,6 @@ public class SelectManager : MonoBehaviour {
             return;
         }
 
-        if (_editManager.IsRulerActive)
-            return;
-
         if (Input.GetMouseButtonUp(0))
             LeftButtonUp();
 
@@ -45,15 +38,13 @@ public class SelectManager : MonoBehaviour {
     }
 
     private void LeftButtonUp() {
-        if (_buttonWasHeldBeforeEditable && !_selector.IsActive) {
+        if (_buttonWasHeldBeforeEditable) {
             _buttonWasHeldBeforeEditable = false;
             return;
         }
 
-        if (_editable == null || _selector.IsActive) {
-            _selector.ChangeState(false);
+        if (_editable == null)
             return;
-        }
 
         _editable.LeftButtonUp();
     }
@@ -67,11 +58,5 @@ public class SelectManager : MonoBehaviour {
             _editable.LeftButtonDown();
             return;
         }
-
-        if (!_editManager.IsEdit)
-            return;
-
-        _editManager.DeselectAllNowEditables();
-        _selector.ChangeState(true);
     }
 }

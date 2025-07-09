@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,23 +37,6 @@ public class MapBuildManager : MapElementManager<MapBuild, EditableAudience, Aud
     protected override void SelectElement(MapBuild build) {
         base.SelectElement(build);
         BuildChanged?.Invoke(build);
-    }
-
-    public override IEnumerator DeleteEditableAfterEditing(AudienceData editableData) {
-        foreach (var computerData in _mapData.GetComputersByAudience(editableData))
-            _errorManager.DeleteErrorsByComputerId(computerData);
-        _audienceManager.DeleteAudience(editableData);
-        return base.DeleteEditableAfterEditing(editableData);
-    }
-
-    public override IEnumerator CreateEditableAfterEditing(AudienceData editableData) {
-        _audienceManager.GenerateMapElement(editableData);
-        return base.CreateEditableAfterEditing(editableData);
-    }
-
-    public override void ChangeEditableOnMap(AudienceData editableData) {
-        _audienceManager.UpdateAudienceById(editableData);
-        base.ChangeEditableOnMap(editableData);
     }
 
     protected override AudienceData GetEditableById(int id) {

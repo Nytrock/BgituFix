@@ -10,7 +10,7 @@ public class ThemeDropdown : MonoBehaviour {
     private void Awake() {
         _dropdown = GetComponent<CustomDropdown>();
         _dropdown.onValueChanged.AddListener(ChangeTheme);
-        _themeManager.IsModeChanged += SetupDropdown;
+        SetupDropdown();
     }
 
     private void ChangeTheme(int value) {
@@ -18,7 +18,6 @@ public class ThemeDropdown : MonoBehaviour {
     }
 
     private void SetupDropdown() {
-        _themeManager.IsModeChanged -= SetupDropdown;
         _dropdown.SetValueWithoutNotify(Convert.ToInt32(_themeManager.IsDarkMode));
     }
 }

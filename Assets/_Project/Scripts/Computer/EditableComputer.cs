@@ -11,24 +11,10 @@ public class EditableComputer : Editable<ComputerData> {
     }
 
     public override void LeftButtonUp() {
-        base.LeftButtonUp();
-        if (_editManager.IsEdit || MouseTimeTooBig)
+        if (MouseTimeTooBig)
             return;
 
         _computerUIManager.OpenComputer(_data);
-    }
-
-    protected override void ChangeSizeByMouse() {
-        Vector2 oldPosition = _data.Position;
-        Vector2 oldSize = _data.Size;
-        base.ChangeSizeByMouse();
-        CheckNewPositionAndSize(oldPosition, oldSize);
-    }
-
-    protected override void ChangePositionByMouse() {
-        Vector2 oldPosition = _data.Position;
-        base.ChangePositionByMouse();
-        CheckNewPositionAndSize(oldPosition, _data.Size);
     }
 
     private void CheckNewPositionAndSize(Vector2 oldPosition, Vector2 oldSize) {
@@ -61,9 +47,9 @@ public class EditableComputer : Editable<ComputerData> {
         _audienceData = _mapManager.Data.GetAudienceById(data.AudienceId);
     }
 
-    public void SetManagers(MapManager mapManager, ComputerUIManager computerUI, MapEditManager editManager, SelectManager selectManager) {
+    public void SetManagers(MapManager mapManager, ComputerUIManager computerUI, SelectManager selectManager) {
         _computerUIManager = computerUI;
-        SetManagers(mapManager, editManager, selectManager);
+        SetManagers(mapManager, selectManager);
     }
 
     public void UpdateNumber(string newNumber) {

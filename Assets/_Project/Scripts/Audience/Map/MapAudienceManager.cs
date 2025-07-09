@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,30 +19,6 @@ public class MapAudienceManager : MapElementManager<MapAudience, EditableCompute
             }
         }
         ChangeState(true);
-    }
-
-    public void DeleteAudience(AudienceData data) {
-        foreach (var audience in _mapElements) {
-            if (audience.Id == data.Id) {
-                audience.Delete();
-                _pool.PutObject(audience);
-                break;
-            }
-        }
-    }
-
-    public override IEnumerator DeleteEditableAfterEditing(ComputerData editableData) {
-        _errorManager.DeleteErrorsByComputerId(editableData);
-        return base.DeleteEditableAfterEditing(editableData);
-    }
-
-    public void UpdateAudienceById(AudienceData data) {
-        foreach (var audience in _mapElements) {
-            if (audience.Id == data.Id) {
-                audience.UpdateData(data);
-                break;
-            }
-        }
     }
 
     protected override ComputerData GetEditableById(int id) {

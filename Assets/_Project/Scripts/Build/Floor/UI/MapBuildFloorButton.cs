@@ -21,14 +21,6 @@ public class MapBuildFloorButton : MonoBehaviour {
         floor.ErrorUpdated += UpdateError;
     }
 
-    public void SetManagers(MapEditManager editManager) {
-        editManager.EditStateChanged += ChangeErrorRendererState;
-    }
-
-    private void ChangeErrorRendererState(bool isEdit) {
-        _errorRenderer.SetEditState(isEdit);
-    }
-
     private void CheckFloor(int floorIndex) {
         _button.SetStyle(floorIndex == _floorIndex ? _selectedStyle : _deselectedStyle);
     }

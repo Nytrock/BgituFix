@@ -4,16 +4,10 @@ using UnityEngine;
 
 public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceData> {
     [SerializeField] private SpriteRenderer _renderer;
-    [SerializeField] private RectTransform _canvas;
     [SerializeField] private float _sizesTextsMultiplier;
-    [SerializeField] private EditableTextSize _widthText;
-    [SerializeField] private EditableTextSize _lengthText;
 
-    private bool _isShowingSize;
-
-    public override void Setup(MapData mapData, AudienceData data, float precision) {
-        base.Setup(mapData, data, precision);
-        ChangeSizeShowState(false);
+    public override void Setup(MapData mapData, AudienceData data) {
+        base.Setup(mapData, data);
         UpdateSize();
     }
 
@@ -38,22 +32,8 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
         }
     }
 
-    private void Update() {
-        if (!_isShowingSize)
-            return;
-
-        _widthText.SetSize(_data.Size.x);
-        _lengthText.SetSize(_data.Size.y);
-    }
-
-    protected override void ChangeSizeShowState(bool newState) {
-        _canvas.gameObject.SetActive(newState);
-        _isShowingSize = newState;
-    }
-
     public void UpdateSize() {
         _renderer.size = _data.Size;
-        _canvas.sizeDelta = _data.Size * (1 / _canvas.localScale.x);
         _cameraSize = Mathf.Max(_data.Size.x / 2f / 16f * 9, _data.Size.y / 2f);
     }
 
@@ -61,10 +41,9 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
         return mapData.GetComputersByAudience(_data);
     }
 
-    public void SetManagers(MapManager mapManager, ComputerUIManager computerUI,
-        ErrorManager errorManager, MapEditManager editManager, SelectManager selectManager) {
+    public void SetManagers(MapManager mapManager, ComputerUIManager computerUI, ErrorManager errorManager, SelectManager selectManager) {
 
-        (_pool as EditableComputerPool).SetManagers(mapManager, computerUI, editManager, selectManager);
+        (_pool as EditableComputerPool).SetManagers(mapManager, computerUI, selectManager);
 
         errorManager.ErrorAdded += CheckNewError;
         errorManager.ErrorChanged += CheckChangedError;
