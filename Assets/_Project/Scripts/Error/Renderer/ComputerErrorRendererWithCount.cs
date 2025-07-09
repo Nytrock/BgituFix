@@ -27,6 +27,6 @@ public class ComputerErrorRendererWithCount : ComputerErrorRenderer {
     }
 
     public override void UpdateState() {
-        gameObject.SetActive(_type != ComputerErrorType.None && _count > 0 && _isEdit);
+        gameObject.SetActive(_type != ComputerErrorType.None && _count > 0 && !_isEdit);
     }
 }

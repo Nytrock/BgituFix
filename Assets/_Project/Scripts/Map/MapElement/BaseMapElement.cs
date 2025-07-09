@@ -20,4 +20,5 @@ public abstract class BaseMapElement : MonoBehaviour {
     }
 
     protected abstract void ChangeSizeShowState(bool newState);
+    public abstract void GetBounds(out Vector2 leftDown, out Vector2 rightUp);
 }

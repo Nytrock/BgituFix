@@ -96,4 +96,9 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
         int computersCount = _mapData.ComputerDatas.Count();
         return new(_data.Id, computersCount);
     }
+
+    public override void GetBounds(out Vector2 leftDown, out Vector2 rightUp) {
+        leftDown = _data.LeftBottom;
+        rightUp = _data.RightTop;
+    }
 }

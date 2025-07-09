@@ -117,4 +117,8 @@ public class MapBuild : MapElement<EditableAudience, AudienceData, BuildData> {
         int audiencesCount = _mapData.AudienceDatas.Count();
         return new(_data.Id, _nowFloor, audiencesCount);
     }
+
+    public override void GetBounds(out Vector2 leftDown, out Vector2 rightUp) {
+        _floors[_nowFloor - 1].GetBounds(out leftDown, out rightUp);
+    }
 }

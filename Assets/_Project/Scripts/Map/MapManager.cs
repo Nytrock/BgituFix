@@ -146,4 +146,10 @@ public class MapManager : StateMachine {
             return _buildManager.GridPrecision;
         return _audienceManager.GridPrecision;
     }
+
+    public BaseMapElement GetNowMapElement() {
+        if (_state == MapState.Build)
+            return _buildManager.NowElement;
+        return _audienceManager.NowElement;
+    }
 }

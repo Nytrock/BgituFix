@@ -112,4 +112,9 @@ public class MapBuildFloor : MonoBehaviour {
     public void RemoveAudience(EditableAudience audience) {
         _audiences.Remove(audience);
     }
+
+    public void GetBounds(out Vector2 leftDown, out Vector2 rightUp) {
+        leftDown = (Vector2)_renderer.transform.position - _renderer.size / 2f;
+        rightUp = (Vector2)_renderer.transform.position + _renderer.size / 2f;
+    }
 }
