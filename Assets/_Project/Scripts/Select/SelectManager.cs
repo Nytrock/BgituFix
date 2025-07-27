@@ -6,65 +6,45 @@ public class SelectManager : MonoBehaviour {
     [SerializeField] private CameraManager _cameraManager;
     [SerializeField] private Selector _selector;
 
-    private BaseEditable _editable;
-
-    private bool _buttonWasHeldBeforeEditable;
-    private bool _onHoverWasOnDown;
+    private ISelectable _selected;
 
     public bool IsSelectorActive => _selector.IsActive;
 
-    private void Awake() {
-        _mapManager.MapLocationChanged += ResetEditable;
-    }
-
-    public void SetEditable(BaseEditable editable, bool checkButtonHeld = true) {
-        if (checkButtonHeld)
-            _buttonWasHeldBeforeEditable = Input.GetMouseButton(0);
-        _editable = editable;
-    }
-
-    public void ResetEditable() {
-        _editable = null;
-    }
-
     private void Update() {
-        if (_onHoverWasOnDown) {
-            if (!_cameraManager.IsHover)
-                _onHoverWasOnDown = false;
-            return;
-        }
-
         if (_editManager.IsRulerActive)
             return;
 
         if (Input.GetMouseButtonUp(0))
-            LeftButtonUp();
+            MouseUp();
 
         if (Input.GetMouseButtonDown(0))
-            LeftButtonDown();
+            MouseDown();
     }
 
-    private void LeftButtonUp() {
-        if (_buttonWasHeldBeforeEditable && !_selector.IsActive) {
-            _buttonWasHeldBeforeEditable = false;
-            return;
-        }
-
-        if (_editable == null || _selector.IsActive) {
+    private void MouseUp() {
+        if (_selector.IsActive) {
             _selector.ChangeState(false);
             return;
         }
 
-        _editable.LeftButtonUp();
+        if (_selected != null && _editManager.IsEdit) {
+            _selected.MouseUp();
+            return;
+        }
+
+        GetSelectable();
+        if (_selected is null)
+            return;
+        _selected.MouseUp();
     }
 
-    private void LeftButtonDown() {
-        _onHoverWasOnDown = _cameraManager.IsHover;
-        if (_onHoverWasOnDown)
+    private void MouseDown() {
+        if (_cameraManager.IsHover)
             return;
 
-        if (_editable != null) {
-            _editable.LeftButtonDown();
+        GetSelectable();
+        if (_selected is not null) {
+            _selected.MouseDown();
             return;
         }
 
@@ -73,5 +53,14 @@ public class SelectManager : MonoBehaviour {
 
         _editManager.DeselectAllNowEditables();
         _selector.ChangeState(true);
+    }
+
+    private void GetSelectable() {
+        _selected = null;
+        RaycastHit2D hit = Physics2D.Raycast(CameraManager.LocalMousePosition, Vector2.zero);
+        if (!hit || _cameraManager.IsHover)
+            return;
+
+        hit.collider.TryGetComponent(out _selected);
     }
 }

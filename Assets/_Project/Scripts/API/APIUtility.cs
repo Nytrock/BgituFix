@@ -56,6 +56,11 @@ public static class APIUtility {
         yield return request.SendWebRequest();
     }
 
+    public static IEnumerator SendWebRequestNotSafely(this UnityWebRequest request) {
+        SetupRequestBeforeSend(request);
+        yield return request.SendWebRequest();
+    }
+
     private static void SetupRequestBeforeSend(UnityWebRequest request) {
         if (_tokenData is not null)
             request.SetRequestHeader(TOKEN_HEADER, TOKEN_TEXT + _tokenData.Token);

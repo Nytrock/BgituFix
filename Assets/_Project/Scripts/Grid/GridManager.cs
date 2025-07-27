@@ -38,8 +38,8 @@ public class GridManager : MonoBehaviour {
         Vector2 bottomLeft = _cameraManager.transform.position - _cameraManager.Size / 2f - offset;
         Vector2 topRight = _cameraManager.transform.position + _cameraManager.Size / 2f + offset;
 
-        bottomLeft = CalculationUtils.SnapToGrid(bottomLeft, _precision);
-        topRight = CalculationUtils.SnapToGrid(topRight, _precision);
+        bottomLeft = EditorUtils.SnapToGrid(bottomLeft, _precision);
+        topRight = EditorUtils.SnapToGrid(topRight, _precision);
 
         bool direction = false;
         List<Vector3> horizontalLinePoints = new();

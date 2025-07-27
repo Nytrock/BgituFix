@@ -2,13 +2,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class CameraHoverTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
-    [SerializeField] private CameraManager _cameraManager;
+    [SerializeField] protected CameraManager _cameraManager;
 
-    public void OnPointerEnter(PointerEventData eventData) {
+    public virtual void OnPointerEnter(PointerEventData eventData) {
         _cameraManager.UpdateHover(true);
     }
 
-    public void OnPointerExit(PointerEventData eventData) {
+    public virtual void OnPointerExit(PointerEventData eventData) {
         _cameraManager.UpdateHover(false);
     }
 

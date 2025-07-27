@@ -136,10 +136,22 @@ public class MapData {
             if (!otherAudience.Equals(audience)) return false;
         }
 
+        foreach (var audience in other.auditoriums) {
+            AudienceData myAudience = GetAudienceById(audience.Id);
+            if (myAudience == null) return false;
+            if (!myAudience.Equals(audience)) return false;
+        }
+
         foreach (var computer in computers) {
             ComputerData otherComputer = other.GetComputerById(computer.Id);
             if (otherComputer == null) return false;
             if (!otherComputer.Equals(computer)) return false;
+        }
+
+        foreach (var computer in other.computers) {
+            ComputerData myComputer = GetComputerById(computer.Id);
+            if (myComputer == null) return false;
+            if (!myComputer.Equals(computer)) return false;
         }
 
         return true;

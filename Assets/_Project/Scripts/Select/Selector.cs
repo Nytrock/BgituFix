@@ -96,7 +96,7 @@ public class Selector : MonoBehaviour {
             Vector2 candidateBottomLeft = (Vector2)candidate.transform.position - candidate.Size / 2f;
             Vector2 candidateTopRight = (Vector2)candidate.transform.position + candidate.Size / 2f;
 
-            if (CalculationUtils.RectContainsRect(bottomLeft, topRight, candidateBottomLeft, candidateTopRight))
+            if (EditorUtils.RectContainsRect(bottomLeft, topRight, candidateBottomLeft, candidateTopRight))
                 temp.Add(candidate);
         }
 
@@ -108,7 +108,7 @@ public class Selector : MonoBehaviour {
             Vector2 participantBottomLeft = (Vector2)participant.transform.position - participant.Size / 2f;
             Vector2 participantTopRight = (Vector2)participant.transform.position + participant.Size / 2f;
 
-            if (!CalculationUtils.RectContainsRect(bottomLeft, topRight, participantBottomLeft, participantTopRight))
+            if (!EditorUtils.RectContainsRect(bottomLeft, topRight, participantBottomLeft, participantTopRight))
                 temp.Add(participant);
         }
 

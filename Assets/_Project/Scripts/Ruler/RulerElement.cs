@@ -18,7 +18,7 @@ public class RulerElement : MonoBehaviour {
     private void CalculateDistances() {
         Vector2 rulerPosition = transform.position;
         _nowMapElement.GetBounds(out Vector2 leftDown, out Vector2 rightUp);
-        bool isRulerInside = CalculationUtils.RectContainsRect(leftDown, rightUp, rulerPosition, rulerPosition);
+        bool isRulerInside = EditorUtils.RectContainsRect(leftDown, rightUp, rulerPosition, rulerPosition);
 
         _canvas.ChangeState(isRulerInside);
         if (!isRulerInside)

@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public static class FloatUtils {
     public static bool NearlyEqual(this float a, float b) {
@@ -25,5 +26,10 @@ public static class FloatUtils {
         if (a > b)
             return true;
         return NearlyEqual(a, b);
+    }
+
+    public static float Round(this float num, int precision) {
+        float coef = Mathf.Pow(10, precision);
+        return Mathf.Round(num * coef) / coef;
     }
 }

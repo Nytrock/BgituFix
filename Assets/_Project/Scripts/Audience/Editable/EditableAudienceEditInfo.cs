@@ -41,7 +41,7 @@ public class EditableAudienceEditInfo : EditableCanvasInfo {
 
     private void SetAudience(EditableAudience audience) {
         _audience = audience;
-        _typeDropdown.SetValueWithoutNotify((int)_audience.Data.Type);
+        _typeDropdown.SetValueWithoutNotify((int)(_audience.Data.Type - 1));
         _nameField.SetTextWithoutNotify(_audience.Data.Name);
         ChangeState(true);
     }

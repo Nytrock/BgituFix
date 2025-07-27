@@ -32,14 +32,18 @@ public class EditableCanvas : MonoBehaviour {
     private void SetupBorderElements() {
         foreach (var borderElement in _borderElements) {
             borderElement.CursorTypeChanged += ChangeResizeSettings;
-            borderElement.LeftButtonClick += delegate {
-                _selectManager.SetEditable(_editable, false);
+            borderElement.LeftButtonDown += delegate {
+                _editable.LeftButtonDown();
+            };
+            borderElement.LeftButtonUp += delegate {
+                _editable.LeftButtonUp();
+                ChangeResizeSettings(borderElement.IsHover ? borderElement.CursorType : CursorType.Default);
             };
         }
     }
 
     public void ChangeResizeSettings(CursorType type) {
-        if (_editable.IsResizing || _selectManager.IsSelectorActive)
+        if (_editable.IsResizing || _editable.IsMoving || _selectManager.IsSelectorActive)
             return;
 
         CursorManager.Instance.SetType(type);
@@ -67,16 +71,5 @@ public class EditableCanvas : MonoBehaviour {
     public void ChangeBorderState(bool isEditing) {
         _border.SetActive(isEditing);
         _isResizing = isEditing;
-    }
-
-    public void StopResizing() {
-        foreach (var borderElement in _borderElements) {
-            if (borderElement.IsHover) {
-                ChangeResizeSettings(borderElement.CursorType);
-                return;
-            }
-        }
-
-        ChangeResizeSettings(CursorType.Default);
     }
 }

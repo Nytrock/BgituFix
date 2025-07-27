@@ -14,4 +14,8 @@ public static class VectorUtils {
         float[] values = vector.Split(';').Select(value => float.Parse(value, new CultureInfo("ru-RU").NumberFormat)).ToArray();
         return new(values[0], values[1]);
     }
+
+    public static Vector3 Round(this Vector3 vector, int precision) {
+        return new(vector.x.Round(precision), vector.y.Round(precision), vector.z.Round(precision));
+    }
 }

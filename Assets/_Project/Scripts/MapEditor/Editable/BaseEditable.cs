@@ -22,6 +22,7 @@ public abstract class BaseEditable : MonoBehaviour {
     protected float _mouseTime = 0;
 
     public bool IsResizing => _isResizing;
+    public bool IsMoving => _isMoving;
     public bool MouseTimeTooBig => _mouseTime > 0.15f;
     public abstract Vector2 Size { get; }
     public abstract Vector2 Position { get; }
@@ -70,8 +71,6 @@ public abstract class BaseEditable : MonoBehaviour {
             _isMoving = isEdit;
 
         _mouseOffset = transform.position - CameraManager.LocalMousePosition;
-        if (!isEdit)
-            _canvas.StopResizing();
     }
 
     public void ChangeEditingState(bool isEditing) {
@@ -99,7 +98,10 @@ public abstract class BaseEditable : MonoBehaviour {
     }
 
     public void ChangeSelectState() {
-        _editManager.ChangeSelectStateOfSingleEditable(this);
+        if (Input.GetKey(KeyCode.LeftControl))
+            _editManager.ChangeSelectStateOfAdditionalEditable(this);
+        else
+            _editManager.ChangeSelectStateOfSingleEditable(this);
     }
 
     protected abstract void ChangePositionByMouse();

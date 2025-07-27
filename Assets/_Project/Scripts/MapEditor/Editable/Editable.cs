@@ -38,7 +38,7 @@ public abstract class Editable<TData> : BaseEditable where TData : EditableData 
 
     protected override void ChangePositionByMouse() {
         Vector3 mousePosition = CameraManager.LocalMousePosition + _mouseOffset;
-        mousePosition = CalculationUtils.GetSnappedEditablePosition(mousePosition, _data.Size, GetPresicion());
+        mousePosition = EditorUtils.GetSnappedEditablePosition(mousePosition, _data.Size, GetPresicion());
         _editManager.ChangeEditablesPosition(mousePosition - transform.position);
     }
 
@@ -49,16 +49,17 @@ public abstract class Editable<TData> : BaseEditable where TData : EditableData 
         float centerX = transform.position.x, centerY = transform.position.y;
 
         if (_isHorizontalResizing)
-            CalculationUtils.Resize(ref width, ref centerX, _mouseOffset.x, mousePosition.x, GetPresicion());
+            EditorUtils.Resize(ref width, ref centerX, _mouseOffset.x, mousePosition.x, GetPresicion());
 
         if (_isVerticalResizing)
-            CalculationUtils.Resize(ref height, ref centerY, _mouseOffset.y, mousePosition.y, GetPresicion());
+            EditorUtils.Resize(ref height, ref centerY, _mouseOffset.y, mousePosition.y, GetPresicion());
 
         ChangePosition(new(centerX, centerY));
         ChangeSize(width, height);
     }
 
     public override void ChangePosition(Vector3 newPosition) {
+        newPosition = newPosition.Round(3);
         if (newPosition == transform.position)
             return;
 
@@ -69,6 +70,8 @@ public abstract class Editable<TData> : BaseEditable where TData : EditableData 
     }
 
     public override void ChangeSize(float width, float height) {
+        width = width.Round(3);
+        height = height.Round(3);
         if (_data.Size == new Vector2(width, height))
             return;
 

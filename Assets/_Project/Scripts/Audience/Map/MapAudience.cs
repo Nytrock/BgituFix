@@ -98,7 +98,7 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
     }
 
     public override void GetBounds(out Vector2 leftDown, out Vector2 rightUp) {
-        leftDown = _data.LeftBottom;
-        rightUp = _data.RightTop;
+        leftDown = -_data.Size / 2f;
+        rightUp = _data.Size / 2f;
     }
 }

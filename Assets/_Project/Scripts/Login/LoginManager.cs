@@ -13,7 +13,7 @@ public class LoginManager : MonoBehaviour {
 
     public IEnumerator TryLogin(UserLoginData loginData) {
         UnityWebRequest request = APIUtility.Post(_APIPathToLogin, loginData);
-        yield return request.SendWebRequestSafely();
+        yield return request.SendWebRequestNotSafely();
         TokenData tokenData = request.ToData<TokenData>();
 
         if (request.responseCode == 401) {

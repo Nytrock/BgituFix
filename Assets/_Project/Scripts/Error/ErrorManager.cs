@@ -2,7 +2,6 @@ using EvtSource;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.Http;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -12,8 +11,9 @@ public class ErrorManager : MonoBehaviour {
     [SerializeField] private string _APIPathForErrors;
     [SerializeField] private string _APIPathToSSE;
 
-    [SerializeField] private ErrorManagerData _data;
+    private ErrorManagerData _data;
     private MapData _mapData;
+    private SSEError _sse;
 
     public IEnumerable<ComputerErrorData> Errors => _data.Errors;
 
@@ -45,28 +45,18 @@ public class ErrorManager : MonoBehaviour {
     }
 
     private void SSESetup() {
-        Uri uri = new($"{APIUtility.API_URL}/{_APIPathToSSE}");
-        HttpClient client = new();
-        client.SetToken();
-        client.SetHeaders();
+        _sse = new($"{APIUtility.API_URL}/{_APIPathToSSE}");
+        _sse.Reader.MessageReceived += CheckSSEData;
+    }
 
-        EventSourceReader evt = new EventSourceReader(uri, client).Start();
-        evt.MessageReceived += (object sender, EventSourceMessageEventArgs e) => {
-            ErrorManagerData newData = e.ToData<ErrorManagerData>();
-            CheckNewData(newData);
-        };
+    private void CheckSSEData(object sender, EventSourceMessageEventArgs message) {
+        ErrorManagerData newData = message.ToData<ErrorManagerData>();
+        CheckNewData(newData);
+    }
 
-        evt.Disconnected += (object sender, DisconnectEventArgs e) => {
-            if (!Application.isPlaying)
-                return;
-
-            if (e.Exception.Message.Contains("Not Found")) {
-                Debug.Log($"Ошибка, SSE сервис не найден");
-            } else {
-                Debug.Log($"Переподключение: {e.ReconnectDelay} - Ошибка: {e.Exception}");
-                evt.Start();
-            }
-        };
+    private void OnDestroy() {
+        if (Application.isPlaying && _sse is not null)
+            _sse.Dispose();
     }
 
     private void CheckNewData(ErrorManagerData newData) {

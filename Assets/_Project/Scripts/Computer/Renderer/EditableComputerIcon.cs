@@ -16,6 +16,8 @@ public class EditableComputerIcon : MonoBehaviour {
     }
 
     public void Resize(Vector2 size) {
-        _image.rectTransform.sizeDelta = size * _sizeMultiplier;
+        float avgSize = (size.x + size.y) / 2f;
+        avgSize *= _sizeMultiplier;
+        _image.rectTransform.sizeDelta = new(avgSize, avgSize);
     }
 }

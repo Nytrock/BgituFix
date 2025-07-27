@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public static class CalculationUtils {
+public static class EditorUtils {
     public static void Resize(ref float length, ref float center, float mouseOffset, float mousePosition, float precision) {
         int sign = mouseOffset > 0 ? 1 : -1;
         float border = center + length / 2f * sign;
@@ -10,16 +10,6 @@ public static class CalculationUtils {
         float rawWidth = Mathf.Abs(border - mousePosition);
         length = SnapToGrid(rawWidth, precision);
         length = Mathf.Max(length, precision);
-        center = border - length / 2f * sign;
-    }
-
-    public static void Resize(ref float length, ref float center, float mouseOffset, float mousePosition) {
-        int sign = mouseOffset > 0 ? 1 : -1;
-        float border = center + length / 2f * sign;
-        if (border * sign < mousePosition * sign)
-            return;
-
-        length = Mathf.Abs(border - mousePosition);
         center = border - length / 2f * sign;
     }
 
