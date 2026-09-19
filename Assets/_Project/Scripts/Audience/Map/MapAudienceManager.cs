@@ -1,8 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapAudienceManager : MapElementManager<MapAudience, EditableComputer, ComputerData, AudienceData> {
+public class MapAudienceManager : MapElementManager<MapAudience> {
     [SerializeField] private ErrorManager _errorManager;
 
     public void UpdateAudiences() {
@@ -22,9 +22,9 @@ public class MapAudienceManager : MapElementManager<MapAudience, EditableCompute
         ChangeState(true);
     }
 
-    public void DeleteAudience(AudienceData data) {
+    public void DeleteAudienceById(int id) {
         foreach (var audience in _mapElements) {
-            if (audience.Id == data.Id) {
+            if (audience.Id == id) {
                 audience.Delete();
                 _pool.PutObject(audience);
                 break;
@@ -32,8 +32,8 @@ public class MapAudienceManager : MapElementManager<MapAudience, EditableCompute
         }
     }
 
-    public override IEnumerator DeleteEditableAfterEditing(ComputerData editableData) {
-        _errorManager.DeleteErrorsByComputerId(editableData);
+    public override IEnumerator DeleteEditableAfterEditing(EditableData editableData) {
+        _errorManager.DeleteErrorsByComputerId(editableData.Id);
         return base.DeleteEditableAfterEditing(editableData);
     }
 
@@ -46,15 +46,15 @@ public class MapAudienceManager : MapElementManager<MapAudience, EditableCompute
         }
     }
 
-    protected override ComputerData GetEditableById(int id) {
+    protected override EditableData GetEditableById(int id) {
         return _mapData.GetComputerById(id);
     }
 
-    protected override IEnumerable<AudienceData> GetElementsData() {
+    protected override IEnumerable<IdData> GetElementsData() {
         return _mapData.AudienceDatas;
     }
 
-    protected override IEnumerable<ComputerData> GetEditablesData(MapData mapData) {
+    protected override IEnumerable<EditableData> GetEditablesData(MapData mapData) {
         return mapData.ComputerDatas;
     }
 }

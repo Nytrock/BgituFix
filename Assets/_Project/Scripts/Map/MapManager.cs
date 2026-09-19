@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -98,15 +98,11 @@ public class MapManager : StateMachine {
     }
 
     public void CreateEmptyEditable() {
-        if (_state == MapState.Build) {
-            EditableAudience audience = _buildManager.CreateEmptyEditableOnMap();
-            _data.AddAudience(audience.Data);
-        }
+        if (_state == MapState.Build)
+            _buildManager.CreateEmptyEditableOnMap();
 
-        if (_state == MapState.Audience) {
-            EditableComputer computer = _audienceManager.CreateEmptyEditableOnMap();
-            _data.AddComputer(computer.Data);
-        }
+        if (_state == MapState.Audience)
+            _audienceManager.CreateEmptyEditableOnMap();
     }
 
     public IEnumerable<BaseEditable> PasteEditables(IEnumerable<EditableData> clipboard) {
@@ -114,16 +110,14 @@ public class MapManager : StateMachine {
             if (_state == MapState.Build) {
                 AudienceData audienceData = new(data as AudienceData);
                 _data.CheckCopyAudienceData(audienceData, _buildManager.NowElement);
-                EditableAudience audience = _buildManager.CreateEditableOnMap(audienceData, true);
-                _data.AddAudience(audience.Data);
+                BaseEditable audience = _buildManager.CreateEditableOnMap(audienceData, true);
                 yield return audience;
             }
 
             if (_state == MapState.Audience) {
                 ComputerData computerData = new(data as ComputerData);
                 _data.CheckCopyComputerData(computerData);
-                EditableComputer computer = _audienceManager.CreateEditableOnMap(computerData, true);
-                _data.AddComputer(computer.Data);
+                BaseEditable computer = _audienceManager.CreateEditableOnMap(computerData, true);
                 yield return computer;
             }
         }

@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapBuildManager : MapElementManager<MapBuild, EditableAudience, AudienceData, BuildData> {
+public class MapBuildManager : MapElementManager<MapBuild> {
     [SerializeField] private MapAudienceManager _audienceManager;
     [SerializeField] private ErrorManager _errorManager;
 
@@ -15,7 +15,7 @@ public class MapBuildManager : MapElementManager<MapBuild, EditableAudience, Aud
         SelectElement(_mapElements[0]);
     }
 
-    public override void GenerateMapElement(BuildData elementData) {
+    public override void GenerateMapElement(IdData elementData) {
         base.GenerateMapElement(elementData);
         BuildAdded?.Invoke(_mapElements[^1]);
     }
@@ -40,32 +40,32 @@ public class MapBuildManager : MapElementManager<MapBuild, EditableAudience, Aud
         BuildChanged?.Invoke(build);
     }
 
-    public override IEnumerator DeleteEditableAfterEditing(AudienceData editableData) {
-        foreach (var computerData in _mapData.GetComputersByAudience(editableData))
-            _errorManager.DeleteErrorsByComputerId(computerData);
-        _audienceManager.DeleteAudience(editableData);
-        return base.DeleteEditableAfterEditing(editableData);
+    public override IEnumerator DeleteEditableAfterEditing(EditableData audienceData) {
+        foreach (var computerData in _mapData.GetComputersByAudienceId(audienceData.Id))
+            _errorManager.DeleteErrorsByComputerId(computerData.Id);
+        _audienceManager.DeleteAudienceById(audienceData.Id);
+        return base.DeleteEditableAfterEditing(audienceData);
     }
 
-    public override IEnumerator CreateEditableAfterEditing(AudienceData editableData) {
+    public override IEnumerator CreateEditableAfterEditing(EditableData editableData) {
         _audienceManager.GenerateMapElement(editableData);
         return base.CreateEditableAfterEditing(editableData);
     }
 
-    public override void ChangeEditableOnMap(AudienceData editableData) {
-        _audienceManager.UpdateAudienceById(editableData);
+    public override void ChangeEditableOnMap(EditableData editableData) {
+        _audienceManager.UpdateAudienceById(editableData as AudienceData);
         base.ChangeEditableOnMap(editableData);
     }
 
-    protected override AudienceData GetEditableById(int id) {
+    protected override EditableData GetEditableById(int id) {
         return _mapData.GetAudienceById(id);
     }
 
-    protected override IEnumerable<BuildData> GetElementsData() {
+    protected override IEnumerable<IdData> GetElementsData() {
         return _mapData.BuildDatas;
     }
 
-    protected override IEnumerable<AudienceData> GetEditablesData(MapData mapData) {
+    protected override IEnumerable<EditableData> GetEditablesData(MapData mapData) {
         return mapData.AudienceDatas;
     }
 }

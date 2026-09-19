@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -33,9 +33,9 @@ public class MapData {
                 yield return data;
     }
 
-    public IEnumerable<ComputerData> GetComputersByAudience(AudienceData audienceData) {
+    public IEnumerable<ComputerData> GetComputersByAudienceId(int id) {
         foreach (var data in computers)
-            if (data.AudienceId == audienceData.Id)
+            if (data.AudienceId == id)
                 yield return data;
     }
 

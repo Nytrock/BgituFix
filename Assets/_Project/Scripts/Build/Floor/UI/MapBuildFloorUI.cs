@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MapBuildFloorUI : MonoBehaviour {
     [SerializeField] private MapBuildFloorButtonPool _buttonsPool;
@@ -17,8 +17,8 @@ public class MapBuildFloorUI : MonoBehaviour {
         ChangeState(false);
     }
 
-    public void SetManagers(CameraManager cameraManager, MapEditManager editManager) {
-        _buttonsPool.SetManagers(cameraManager, editManager);
+    public void Inject(CameraManager cameraManager, MapEditManager editManager) {
+        _buttonsPool.Inject(cameraManager, editManager);
     }
 
     public void ChangeState(bool newState) {

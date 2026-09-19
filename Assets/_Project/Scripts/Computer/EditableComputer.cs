@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EditableComputer : Editable<ComputerData> {
     private EditableComputerRenderer _computerRenderer;
@@ -56,14 +56,14 @@ public class EditableComputer : Editable<ComputerData> {
             ChangeSize(oldSize.x, oldSize.y);
     }
 
-    public override void SetData(ComputerData data) {
+    public override void SetData(EditableData data) {
         base.SetData(data);
-        _audienceData = _mapManager.Data.GetAudienceById(data.AudienceId);
+        _audienceData = _mapManager.Data.GetAudienceById(_data.AudienceId);
     }
 
-    public void SetManagers(MapManager mapManager, ComputerUIManager computerUI, MapEditManager editManager, SelectManager selectManager) {
-        _computerUIManager = computerUI;
-        SetManagers(mapManager, editManager, selectManager);
+    public override void Inject(ObjectResolver resolver) {
+        _computerUIManager = resolver.GetInstance<ComputerUIManager>();
+        base.Inject(resolver);
     }
 
     public void UpdateNumber(string newNumber) {

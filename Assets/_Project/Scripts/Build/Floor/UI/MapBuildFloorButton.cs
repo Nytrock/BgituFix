@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MapBuildFloorButton : MonoBehaviour {
     [SerializeField] private ButtonWithText _button;
@@ -21,7 +21,7 @@ public class MapBuildFloorButton : MonoBehaviour {
         floor.ErrorUpdated += UpdateError;
     }
 
-    public void SetManagers(MapEditManager editManager) {
+    public void Inject(MapEditManager editManager) {
         editManager.EditStateChanged += ChangeErrorRendererState;
     }
 

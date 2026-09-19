@@ -1,4 +1,4 @@
-public class EditableAudience : Editable<AudienceData> {
+﻿public class EditableAudience : Editable<AudienceData> {
     private EditableAudienceRenderer _audienceRenderer;
 
     public ComputerErrorType ErrorType => _errorsRenderer.GetMaxError();

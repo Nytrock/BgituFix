@@ -1,4 +1,4 @@
-using EvtSource;
+﻿using EvtSource;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -121,10 +121,10 @@ public class ErrorManager : MonoBehaviour {
         ErrorsUpdated?.Invoke();
     }
 
-    public void DeleteErrorsByComputerId(ComputerData data) {
+    public void DeleteErrorsByComputerId(int id) {
         List<ComputerErrorData> errorsToDelete = new();
         foreach (var error in _data.Errors)
-            if (error.ComputerId == data.Id)
+            if (error.ComputerId == id)
                 errorsToDelete.Add(error);
 
         foreach (var error in errorsToDelete)

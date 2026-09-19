@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceData> {
+public class MapAudience : MapElement<EditableComputer, AudienceData> {
     [SerializeField] private SpriteRenderer _renderer;
     [SerializeField] private RectTransform _canvas;
     [SerializeField] private float _sizesTextsMultiplier;
@@ -11,7 +11,7 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
 
     private bool _isShowingSize;
 
-    public override void Setup(MapData mapData, AudienceData data, float precision) {
+    public override void Setup(MapData mapData, IdData data, float precision) {
         base.Setup(mapData, data, precision);
         ChangeSizeShowState(false);
         UpdateSize();
@@ -51,21 +51,25 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
         _isShowingSize = newState;
     }
 
+    public override BaseEditable GenerateEditable(EditableData data, bool neeedOverlapCheck = false) {
+        _mapData.AddComputer(data as ComputerData);
+        return base.GenerateEditable(data, neeedOverlapCheck);
+    }
+
     public void UpdateSize() {
         _renderer.size = _data.Size;
         _canvas.sizeDelta = _data.Size * (1 / _canvas.localScale.x);
         _cameraSize = Mathf.Max(_data.Size.x / 2f / 16f * 9, _data.Size.y / 2f);
     }
 
-    protected override IEnumerable<ComputerData> GetEditablesData(MapData mapData) {
-        return mapData.GetComputersByAudience(_data);
+    protected override IEnumerable<EditableData> GetEditablesData(MapData mapData) {
+        return mapData.GetComputersByAudienceId(_data.Id);
     }
 
-    public void SetManagers(MapManager mapManager, ComputerUIManager computerUI,
-        ErrorManager errorManager, MapEditManager editManager, SelectManager selectManager) {
+    public override void Inject(ObjectResolver resolver) {
+        _pool.SetResolver(resolver);
 
-        (_pool as EditableComputerPool).SetManagers(mapManager, computerUI, editManager, selectManager);
-
+        var errorManager = resolver.GetInstance<ErrorManager>();
         errorManager.ErrorAdded += CheckNewError;
         errorManager.ErrorChanged += CheckChangedError;
         errorManager.ErrorDeleted += CheckDeletedError;
@@ -87,14 +91,14 @@ public class MapAudience : MapElement<EditableComputer, ComputerData, AudienceDa
     }
 
     public void Delete() {
-        foreach (var computer in _editables)
+        foreach (EditableComputer computer in _editables.Cast<EditableComputer>())
             _pool.PutObject(computer);
         _editables.Clear();
     }
 
-    protected override ComputerData GenerateEmptyEditableData() {
+    protected override EditableData GenerateEmptyEditableData() {
         int computersCount = _mapData.ComputerDatas.Count();
-        return new(_data.Id, computersCount);
+        return new ComputerData(_data.Id, computersCount);
     }
 
     public override void GetBounds(out Vector2 leftDown, out Vector2 rightUp) {

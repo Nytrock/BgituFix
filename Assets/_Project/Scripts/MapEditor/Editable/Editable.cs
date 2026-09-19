@@ -1,104 +1,15 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class Editable<TData> : BaseEditable where TData : EditableData {
-    [SerializeField] protected EditableErrorsRenderer _errorsRenderer;
-
     protected TData _data;
-    protected readonly List<ComputerErrorData> _errors = new();
 
-    public override Vector2 Size => _data.Size;
-    public override Vector2 Position => _data.Position;
-    public Vector2 LeftBottom => _data.LeftBottom;
-    public Vector2 RightTop => _data.RightTop;
     public TData Data => _data;
 
-    public event Action SizeOrPositionChanged;
+    public override void SetData(EditableData data) {
+        _data = data as TData;
+        if (_data == null)
+            Debug.LogError($"Types mismatch: expected {nameof(TData)}, got something else");
 
-    private float GetPresicion() {
-        if (Input.GetKey(KeyCode.LeftShift))
-            return _freePrecision;
-        return _parent.Precision;
-    }
-
-    public virtual void Setup(TData data, BaseMapElement parent) {
-        BaseSetup(parent);
-        SetData(data);
-        _errorsRenderer.Setup();
-    }
-
-    public virtual void SetData(TData data) {
-        _data = data;
-        _renderer.SetData(_data);
-        _activator.SetSize(_data.Size);
-        transform.position = _data.Position;
-        SizeOrPositionChanged?.Invoke();
-    }
-
-    protected override void ChangePositionByMouse() {
-        Vector3 mousePosition = CameraManager.LocalMousePosition + _mouseOffset;
-        mousePosition = EditorUtils.GetSnappedEditablePosition(mousePosition, _data.Size, GetPresicion());
-        _editManager.ChangeEditablesPosition(mousePosition - transform.position);
-    }
-
-    protected override void ChangeSizeByMouse() {
-        _editManager.DeselectAllNowEditablesExceptOne(this);
-        Vector2 mousePosition = CameraManager.LocalMousePosition;
-        float width = _data.Size.x, height = _data.Size.y;
-        float centerX = transform.position.x, centerY = transform.position.y;
-
-        if (_isHorizontalResizing)
-            EditorUtils.Resize(ref width, ref centerX, _mouseOffset.x, mousePosition.x, GetPresicion());
-
-        if (_isVerticalResizing)
-            EditorUtils.Resize(ref height, ref centerY, _mouseOffset.y, mousePosition.y, GetPresicion());
-
-        ChangePosition(new(centerX, centerY));
-        ChangeSize(width, height);
-    }
-
-    public override void ChangePosition(Vector3 newPosition) {
-        newPosition = newPosition.Round(3);
-        if (newPosition == transform.position)
-            return;
-
-        transform.position = newPosition;
-        _data.UpdatePosition(transform.position);
-        _mouseTime += 0.2f;
-        SizeOrPositionChanged?.Invoke();
-    }
-
-    public override void ChangeSize(float width, float height) {
-        width = width.Round(3);
-        height = height.Round(3);
-        if (_data.Size == new Vector2(width, height))
-            return;
-
-        _data.UpdateSize(width, height);
-        _renderer.SetSize(_data.Size);
-        _mouseTime += 0.2f;
-        SizeOrPositionChanged?.Invoke();
-    }
-
-    protected override void UpdateEditState(bool isEdit) {
-        base.UpdateEditState(isEdit);
-        _errorsRenderer.ChangeEditState(isEdit);
-    }
-
-    public void CheckChangedError(ComputerErrorData errorData) {
-        if (errorData.IsSolved)
-            CheckDeletedError(errorData);
-        else
-            CheckNewError(errorData);
-    }
-
-    public abstract void CheckNewError(ComputerErrorData errorData);
-
-    public void CheckDeletedError(ComputerErrorData errorData) {
-        if (_errors.Contains(errorData)) {
-            _errors.Remove(errorData);
-            _errorsRenderer.RemoveError(errorData);
-        }
+        base.SetData(data);
     }
 }
