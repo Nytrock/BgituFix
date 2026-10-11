@@ -1,9 +1,7 @@
-using System;
+﻿using System;
 using UnityEngine;
 
-public class Singleton<TObject> : MonoBehaviour
-    where TObject : Component {
-
+public class Singleton<TObject> : MonoBehaviour where TObject : Component {
     protected static TObject _instance;
     public static TObject Instance => _instance;
 

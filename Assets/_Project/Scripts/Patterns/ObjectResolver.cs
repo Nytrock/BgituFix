@@ -3,22 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectResolver : MonoBehaviour {
+    [SerializeField] private CameraManager _cameraManager;
     [SerializeField] private MapManager _mapManager;
     [SerializeField] private MapEditManager _editManager;
     [SerializeField] private UserManager _userManager;
     [SerializeField] private ErrorManager _errorManager;
     [SerializeField] private SelectManager _selectManager;
     [SerializeField] private ComputerUIManager _computerUIManager;
+    [SerializeField] private CursorManager _cursorManager;
 
-    private Dictionary<Type, object> _instances;
+    private readonly Dictionary<Type, object> _instances = new();
 
     private void Start() {
+        AddInstance(_cameraManager);
         AddInstance(_mapManager);
         AddInstance(_editManager);
         AddInstance(_errorManager);
         AddInstance(_userManager);
         AddInstance(_selectManager);
         AddInstance(_computerUIManager);
+        AddInstance(_cursorManager);
     }
 
     private void AddInstance<T>(T instance) {

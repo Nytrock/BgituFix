@@ -15807,6 +15807,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ruler: {fileID: 1055308494}
+  _cursorManager: {fileID: 1256280020}
 --- !u!1 &810169245
 GameObject:
   m_ObjectHideFlags: 0
@@ -20173,12 +20174,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdc17ad52e25e9d4197aaeabb0113e41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectResolver
+  _cameraManager: {fileID: 519420033}
   _mapManager: {fileID: 186414406}
   _editManager: {fileID: 376717917}
   _userManager: {fileID: 1203970055}
   _errorManager: {fileID: 669909265}
   _selectManager: {fileID: 863042627}
   _computerUIManager: {fileID: 228689744}
+  _cursorManager: {fileID: 1256280020}
 --- !u!4 &1069797669
 Transform:
   m_ObjectHideFlags: 0

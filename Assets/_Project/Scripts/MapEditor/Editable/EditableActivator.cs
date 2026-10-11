@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class EditableActivator : MonoBehaviour, ISelectable {
@@ -7,7 +7,7 @@ public class EditableActivator : MonoBehaviour, ISelectable {
 
     public BaseEditable Editable => _editable;
 
-    public void Setup(BaseEditable editable, SelectManager selectManager) {
+    public void Setup(BaseEditable editable) {
         _editable = editable;
         _collider = GetComponent<BoxCollider2D>();
     }

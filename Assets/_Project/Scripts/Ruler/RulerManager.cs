@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 public class RulerManager : MonoBehaviour {
     [SerializeField] private RulerElement _ruler;
+    [SerializeField] private CursorManager _cursorManager;
 
     private bool _isActive;
 
@@ -18,6 +19,6 @@ public class RulerManager : MonoBehaviour {
     public void ChangeStateSilently(bool newState) {
         _isActive = newState;
         _ruler.ChangeState(newState);
-        CursorManager.Instance.SetType(_isActive ? CursorType.Ruler : CursorType.Default);
+        _cursorManager.SetType(_isActive ? CursorType.Ruler : CursorType.Default);
     }
 }

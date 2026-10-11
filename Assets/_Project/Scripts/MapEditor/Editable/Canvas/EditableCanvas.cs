@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EditableCanvas : MonoBehaviour {
     [SerializeField] private GameObject _panel;
@@ -8,6 +8,7 @@ public class EditableCanvas : MonoBehaviour {
     [SerializeField] private EditableTextSize _lengthText;
 
     private SelectManager _selectManager;
+    private CursorManager _cursorManager;
     private BaseEditable _editable;
     private bool _isResizing;
 
@@ -23,10 +24,16 @@ public class EditableCanvas : MonoBehaviour {
         _lengthText.SetSize(_editable.Size.y);
     }
 
-    public void Setup(BaseEditable editable, SelectManager selectManager) {
+    public void Setup(BaseEditable editable) {
         _editable = editable;
-        _selectManager = selectManager;
         SetupBorderElements();
+    }
+
+    public void Inject(ObjectResolver objectResolver) {
+        _selectManager = objectResolver.GetInstance<SelectManager>();
+        _cursorManager = objectResolver.GetInstance<CursorManager>();
+        foreach (var borderElement in _borderElements)
+            borderElement.SetManager(objectResolver.GetInstance<CameraManager>());
     }
 
     private void SetupBorderElements() {
@@ -46,7 +53,7 @@ public class EditableCanvas : MonoBehaviour {
         if (_editable.IsResizing || _editable.IsMoving || _selectManager.IsSelectorActive)
             return;
 
-        CursorManager.Instance.SetType(type);
+        _cursorManager.SetType(type);
         switch (type) {
             case CursorType.Default:
                 _editable.SetResizings(false, false);

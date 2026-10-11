@@ -1,7 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class CameraManager : Singleton<CameraManager> {
+public class CameraManager : MonoBehaviour {
     [SerializeField] private float _cameraOffset;
     [SerializeField] private float _minSize;
     [SerializeField] private float _scrollSensivity;
@@ -18,8 +18,7 @@ public class CameraManager : Singleton<CameraManager> {
     public Vector3 Size => new(_camera.orthographicSize * 2 / 9 * 16, _camera.orthographicSize * 2);
     public static Vector3 LocalMousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-    protected override void Awake() {
-        base.Awake();
+    protected void Awake() {
         _camera = GetComponent<Camera>();
         _startZoom = _camera.orthographicSize;
     }

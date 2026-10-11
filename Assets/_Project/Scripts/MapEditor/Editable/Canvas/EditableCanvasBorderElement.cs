@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,10 +12,6 @@ public class EditableCanvasBorderElement : CameraHoverTrigger, IPointerEnterHand
     public event Action<CursorType> CursorTypeChanged;
     public event Action LeftButtonDown;
     public event Action LeftButtonUp;
-
-    private void Start() {
-        _cameraManager = CameraManager.Instance;
-    }
 
     public void OnPointerDown(PointerEventData eventData) {
         if (eventData.button != PointerEventData.InputButton.Left)

@@ -11,7 +11,6 @@ public abstract class BaseEditable : MonoBehaviour, IResolvable {
 
     protected MapManager _mapManager;
     protected MapEditManager _editManager;
-    protected SelectManager _selectManager;
     protected BaseMapElement _parent;
     protected EditableData _baseData;
 
@@ -50,8 +49,9 @@ public abstract class BaseEditable : MonoBehaviour, IResolvable {
 
     public virtual void Setup(EditableData data, BaseMapElement parent) {
         _parent = parent;
+        _activator.Setup(this);
         _renderer.Setup();
-        _canvas.Setup(this, _selectManager);
+        _canvas.Setup(this);
         _errorsRenderer.Setup();
 
         ChangeEditingState(false);
@@ -103,9 +103,8 @@ public abstract class BaseEditable : MonoBehaviour, IResolvable {
     public virtual void Inject(ObjectResolver resolver) {
         _mapManager = resolver.GetInstance<MapManager>();
         _editManager = resolver.GetInstance<MapEditManager>();
-        _selectManager = resolver.GetInstance<SelectManager>();
         _editManager.EditStateChanged += UpdateEditState;
-        _activator.Setup(this, _selectManager);
+        _canvas.Inject(resolver);
     }
 
     protected virtual void UpdateEditState(bool isEdit) {

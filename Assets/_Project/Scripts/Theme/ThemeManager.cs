@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,12 +42,12 @@ public class ThemeManager : Singleton<ThemeManager> {
     }
 
     public Color GetErrorColor(ComputerErrorType type) {
-        switch (type) {
-            case ComputerErrorType.Critical: return GetColor(ThemeColorVariable.CriticalError);
-            case ComputerErrorType.Standard: return GetColor(ThemeColorVariable.MediumError);
-            case ComputerErrorType.Minor: return GetColor(ThemeColorVariable.MinorError);
-            default: return GetColor(ThemeColorVariable.Primary);
-        }
+        return type switch {
+            ComputerErrorType.Critical => GetColor(ThemeColorVariable.CriticalError),
+            ComputerErrorType.Standard => GetColor(ThemeColorVariable.MediumError),
+            ComputerErrorType.Minor => GetColor(ThemeColorVariable.MinorError),
+            _ => GetColor(ThemeColorVariable.Primary),
+        };
     }
 
     public Color GetColor(ThemeColorVariable variable) {
